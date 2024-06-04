@@ -19,9 +19,10 @@ export default function MinhaSala() {
                     </div>
                     <div className='Desc'>
                         <section className='DescCard cor2'>
+                            <div className='linha cor3'></div>
                             <h4>Uma aventura de aprendizado para que possamos dominar a lingua. Passaremos pelo verbo to be, simple past, present continuos, entre outros.</h4>
                         </section>
-                        <button className='cor3'> 
+                        <button className='cor3 border'> 
                             <img src='/assets/images/icones/pessoas.png' />
                             Pessoas
                         </button>

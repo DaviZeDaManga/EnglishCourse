@@ -44,17 +44,19 @@ body {
     &.selecionado { background-color: #8A55CD; }
 }
 .cor2 {
-    background-color: #252525;
+    background-color: #242424;
     &.selecionado { background-color: #7D4CBB; }
 }
 .cor3 {
-    background-color: #2F2F2F;
-    border: 1px solid #3f3f3f;
+    background-color: #313131;
     &.selecionado { background-color: #8A55CD; }
 }
 .cor4 {
     background-color: #8A55CD;
-    border: 1px solid #8e3cc1;
+}
+.border {
+    border: 1px solid #4e4e4e;
+    .selecionado { border: 1px solid #43c13c; }
 }
 
 
@@ -98,4 +100,17 @@ img {
 ::-webkit-scrollbar-thumb { 
     width: 0px;
     background-color: transparent;
+}
+
+
+
+.linha {
+    width: 5px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: rgb(44, 44, 44);
 }
