@@ -1,0 +1,25 @@
+.Trilha {
+    width: 100vw;
+    padding: 15px 12px 15px 392px;
+
+    .Video {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        margin-top: 12px;
+        height: 580px;
+        border-radius: 10px;
+    }
+
+    .SectionsTrilha {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        gap: 12px;
+        margin-top: 12px;
+    }
+}

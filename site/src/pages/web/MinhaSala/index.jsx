@@ -12,7 +12,7 @@ export default function MinhaSala() {
             <Titulo nome={"Minha Sala"}/>
 
             <section className='Info'>
-                <section className='InfoCard cor1'>
+                <section className='InfoCard cor1 border'>
                     <div className='Sala cor4'>
                         <img src='/assets/images/icones/minhasalaPE.png' />
                         <h3>Ingles A</h3>
@@ -22,7 +22,7 @@ export default function MinhaSala() {
                             <div className='linha cor3'></div>
                             <h4>Uma aventura de aprendizado para que possamos dominar a lingua. Passaremos pelo verbo to be, simple past, present continuos, entre outros.</h4>
                         </section>
-                        <button className='cor3 border'> 
+                        <button className='cor3'> 
                             <img src='/assets/images/icones/pessoas.png' />
                             Pessoas
                         </button>

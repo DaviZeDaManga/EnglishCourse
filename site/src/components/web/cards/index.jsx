@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import './index.scss'
+import { useState } from 'react'
 
 //components
 import Card from '../card'
@@ -13,7 +13,7 @@ export default function Cards({conteudo}) {
             <section className='Cards'>
                 <section className='Buttons'>
                     {conteudo.map( item =>
-                        <button onClick={()=> (setSection(item[0]), setContSection(item))} className={`cor3 border ${item[0] == section && "selecionado"}`}>
+                        <button onClick={()=> (setSection(item[0]), setContSection(item))} className={`cor3 ${item[0] == section && "selecionado"}`}>
                             <img src={`/assets/images/icones/${item[0]}${item[0] == section ? "PE" : ""}.png`} />
                             {item[0]}
                         </button>

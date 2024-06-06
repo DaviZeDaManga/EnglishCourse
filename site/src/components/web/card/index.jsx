@@ -3,7 +3,7 @@ import './index.scss'
 export default function Card({name, desc, link, img}) {
     return (
         <>
-            <main className='Card cor1'>
+            <main className='Card cor1 border'>
                 {img == null &&
                 <>
                     <section className='Title cor2'>
@@ -14,7 +14,7 @@ export default function Card({name, desc, link, img}) {
                         <h4>{desc}</h4>
                     </section>
                     {link != null &&
-                    <button className='cor2'>
+                    <button className='cor3'>
                         Acessar
                     </button>}
                 </>}
