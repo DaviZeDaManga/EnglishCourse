@@ -10,7 +10,17 @@
         width: 100%;
         margin-top: 12px;
         height: 580px;
+        padding: 12px;
         border-radius: 10px;
+
+        .FundoVideo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
     }
 
     .SectionsTrilha {
@@ -21,5 +31,100 @@
         width: 100%;
         gap: 12px;
         margin-top: 12px;
+    }
+
+    .Info {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        gap: 12px;
+        margin-top: 12px;
+
+        .CardInfo {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            height: 280px;
+            border-radius: 10px;
+            padding: 12px;
+            gap: 12px;
+
+            .Title {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                width: 100%;
+                min-height: 35px;
+                max-height: 35px;
+                border-radius: 10px;
+                padding: 12px;
+            }
+            .Desc {
+                display: flex;
+                justify-content: flex-start;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                width: 100%;
+                gap: 12px;
+                height: 100%;
+                padding: 12px 12px 12px 17px;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+                position: relative;
+                > button { width: auto; }
+            }
+            button {
+                max-width: 100%;
+                &:hover { .ExplicacaoPalavra { opacity: 1; } }
+
+                .ExplicacaoPalavra {
+                    opacity: 0;
+                    width: 300px;
+                    height: 220px;
+                    border-radius: 10px;
+                    position: absolute;
+                    top: 0;
+                    right: -312px;
+                    z-index: 2;
+                    transition: 0.3s;
+                }
+            }
+        }
+    }
+
+    .Controle {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end;
+        width: calc(100vw - 404px);
+        position: fixed;
+        gap: 12px;
+        bottom: 0;
+
+        .AtividadeControle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            > button { max-width: 35px; padding: 8px; }
+        }
+
+        .AtividadeEscolha {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 60px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
     }
 }

@@ -34,6 +34,7 @@ export default function BarraLateral({page}) {
                     </>}
                 </div>
 
+                {page == "Trilha" &&
                 <section className='Atividades cor4'>
                     <button className="selecionado"> 
                         <img src={`/assets/images/icones/TrilhasPE.png`} />
@@ -62,7 +63,7 @@ export default function BarraLateral({page}) {
                             Fazer lições
                         </button>
                     </section>
-                </section>
+                </section>}
             </section>
         </>
     )
