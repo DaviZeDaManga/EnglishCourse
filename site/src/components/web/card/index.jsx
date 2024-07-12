@@ -6,17 +6,18 @@ export default function Card({name, desc, link, img}) {
             <main className='Card cor1 border'>
                 {img == null &&
                 <>
-                    <section className='Title cor2'>
+                    <section className='Title border cor2'>
                         <h3>{name}</h3>
                     </section>
-                    <section className='Desc cor2'>
-                        <div className='linha'></div>
-                        <h4>{desc}</h4>
+                    <section className='Desc'>
+                        <section className='DescCard border cor2'>
+                            <div className='linha'></div>
+                            <h4>{desc}</h4>
+                        </section>
+                        <button className='b cor3'>
+                            Acessar
+                        </button>
                     </section>
-                    {link != null &&
-                    <button className='cor3'>
-                        Acessar
-                    </button>}
                 </>}
                 {img != null &&
                 <>

@@ -12,7 +12,7 @@ body {
     height: 100vh;
     background-color: #151515;
 
-    button {
+    .b {
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
@@ -124,4 +124,100 @@ img {
 
 .deg180 {
     transform: rotate(180deg);
+}
+
+
+
+
+
+
+
+
+
+
+.Card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: calc((100% / 3) - 8px);
+    min-height: 280px;
+    border-radius: 10px;
+    padding: 12px 12px 0px 12px;
+    gap: 12px;
+    &:hover > .Desc > .DescCard { min-height: 162px; max-height: 162px;}
+    &.min {width: calc(100% / 4);}
+
+    .Title {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        min-height: 35px;
+        max-height: 35px;
+        border-radius: 10px;
+        padding: 12px;
+    }
+    .Desc {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-content: flex-start;
+        width: 100%;
+        height: 219px;
+        gap: 12px;
+        overflow: hidden;
+        transition: 0.3s;
+
+        .DescCard {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+            min-height: 200px;
+            max-height: 200px;
+            padding: 12px 12px 12px 17px;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            position: relative;
+            transition: 0.3s;
+        }
+        button {
+            max-width: 100%;
+        }
+    }
+}
+.InfoFundo {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+
+
+
+
+
+.SectionButtons {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 35px;
+    gap: 12px;
+    margin-top: 36px;
+}
+.SectionCards {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 12px 0px;
+    gap: 12px;
 }

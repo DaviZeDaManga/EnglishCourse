@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 //USER
-import MinhaSala from './pages/web/MinhaSala'
-import Trilha from './pages/web/Trilha'
+import MinhaSala from './pages/user/MinhaSala'
+import Trilha from './pages/user/Trilha'
 
 export default function Routess(){
     return(
