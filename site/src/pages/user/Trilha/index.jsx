@@ -1,89 +1,103 @@
 import './index.scss'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
+//conexoes
+import { dadosAtividadesCon, dadosTrilhaCon } from '../../../connection/userConnection'
 
 //components
 import BarraLateral from '../../../components/web/barraLateral'
 import Titulo from '../../../components/web/titulo'
+import Card from '../../../components/web/card'
+import ErrorCard from '../../../components/web/error'
+
+//outros
+import { toast } from 'react-toastify';
 
 export default function Trilha() {
-    const [section, setSection] = useState(1)
+    const {idsala, idtrilha} = useParams()
+    const [trilha, setTrilha] = useState([]) 
 
-    return(
+    async function dadosTrilha() {
+        try {
+            const resposta = await dadosTrilhaCon(1, idsala, idtrilha);
+            setTrilha(resposta);
+        } catch { toast.dark('Ocorreu um erro ao buscar dados da trilha.'); }
+    }
+
+
+
+    const [section, setSection] = useState(1)
+    const [atividades, setAtividades] = useState([])
+
+    async function dadosAtividades() {
+        try {
+            let resposta = await dadosAtividadesCon(1, idsala, idtrilha)
+            setAtividades(resposta)
+        }
+        catch { toast.dark('Ocorreu um erro ao buscar dados das atividades.'); }
+    }
+
+
+
+
+    useEffect(()=> {
+        async function conections() {
+            await dadosTrilha()
+            await dadosAtividades()
+        }
+        conections()
+    }, [idsala, idtrilha])
+
+    return (
         <div className='Trilha'>
             <BarraLateral page={"Trilha"}/>
             <Titulo nome={"Trilha"}/>
 
-            <main className='Video cor1 border'>
-                <section className='FundoVideo cor2'>
-
+            <section className='Info'>
+                <section className='Card min cor1 border'>
+                    <section className='Title cor2'>
+                        {trilha.map( item => <h3>{item.nome}</h3>)}
+                    </section>
+                    <div className='Desc'>
+                        <section className='DescCard border cor2'>
+                            <div className='linha cor3'></div>
+                            {trilha.map( item => <h4>{item.descricao}</h4>)}
+                        </section>
+                        <button className='b cor3'> 
+                            {trilha.map( item => <img src={item.img} />)}
+                            Pessoas
+                        </button>
+                    </div>
                 </section>
-            </main>
-
-            <section className='SectionsTrilha'>
-                <button onClick={()=> setSection(1)} className={`cor3 ${section == 1 && "selecionado"}`}> 
-                    <img src={`/assets/images/icones/Avisos${section == 1 ? "PE" : ""}.png`} />
-                    Informações
-                </button>
-                <button onClick={()=> setSection(2)} className={`cor3 ${section == 2 && "selecionado"}`}> 
-                    <img src={`/assets/images/icones/download.png`} />
-                    Conteúdos
-                </button>
+                <section className='InfoFundo border cor1'>
+                    {trilha.map( item => <img className='fundo' src={item.imagem} />)}
+                </section>
             </section>
 
-            {section == 1 &&
-            <section className='Info'>
-                <section className='CardInfo cor1 border'>
-                    <section className='Title cor2'>
-                        <h3>Descrição</h3>
-                    </section>
-                    <section className='Desc cor2'>
-                        <div className='linha'></div>
-                        <h4>Hoje, iremos nos aprofundar no uso do verbo "to be" para fazer perguntas em inglês. Este é um aspecto fundamental da gramática e essencial para a comunicação eficaz. Vamos aprender sobre os verbos "am," "are," e "is" e como usá-los corretamente nas perguntas. Aliás, how are you? Primeiramente, o verbo "to be" é extremamente versátil e é utilizado em diversas formas de comunicação. Quando queremos formular perguntas, usamos "am," "are," e "is" de acordo com o sujeito da frase.</h4>
-                    </section>
-                    <button className='cor3'>
-                        Ver mais
-                    </button>
-                </section>
+            <section className='SectionButtons'>
+                <button onClick={()=> setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}> <img src={`/assets/images/icones/Trilhas${section == 1 ? "PE" : ""}.png`}/> Atividades</button>
+                <button onClick={()=> setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}> <img src={`/assets/images/icones/Avisos${section == 2 ? "PE" : ""}.png`}/> Meu rendimento</button>
+            </section>
 
-                <section className='CardInfo cor1 border'>
-                    <section className='Title cor2'>
-                        <h3>Palavras novas</h3>
-                    </section>
-                    <section className='Desc cor2'>
-                        <div className='linha'></div>
-                        <button className='cor3'>
-                            How
-                            <div className='ExplicacaoPalavra cor3 border'>
+            <main className='SectionCards'>
+                {section == 1 && <>  
+                {atividades.length <= 0 
+                    ? <ErrorCard mensagem={"Parece que não tem nada aqui."}/>
+                    : <>
+                    {atividades.map( item =>
+                        <Card
+                        estilo={1}
+                        id={item.id}
+                        name={item.nome}
+                        desc={item.descricao}
+                        img={item.imagem}
+                        video={item.video}
+                        para={2}
+                        />
+                    )}</>
+                }</>}
 
-                            </div>
-                        </button>                      
-                    </section>
-                </section>
-            </section>}
-
-            {section == 2 &&
-            <section className='Info'>
-                <section className='CardInfo cor1 border'>
-                    <section className='Title cor2'>
-                        <h3>Conteudos adicionais</h3>
-                    </section>
-                    <section className='Desc cor2'>
-                        <div className='linha'></div>
-                        
-                    </section>
-                </section>
-            </section>}
-
-            <main className='Controle'>
-                <section className='AtividadeControle cor1 border'>
-                    <button className='cor3'> <img src='/assets/images/icones/voltar.png'/> </button>
-                </section>
-                <section className='AtividadeEscolha cor1 border'>
-
-                </section>
-                <section className='AtividadeControle cor1 border'>
-                    <button className='cor3 deg180'> <img src='/assets/images/icones/voltar.png'/> </button>
-                </section>
             </main>
         </div>
     )

@@ -33,9 +33,10 @@ body {
         position: relative;
         cursor: pointer;
 
+        &.min { width: auto;}
         &:hover { background-color: #242424; color: #D9D9D9; }
         &.selecionado { background-color: #8A55CD; border: none; }
-        &.monstrando { background-color: #7D4CBB; border: none; }
+        &.mostrando { background-color: #7D4CBB; border: none; }
     }
 }
 
@@ -57,7 +58,7 @@ body {
     background-color: #8A55CD;
 }
 .border {
-    border: 1px solid #2e2e2e;
+    border: 1px solid #2c2c2c74;
     .selecionado { border: 1px solid #43c13c; }
 }
 
@@ -73,18 +74,24 @@ h3 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #C5C5C5;
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 600;
 }
 h4 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #898989;
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 450;
     line-height: 19px;
 }
 img {
     height: 100%;
-    &.fundo { width: 100%; border-radius: 10px;}
+    transition: 0.3s;
+    &.fundo { min-height: 100%; width: 100%; border-radius: 10px;}
+    &.meio { position: absolute;}
+    &.icon { max-width: 35px; max-height: 35px; &:hover {transform: scale(1.1);} cursor: pointer;}
+}
+video {
+    height: 100%;
 }
 
 
@@ -146,7 +153,10 @@ img {
     padding: 12px 12px 0px 12px;
     gap: 12px;
     &:hover > .Desc > .DescCard { min-height: 162px; max-height: 162px;}
+    &:hover > .Img > .Escuro > h3 {bottom: 12px;}
     &.min {width: calc(100% / 4);}
+    &.cem {width: 100%;}
+    &.normalPadding {padding: 12px;}
 
     .Title {
         display: flex;
@@ -171,19 +181,52 @@ img {
 
         .DescCard {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: flex-start;
             width: 100%;
             min-height: 200px;
             max-height: 200px;
             padding: 12px 12px 12px 17px;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
+            border-radius: 10px;
             position: relative;
             transition: 0.3s;
+            overflow: auto;
+            &.fix { min-height: 208px; max-height: 208px;}
         }
         button {
             max-width: 100%;
+        }
+    }
+    .Img {
+        display: flex;
+        width: 100%;
+        height: 254px;
+        border-radius: 10px;
+        position: relative;
+
+        .Escuro {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.241);
+            padding: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+
+            > h3 {
+                position: absolute; 
+                padding: 6px 12px;
+                border-radius: 10px;
+                left: 12px;
+                bottom: -22px;
+                background-color: #242424;
+                transition: 0.3s;
+                cursor: pointer;
+            }
         }
     }
 }
@@ -192,10 +235,10 @@ img {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-
     width: 100%;
     height: 100%;
     border-radius: 10px;
+    overflow: hidden;
 }
 
 
@@ -210,7 +253,6 @@ img {
     width: 100%;
     height: 35px;
     gap: 12px;
-    margin-top: 36px;
 }
 .SectionCards {
     display: flex;

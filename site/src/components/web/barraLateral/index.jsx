@@ -1,8 +1,50 @@
+import { useNavigate, useParams } from 'react-router-dom'
 import './index.scss'
+import { useEffect, useState, useRef } from 'react'
+
+//conexoes
+import { dadosAtividadesCon } from '../../../connection/userConnection';
+
+//outros
+import { toast } from 'react-toastify';
+import LoadingBar from "react-top-loading-bar";
 
 export default function BarraLateral({page}) {
+    const {idsala, idtrilha, idatividade} = useParams()
+    const [atividades, setAtividades] = useState([])
+
+    async function dadosAtividades() {
+        try {
+            let resposta = await dadosAtividadesCon(1, idsala, idtrilha)
+            setAtividades(resposta)
+        }
+        catch { toast.dark('Ocorreu um erro ao buscar dados das atividades.'); }
+    }
+
+    useEffect(()=> {
+        async function conections() {
+            if (page == "Trilha" || page == "Atividade") {
+                await dadosAtividades()
+            }
+        }
+        conections()
+    }, [idsala, idtrilha])
+
+    const navigate = useNavigate()
+    const ref = useRef()
+
+    function navegacao(para, id) {
+        ref.current.continuousStart()
+
+        if (para == 1) {
+            navigate(`/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}`)
+        }
+    }
+
     return ( 
         <>
+            <LoadingBar color="#f11946" ref={ref} />
+            
             <section className='BarraLateral border cor1'>
                 <div className='ButtonSections cor4'>
                     <button className={`b cor3 ${page == "inicio" && "selecionado"}`}> 
@@ -34,34 +76,32 @@ export default function BarraLateral({page}) {
                     </>}
                 </div>
 
-                {page == "Trilha" &&
+                {(page == "Trilha" || page == "Atividade") &&
                 <section className='Atividades cor4'>
                     <button className="b selecionado"> 
                         <img src={`/assets/images/icones/TrilhasPE.png`} />
                         Trilha 2 - No ritmo certo
                     </button>
 
-                    <section className="CardAtividades">
-                        <button className="b monstrando"> 
-                            1. Introdução ao curso de inglês
-                        </button>
-                        <button className="b monstrando"> 
-                            2. TOme toma la
-                        </button>
-                    </section>
-
                     <section className='CardAtividades'>
-                        <button className="b selecionado"> 
-                            3. Essa licao é muita legal
-                        </button>
-                        <button className="b selecionado"> 
-                            <img src={`/assets/images/icones/LivesPE.png`} />
-                            Assistir vídeo
-                        </button>
-                        <button className="b selecionado"> 
-                            <img src={`/assets/images/icones/atividadesPE.png`} />
-                            Fazer lições
-                        </button>
+                        {atividades.map( item =>
+                            <>
+                            <button onClick={()=> navegacao(1, item.id)} className={`b ${idatividade == item.id ? "selecionado" : "mostrando"}`}> 
+                                {item.nome}
+                            </button>
+                            {idatividade == item.id &&
+                            <>
+                            <button className="b selecionado"> 
+                                <img src={`/assets/images/icones/LivesPE.png`} />
+                                Assistir vídeo
+                            </button>
+                            <button className="b selecionado"> 
+                                <img src={`/assets/images/icones/atividadesPE.png`} />
+                                Fazer lições
+                            </button>
+                            </>}
+                            </>
+                        )}
                     </section>
                 </section>}
             </section>
