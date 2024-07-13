@@ -2,11 +2,13 @@ import './index.scss'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-//components
-import BarraLateral from '../../../components/web/barraLateral'
-import Titulo from '../../../components/web/titulo'
+//conexoes
 import { dadosAtividadeCon, dadosPalarvasCon } from '../../../connection/userConnection'
-import ErrorCard from '../../../components/web/error'
+
+//components
+import BarraLateral from '../../../components/user/barraLateral'
+import Titulo from '../../../components/user/titulo'
+import ErrorCard from '../../../components/user/error'
 
 //outros
 import { toast } from 'react-toastify';

@@ -6,10 +6,10 @@ import { useParams } from 'react-router-dom'
 import { dadosAtividadesCon, dadosTrilhaCon } from '../../../connection/userConnection'
 
 //components
-import BarraLateral from '../../../components/web/barraLateral'
-import Titulo from '../../../components/web/titulo'
-import Card from '../../../components/web/card'
-import ErrorCard from '../../../components/web/error'
+import BarraLateral from '../../../components/user/barraLateral'
+import Titulo from '../../../components/user/titulo'
+import Card from '../../../components/user/card'
+import ErrorCard from '../../../components/user/error'
 
 //outros
 import { toast } from 'react-toastify';
