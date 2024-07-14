@@ -64,17 +64,21 @@ export async function dadosPalarvasCon(iduser, idsala, idtrilha, idatividade) {
         return resposta.data
     }
     catch(error) {
-        console.error('Erro ao obter dados da atividade:', error);
-        throw new Error(`Erro ao obter dados da atividade: ${error.message}`);
+        console.error('Erro ao obter dados das palavras:', error);
+        throw new Error(`Erro ao obter dados das palavras: ${error.message}`);
     }
 }
 
-
-
-
-
-
-
+export async function dadosLicoesCon(iduser, idsala, idtrilha, idatividade) {
+    try {
+        const resposta = await api.get(`${userDadosUrl(iduser)}/sala/${idsala}/trilha/${idtrilha}/atividade/${idatividade}/licoes`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados das lições:', error);
+        throw new Error(`Erro ao obter dados das lições: ${error.message}`);
+    }
+}
 
 
 
@@ -85,8 +89,19 @@ export async function dadosAvisosCon(iduser, idsala) {
         return resposta.data
     }
     catch(error) {
-        console.error('Erro ao obter dados das trilhas:', error);
-        throw new Error(`Erro ao obter dados das trilhas: ${error.message}`);
+        console.error('Erro ao obter dados dos avisos:', error);
+        throw new Error(`Erro ao obter dados dos avisos: ${error.message}`);
+    }
+}
+
+export async function dadosAvisoCon(iduser, idsala, idaviso) {
+    try {
+        const resposta = await api.get(`${userDadosUrl(iduser)}/sala/${idsala}/aviso/${idaviso}`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados do aviso:', error);
+        throw new Error(`Erro ao obter dados do aviso: ${error.message}`);
     }
 }
 
@@ -96,7 +111,18 @@ export async function dadosTransmissoesCon(iduser, idsala) {
         return resposta.data
     }
     catch(error) {
-        console.error('Erro ao obter dados das trilhas:', error);
-        throw new Error(`Erro ao obter dados das trilhas: ${error.message}`);
+        console.error('Erro ao obter dados das transmissões:', error);
+        throw new Error(`Erro ao obter dados das transmissões: ${error.message}`);
+    }
+}
+
+export async function dadosTransmissaoCon(iduser, idsala, idtransmissao) {
+    try {
+        const resposta = await api.get(`${userDadosUrl(iduser)}/sala/${idsala}/transmissao/${idtransmissao}`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados da transmissão:', error);
+        throw new Error(`Erro ao obter dados da transmissão: ${error.message}`);
     }
 }

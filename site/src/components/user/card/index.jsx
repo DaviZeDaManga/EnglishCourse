@@ -2,9 +2,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useRef } from 'react'
 
 //outros
+import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
 
-export default function Card({estilo, id, name, desc, img, video, para}) {
+export default function Card({estilo, id, name, desc, img, video, status, para, importante, width}) {
     const {idsala, idtrilha} = useParams()
     const navigate = useNavigate()
     const ref = useRef()
@@ -12,11 +13,30 @@ export default function Card({estilo, id, name, desc, img, video, para}) {
     function navegacao() {
         ref.current.continuousStart()
 
-        if (para == 1) {
-            navigate(`/minhasala/${idsala}/trilha/${id}`)
+        try {
+            if (status != "Não feita.") {
+                if (para == 1) {
+                    navigate(`/minhasala/${idsala}/trilha/${id}`)
+                }
+                if (para == 2) {
+                    navigate(`/minhasala/${idsala}/aviso/${id}`)
+                }
+                if (para == 3) {
+                    navigate(`/minhasala/${idsala}/transmissão/${id}`)
+                }
+                if (para == 4) {
+                    navigate(`/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}/${importante == false ? "assistir" : "lições"}`)
+                }
+            }
+            else {
+                toast.dark("Voce não pode acessar isso.")
+            }
         }
-        if (para == 2) {
-            navigate(`/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}`)
+        catch {
+            toast.dark("Algo deu errado.")
+        }
+        finally {
+            ref.current.complete()
         }
     }
 
@@ -24,7 +44,7 @@ export default function Card({estilo, id, name, desc, img, video, para}) {
         <>
             <LoadingBar color="#f11946" ref={ref} />
 
-            <main className={`Card cor1 border ${(estilo == 1 && img != "Nenhuma imagem adicionada.") && "normalPadding"}`}>
+            <main className={`Card ${width} cor1 border ${(estilo == 1 && img != "Nenhuma imagem adicionada.") && "normalPadding"}`}>
                 {(estilo == 1 && img == "Nenhuma imagem adicionada.") &&
                 <section className='Title cor2'>
                     <h3 className="cor2">{name}</h3>

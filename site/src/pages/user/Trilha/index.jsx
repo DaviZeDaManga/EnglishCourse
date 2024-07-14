@@ -29,6 +29,7 @@ export default function Trilha() {
 
     const [section, setSection] = useState(1)
     const [atividades, setAtividades] = useState([])
+    const [rendimento, setRendimento] = useState([])
 
     async function dadosAtividades() {
         try {
@@ -37,7 +38,6 @@ export default function Trilha() {
         }
         catch { toast.dark('Ocorreu um erro ao buscar dados das atividades.'); }
     }
-
 
 
 
@@ -93,9 +93,18 @@ export default function Trilha() {
                         desc={item.descricao}
                         img={item.imagem}
                         video={item.video}
-                        para={2}
+                        para={4}
+                        status={item.status}
+                        importante={item.conteudo}
                         />
                     )}</>
+                }</>}
+
+                {section == 2 && <>  
+                {rendimento.length <= 0 
+                    ? <ErrorCard mensagem={"Essa função ainda não está disponível."}/>
+                    : <>
+                    </>
                 }</>}
 
             </main>

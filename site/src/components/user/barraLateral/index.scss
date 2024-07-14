@@ -38,7 +38,17 @@
             align-items: flex-start;
             width: 100%;
             border-radius: 10px; 
-            button { border-radius: 0px ;}
+            button { 
+                border-radius: 0px ;
+
+                .bolinha {
+                    width: 12px;
+                    height: 12px;
+                    border: 2px rgb(216, 216, 216) solid;
+                    border-radius: 100%;
+                    &.preenchido { background-color: rgb(216, 216, 216);}
+                }
+            }
         }
     }
 }

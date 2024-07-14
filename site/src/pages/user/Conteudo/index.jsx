@@ -2,9 +2,6 @@ import './index.scss'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-//conexoes
-import { dadosAtividadeCon, dadosPalarvasCon } from '../../../connection/userConnection'
-
 //components
 import BarraLateral from '../../../components/user/barraLateral'
 import Titulo from '../../../components/user/titulo'
@@ -12,60 +9,53 @@ import ErrorCard from '../../../components/user/error'
 
 //outros
 import { toast } from 'react-toastify';
-import { inserirFeitoConteudoCon } from '../../../connection/alunoConnection'
+import { dadosAvisoCon, dadosTransmissaoCon } from '../../../connection/userConnection'
 
-export default function Atividade() {
-    const {idsala, idtrilha, idatividade} = useParams()
-    const [atividade, setAtividade] = useState([])
+export default function Conteudo() {
+    const {idsala, idconteudo, tipoconteudo} = useParams()
+    const [conteudo, setConteudo] = useState([])
 
-    async function dadosAtividade() {
+    async function dadosAviso() {
         try {
-            const resposta = await dadosAtividadeCon(1, idsala, idtrilha, idatividade);
-            setAtividade(resposta);
-        } catch { toast.dark('Ocorreu um erro ao buscar dados da atividade.'); }
+            const resposta = await dadosAvisoCon(1, idsala, idconteudo);
+            setConteudo(resposta);
+        } catch { toast.dark('Ocorreu um erro ao buscar dados do aviso.'); }
+    }
+
+    async function dadosTransmissao() {
+        try {
+            const resposta = await dadosTransmissaoCon(1, idsala, idconteudo);
+            setConteudo(resposta);
+        } catch { toast.dark('Ocorreu um erro ao buscar dados da transmissão.'); }
     }
 
     const [section, setSection] = useState(1)
-    const [palavras, setPalavras] = useState([])
     const [comentarios, setComentarios] = useState([])
 
-    async function dadosPalavras() {
-        try {
-            const resposta = await dadosPalarvasCon(1, idsala, idtrilha, idatividade);
-            setPalavras(resposta);
-        } catch { toast.dark('Ocorreu um erro ao buscar dados das palavras.'); }
-    }
+
 
     useEffect(()=> {
         async function conections() {
-            await dadosAtividade()
-            await dadosPalavras()
+            if (tipoconteudo == "aviso") {await dadosAviso()}
+            if (tipoconteudo == "transmissão") {await dadosTransmissao()}
         }
         conections()
-    }, [idsala, idtrilha, idatividade])
+    }, [idsala, idconteudo, tipoconteudo])
 
     const [assistir, setAssistir] = useState(false)
 
-    async function inserirFeitoConteudo() {
-        try {
-            const resposta = await inserirFeitoConteudoCon(1, idatividade);
-            toast.dark('Partiu lições!');
-            
-        } catch { toast.dark('Ocorreu um erro ao inserir feito do conteudo.'); }
-    }
-
     return(
-        <div className='Atividade'>
-            <BarraLateral page={"Assistir"}/>
-            <Titulo nome={"Atividade"}/>
+        <div className='Conteudo'>
+            <BarraLateral page={"Conteudo"}/>
+            <Titulo nome={tipoconteudo}/>
 
             <main className='Video cor1 border'>
                 <section className='FundoVideo'>
-                    {atividade.map( item => 
+                    {conteudo.map( item => 
                         <>
                         {assistir == false && <img className='fundo' src={item.imagem} />}
                         {(assistir == false && item.video != "Nenhum vídeo adicionado.") && <img onClick={()=> setAssistir(true)} className='meio icon' src="/assets/images/icones/LivesPE.png" />}
-                        {assistir == true && <video onEnded={()=> inserirFeitoConteudo()} controls="true">  <source src={item.video} type="video/mp4" /></video>}
+                        {assistir == true && <video controls="true">  <source src={item.video} type="video/mp4" /></video>}
                         </>
                     )}
                 </section>
@@ -92,7 +82,7 @@ export default function Atividade() {
                     <div className='Desc'>
                         <section className='DescCard border cor2'>
                             <div className='linha cor3'></div>
-                            {atividade.map( item => <h4>{item.descricao}</h4>)}
+                            {conteudo.map( item => <h4>{item.descricao}</h4>)}
                         </section>
                         <button className='b cor3'> 
                             Mais dados
@@ -100,14 +90,14 @@ export default function Atividade() {
                     </div>
                 </section>
 
-                <section className='Card cem cor1 border'>
+                <section className='Card min cor1 border'>
                     <section className='Title  cor2'>
-                        <h3>Palavras</h3>
+                        <h3>Criado por</h3>
                     </section>
                     <div className='Desc'>
                         <section className='DescCard fix border cor2'>
                             <div className='linha cor3'></div>
-                            {palavras.map( item => <button className='b cor3 min'>{item.nome}</button>)}
+                            
                         </section>
                     </div>
                 </section>
