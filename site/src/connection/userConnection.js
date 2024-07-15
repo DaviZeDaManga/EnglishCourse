@@ -3,6 +3,17 @@ import axios from 'axios'
 const api = axios.create({ baseURL: "http://localhost:5000" })
 const userDadosUrl = (iduser) => `/user/${iduser}/dados`
 
+export async function dadosSalasCon(iduser) {
+    try {
+        const resposta = await api.get(`${userDadosUrl(iduser)}/salas`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados das salas:', error);
+        throw new Error(`Erro ao obter dados das salas: ${error.message}`);
+    }
+}
+
 export async function dadosSalaCon(iduser, idsala) {
     try {
         const resposta = await api.get(`${userDadosUrl(iduser)}/sala/${idsala}`)

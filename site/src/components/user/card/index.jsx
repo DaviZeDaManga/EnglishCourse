@@ -4,6 +4,7 @@ import { useRef } from 'react'
 //outros
 import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
+import { BuscarImagem } from '../../../connection/alunoConnection';
 
 export default function Card({estilo, id, name, desc, img, video, status, para, importante, width}) {
     const {idsala, idtrilha} = useParams()
@@ -15,6 +16,9 @@ export default function Card({estilo, id, name, desc, img, video, status, para, 
 
         try {
             if (status != "Não feita.") {
+                if (para == 0) {
+                    navigate(`/minhasala/${id}`)
+                }
                 if (para == 1) {
                     navigate(`/minhasala/${idsala}/trilha/${id}`)
                 }
@@ -45,13 +49,14 @@ export default function Card({estilo, id, name, desc, img, video, status, para, 
             <LoadingBar color="#f11946" ref={ref} />
 
             <main className={`Card ${width} cor1 border ${(estilo == 1 && img != "Nenhuma imagem adicionada.") && "normalPadding"}`}>
+
                 {(estilo == 1 && img == "Nenhuma imagem adicionada.") &&
                 <section className='Title cor2'>
                     <h3 className="cor2">{name}</h3>
                 </section>}
                 {(estilo == 2 || (estilo == 1 && img != "Nenhuma imagem adicionada.")) &&
                 <section className={`Img cor2 `}>
-                    <img src={img} className='fundo'/>
+                    <img src={BuscarImagem(img)} className='fundo'/>
                     <section onClick={()=> navegacao()} className='Escuro'>
                         <h3 onClick={()=> navegacao()}>{name}</h3>
                     </section>
@@ -63,7 +68,7 @@ export default function Card({estilo, id, name, desc, img, video, status, para, 
                         <h4>{desc}</h4>
                     </section>
                     {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado.") &&
-                    <button onClick={()=> navegacao()} className='b cor3'>
+                    <button onClick={()=> navegacao()} className='b cor3 cem'>
                         Acessar
                     </button>}
                 </section>}

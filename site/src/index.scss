@@ -77,6 +77,9 @@ body {
     border: 1px solid #2c2c2c74;
     .selecionado { border: 1px solid #43c13c; }
 }
+.border2 {
+    border: solid 1px rgb(56, 56, 56);
+}
 
 
 
@@ -105,6 +108,7 @@ img {
     &.fundo { min-height: 100%; width: 100%; border-radius: 10px;}
     &.meio { position: absolute;}
     &.icon { max-width: 35px; max-height: 35px; &:hover {transform: scale(1.1);} cursor: pointer;}
+    &.fourty {height: 40%; &:hover {transform: scale(1.1);} cursor: pointer;}
 }
 video {
     height: 100%;
@@ -177,7 +181,9 @@ input {
 .deg180 {
     transform: rotate(180deg);
 }
-
+.null {
+    opacity: 0;
+}
 
 
 
@@ -194,54 +200,29 @@ input {
     align-items: flex-start;
     min-width: calc((100% / 3) - 8px);
     max-width: calc((100% / 3) - 8px);
-    min-height: 280px;
+    min-height: 300px;
     border-radius: 10px;
     padding: 12px 12px 0px 12px;
+    position: relative;
     gap: 12px;
-    &:hover > .Desc > .DescCard { min-height: 162px; max-height: 162px;}
-    &:hover > .Img > .Escuro > h3 {bottom: 12px;}
+    &:hover > .Desc > .DescCard { min-height: 182px; max-height: 182px;}
+    &:hover > .Img > .Escuro > h3 {bottom: 6px;}
     &.min {min-width: calc(100% / 4); max-width: calc(100% / 4);}
     &.cem {max-width: none; min-width: none; width: 100%;}
     &.normalPadding {padding: 12px;}
+    &:hover > button{opacity: 1;}
 
-    .Title {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        width: 100%;
-        min-height: 35px;
-        max-height: 35px;
-        border-radius: 10px;
-        padding: 12px;
-    }
     .Desc {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-content: flex-start;
         width: 100%;
-        height: 219px;
+        height: 240px;
         gap: 12px;
         overflow: hidden;
         transition: 0.3s;
 
-        .DescCard {
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-start;
-            width: 100%;
-            min-height: 200px;
-            max-height: 200px;
-            padding: 12px 12px 12px 17px;
-            border-radius: 10px;
-            position: relative;
-            transition: 0.3s;
-            overflow: auto;
-            &.fix { min-height: 208px; max-height: 208px;}
-        }
-        button {
-            max-width: 100%;
-        }
     }
     .Img {
         display: flex;
@@ -265,7 +246,7 @@ input {
 
             > h3 {
                 position: absolute; 
-                padding: 6px 12px;
+                padding: 7px 12px;
                 border-radius: 10px;
                 left: 12px;
                 bottom: -22px;
@@ -296,7 +277,20 @@ input {
     border-radius: 10px;
     padding: 12px;
 }
-
+.DescCard {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 220px;
+    max-height: 220px;
+    padding: 12px 12px 12px 17px;
+    border-radius: 10px;
+    position: relative;
+    transition: 0.3s;
+    overflow: auto;
+    &.fix { min-height: 208px; max-height: 208px;}
+}
 
 
 
@@ -346,10 +340,33 @@ input {
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
-        min-width: calc((100% / 3) - 308px);
-        max-width: calc((100% / 3) - 308px);
+        min-width: calc((100% - 388px) / 3);
+        max-width: calc((100% - 388px) / 3);
         padding: 12px;
         border-radius: 10px;
         gap: 12px;
+    }
+
+    .AddCard {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        min-width: calc((100% - 388px) / 3);
+        max-width: calc((100% - 388px) / 3);
+        padding: 12px;
+        gap: 12px;
+        border-radius: 10px;
+
+        .AddImage {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 260px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
     }
 }

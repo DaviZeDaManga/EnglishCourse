@@ -49,3 +49,7 @@ export async function inserirResposta(idaluno, idlicao, idalternativa, escrita, 
         throw new Error(`Erro ao inserir resposta nessa lição: ${error.message}`);
     }
 }
+
+export function BuscarImagem(imagem){
+    return (`${api.getUri()}/${imagem}`)    
+}

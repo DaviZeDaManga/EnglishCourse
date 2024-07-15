@@ -1,0 +1,21 @@
+.MinhasSalas {
+    width: 100vw;
+    padding: 15px 12px 15px 392px;
+
+    .AddButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 300px;
+        border-radius: 10px;
+        position: relative;
+        padding: 12px;
+
+        > .DescCard {
+            min-height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}

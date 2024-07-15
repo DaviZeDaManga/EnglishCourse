@@ -13,6 +13,7 @@ import ErrorCard from '../../../components/user/error'
 
 //outros
 import { toast } from 'react-toastify';
+import { BuscarImagem } from '../../../connection/alunoConnection'
 
 export default function MinhaSala() {
     const {idsala} = useParams()
@@ -33,27 +34,32 @@ export default function MinhaSala() {
     const [transmissoes, setTransmissoes] = useState([])
 
     async function dadosTrilhas() {
+        setTrilhas("Loading")
         try {
             let resposta = await dadosTrilhasCon(1, idsala)
             setTrilhas(resposta)
         }
-        catch { toast.dark('Ocorreu um erro ao buscar dados das trilhas.'); }
+        catch(error) { 
+            setTrilhas("Parece que não tem nada aqui.")
+        }
     }
 
     async function dadosAvisos() {
+        setAvisos("Loading")
         try {
             let resposta = await dadosAvisosCon(1, idsala)
             setAvisos(resposta)
         }
-        catch { toast.dark('Ocorreu um erro ao buscar dados dos avisos.'); }
+        catch { setAvisos("Parece que não tem nada aqui.") }
     }
 
     async function dadosTransmissoes() {
+        setTransmissoes("Loading")
         try {
             let resposta = await dadosTransmissoesCon(1, idsala)
             setTransmissoes(resposta)
         }
-        catch { toast.dark('Ocorreu um erro ao buscar dados das transmissões.'); }
+        catch { setTransmissoes("Parece que não tem nada aqui.")}
     }
 
 
@@ -90,7 +96,7 @@ export default function MinhaSala() {
                     </div>
                 </section>
                 <section className='InfoFundo border cor1'>
-                    {sala.map( item => <img className='fundo' src={item.imagem} />)}
+                    {sala.map( item => <img className='fundo' src={BuscarImagem(item.imagem)} />)}
                 </section>
             </section>
 
@@ -102,8 +108,8 @@ export default function MinhaSala() {
 
             <main className='SectionCards'>
                 {section == 1 && <>  
-                {trilhas.length <= 0 
-                    ? <ErrorCard mensagem={"Parece que não tem nada aqui."}/>
+                {(trilhas == "Loading" || trilhas == "Parece que não tem nada aqui.") 
+                    ? <ErrorCard mensagem={trilhas}/>
                     : <>
                     {trilhas.map( item =>
                         <Card
@@ -119,8 +125,8 @@ export default function MinhaSala() {
                 }</>}
 
                 {section == 2 && <>  
-                {avisos.length <= 0 
-                    ? <ErrorCard mensagem={"Parece que não tem nada aqui."}/>
+                {(avisos == "Loading" || avisos == "Parece que não tem nada aqui.") 
+                    ? <ErrorCard mensagem={avisos}/>
                     : <>
                     {avisos.map( item =>
                         <Card
@@ -136,8 +142,8 @@ export default function MinhaSala() {
                 }</>}
 
                 {section == 3 && <>  
-                {transmissoes.length <= 0 
-                    ? <ErrorCard mensagem={"Parece que não tem nada aqui."}/>
+                {(transmissoes == "Loading" || transmissoes == "Parece que não tem nada aqui.") 
+                    ? <ErrorCard mensagem={transmissoes}/>
                     : <>
                     {transmissoes.map( item =>
                         <Card
