@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 //ADMIN
 import MinhasSalas from './pages/admin/MinhasSalas'
+import Criacao from './pages/admin/Criacao'
 
 //USER
 import MinhaSala from './pages/user/MinhaSala'
@@ -16,6 +17,7 @@ export default function Routess(){
             <Routes>
                 {/* ADMIN */}
                 <Route path='/admin/minhassalas' element={<MinhasSalas/>} /> 
+                <Route path='/admin/criação' element={<Criacao/>} /> 
 
                 {/* USER */}
                 <Route path='/minhasala/:idsala' element={<MinhaSala/>} /> 

@@ -61,29 +61,29 @@ export default function BarraLateral({page}) {
             
             <section className='BarraLateral border cor1'>
                 <div className='ButtonSections cor4'>
-                    <button className={`b cor3 ${page == "inicio" && "selecionado"}`}> 
+                    <button className={`b cor3 cem ${page == "inicio" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/inicio${page === "inicio" ? "PE" : ""}.png`} />
                         Inicio 
                     </button>
                 </div>
                 <div className='ButtonSections cor4'>
-                    <button className={`b cor3 ${page == "calendario" && "selecionado"}`}> 
+                    <button className={`b cor3 cem ${page == "calendario" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/calendario${page === "calendario" ? "PE" : ""}.png`} />
                         Calendário 
                     </button>
                 </div>
                 <div className='ButtonSections cor4'>
-                    <button onClick={()=> navegacao(2)} className={`b cor3 ${page == "minhasala" && "selecionado"}`}> 
+                    <button onClick={()=> navegacao(2)} className={`b cem cor3 ${page == "minhasala" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/minhasala${page === "minhasala" ? "PE" : ""}.png`} />
                         Minha Sala 
                     </button>
                     {page == "minhasala" &&
                     <>
-                    <button className="b selecionado"> 
+                    <button className="b cem selecionado"> 
                         <img src={`/assets/images/icones/TrilhasPE.png`} />
                         Acessar ultima trilha
                     </button>
-                    <button className="b selecionado"> 
+                    <button className="b cem selecionado"> 
                         <img src={`/assets/images/icones/LivesPE.png`} />
                         Entrar na chamada
                     </button>
@@ -92,7 +92,7 @@ export default function BarraLateral({page}) {
 
                 {(page == "Trilha" || page == "Assistir" || page == "Lições") &&
                 <section className='Atividades cor4'>
-                    <button className="b selecionado"> 
+                    <button className="b cem selecionado"> 
                         <img src={`/assets/images/icones/TrilhasPE.png`} />
                         Trilha 2 - No ritmo certo
                     </button>

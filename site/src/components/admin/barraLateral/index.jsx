@@ -23,6 +23,9 @@ export default function BarraLateral({page}) {
             if (para == 1) {
                 navigate(`/admin/minhassalas`)
             }
+            if (para == 2) {
+                navigate(`/admin/criação`)
+            }
         }
         catch {
             toast.dark("Algo deu errado.")
@@ -38,25 +41,25 @@ export default function BarraLateral({page}) {
             
             <section className='BarraLateral border cor1'>
                 <div className='ButtonSections cor4'>
-                    <button className={`b cor3 ${page == "dash" && "selecionado"}`}> 
+                    <button className={`b cem cor3 ${page == "dash" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/inicio${page === "dash" ? "PE" : ""}.png`} />
                         Dash 
                     </button>
                 </div>
                 <div className='ButtonSections cor4'>
-                    <button className={`b cor3 ${page == "gerenciamento" && "selecionado"}`}> 
+                    <button className={`b cem cor3 ${page == "gerenciamento" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/pessoas.png`} />
                         Gerenciamento de alunos 
                     </button>
                 </div>
                 <div className='ButtonSections cor4'>
-                    <button onClick={()=> navegacao(1)} className={`b cor3 ${page == "minhassalas" && "selecionado"}`}> 
+                    <button onClick={()=> navegacao(1)} className={`b cem cor3 ${page == "minhassalas" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/minhasala${page === "minhassalas" ? "PE" : ""}.png`} />
                         Minhas Salas 
                     </button>
                 </div>
                 <div className='ButtonSections cor4'>
-                    <button onClick={()=> navegacao(2)} className={`b cor3 ${page == "criacao" && "selecionado"}`}> 
+                    <button onClick={()=> navegacao(2)} className={`b cem cor3 ${page == "criacao" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/criacao${page === "criacao" ? "PE" : ""}.png`} />
                         Criação
                     </button>

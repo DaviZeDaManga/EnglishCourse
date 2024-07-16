@@ -2,8 +2,7 @@ import './index.scss'
 import { useEffect, useState } from 'react'
 
 // Conexões
-import { dadosSalasCon } from '../../../connection/userConnection'
-import { inserirSalaCon } from '../../../connection/professorConnection'
+import { dadosAvisosProfessorCon, dadosTransmissoesProfessorCon, dadosTrilhasProfessorCon, inserirAvisoCon, inserirTransmissaoCon, inserirTrilhaCon } from '../../../connection/professorConnection'
 
 // Componentes
 import BarraLateral from '../../../components/admin/barraLateral'
@@ -14,33 +13,57 @@ import ErrorCard from '../../../components/user/error'
 // Outros
 import { toast } from 'react-toastify';
 
-export default function MinhasSalas() {
+export default function Criacao() {
     const [section, setSection] = useState(1)
-    const [salas, setSalas] = useState([])
+    const [trilhas, setTrilhas] = useState([])
+    const [avisos, setAvisos] = useState([])
+    const [transmissoes, setTransmissoes] = useState([])
 
-    async function minhasSalas() {
-        setSalas("Loading")
+    async function Trilhas() {
+        setTrilhas("Loading")
         try {
-            let resposta = await dadosSalasCon(1)
-            setSalas(resposta)
-        } catch (error) {
-            setSalas("Nenhuma sala encontrada.")
+            let resposta = await dadosTrilhasProfessorCon(1)
+            setTrilhas(resposta)
         }
+        catch { setTrilhas("Nenhuma trilha encontrada.")}
     }
 
-    useEffect(() => {
+    async function Avisos() {
+        setAvisos("Loading")
+        try {
+            let resposta = await dadosAvisosProfessorCon(1)
+            setAvisos(resposta)
+        }
+        catch { setAvisos("Nenhum aviso encontrado.")}
+    }
+
+    async function Transmissoes() {
+        setTransmissoes("Loading")
+        try {
+            let resposta = await dadosTransmissoesProfessorCon(1)
+            setTransmissoes(resposta)
+        }
+        catch { setTransmissoes("Nenhuma transmissão encontrada.")}
+    }
+
+    useEffect(()=> {
         async function load() {
-            await minhasSalas()
+            await Trilhas()
+            await Avisos()
+            await Transmissoes()
         }
         load()
     }, [])
 
 
-
+    
     const [cardadd, setCardadd] = useState(false)
     const [nome, setNome] = useState("")
     const [desc, setDesc] = useState("")
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null)
+    const [video, setVideo] = useState("")
+    const [comentarios, setComentarios] = useState(false)
+    const [status, setStatus] = useState("Ativo")
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -57,12 +80,16 @@ export default function MinhasSalas() {
         document.getElementById('fileInput').click();
     };
 
-    const handleCreateRoom = async () => {
+    const handleCreate = async () => {
         try {
             if (nome !== "" && desc !== "" && selectedImage !== null) {
                 const imgFile = document.getElementById('fileInput').files[0];
-                await inserirSalaCon(1, nome, desc, imgFile)
-                toast.dark("Sala criada!")
+                
+                if (section == 1) { await inserirTrilhaCon(1, nome, desc, imgFile) }
+                else if (section == 2) { await inserirAvisoCon(1, nome, desc, imgFile, video, comentarios, status) }
+                else if (section == 3) { await inserirTransmissaoCon(1, nome, desc, imgFile, video, comentarios, status) }
+
+                toast.dark("Criado!")
                 setNome('')
                 setDesc('')
                 setSelectedImage(null)
@@ -73,14 +100,16 @@ export default function MinhasSalas() {
         } catch {
             toast.dark("Não foi possível criar uma nova sala.")
         } finally {
-            minhasSalas()
+            Trilhas()
+            Avisos()
+            Transmissoes()
         }
     }
 
     return (
-        <section className='MinhasSalas'>
-            <BarraLateral page={"minhassalas"} />
-            <Titulo nome={"Minhas salas"} />
+        <section className='Criacao'>
+            <BarraLateral page={"criacao"} />
+            <Titulo nome={"Criação"} />
 
             {cardadd &&
                 <main className='FundoEscuro'>
@@ -90,7 +119,7 @@ export default function MinhasSalas() {
                                 <img src='/assets/images/icones/voltar.png' alt="Voltar" /> 
                             </button>
                             <section className='NomeTitulo cem cor3'>
-                                <h3>Criar nova sala</h3>
+                                <h3>Criar {section == 1 && "nova trilha"}  {section == 2 && "novo aviso"}  {section == 3 && "nova transmissão"}</h3>
                             </section>
                         </div>
 
@@ -124,7 +153,7 @@ export default function MinhasSalas() {
                                 className='cor2 border' 
                             />
                         </section>
-                        <button onClick={handleCreateRoom} className='b cor3 cem'>Criar</button>
+                        <button onClick={()=> handleCreate()} className='b cor3 cem'>Criar</button>
                     </section>
                 </main>
             }
@@ -135,16 +164,15 @@ export default function MinhasSalas() {
                 </section>
 
                 <section className='SectionButtons'>
-                    <button onClick={()=> setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}> <img src={`/assets/images/icones/salas${section == 1 ? "PE" : ""}.png`}/>Salas</button>
-                    <button onClick={()=> setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}> <img src={`/assets/images/icones/Avisos${section == 2 ? "PE" : ""}.png`}/>Informações</button>
+                    <button onClick={()=> setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}> <img src={`/assets/images/icones/Trilhas${section == 1 ? "PE" : ""}.png`}/>Trilhas</button>
+                    <button onClick={()=> setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}> <img src={`/assets/images/icones/Avisos${section == 2 ? "PE" : ""}.png`}/>Avisos</button>
+                    <button onClick={()=> setSection(3)} className={`b cor3 ${section == 3 && "selecionado"}`}> <img src={`/assets/images/icones/Lives${section == 3 ? "PE" : ""}.png`}/>Transmissões</button>
                 </section>
 
-                {section == 1 &&
-                <>
-                {(salas == "Loading" || salas == "Nenhuma sala encontrada.") 
-                ? <ErrorCard mensagem={salas} />
-                : <>
-                {salas.map( item=>
+                {section == 1 && <>
+                {(trilhas == "Loading" || trilhas == "Nenhuma trilha encontrada.") 
+                ? <ErrorCard mensagem={trilhas} />
+                : <>{trilhas.map( item=>
                     <Card
                     key={item.id}
                     estilo={2}
@@ -154,15 +182,42 @@ export default function MinhasSalas() {
                     img={item.imagem}
                     video={item.video}
                     para={0}
-                    />
-                )}
-                </>}
-                </>
-                }
+                    />)}
+                </>} </>}
 
-                {section == 2 &&
-                <ErrorCard mensagem={"Essa função ainda não está disponível."} />
-                }
+                {section == 2 && <>
+                {(avisos == "Loading" || avisos == "Nenhum aviso encontrado.") 
+                ? <ErrorCard mensagem={avisos} />
+                : <>{avisos.map( item=>
+                    <Card
+                    key={item.id}
+                    estilo={2}
+                    id={item.id}
+                    name={item.nome}
+                    desc={item.descricao}
+                    img={item.imagem}
+                    video={item.video}
+                    para={0}
+                    />)}
+                </>} </>}
+
+                {section == 3 && <>
+                {(transmissoes == "Loading" || transmissoes == "Nenhuma transmissão encontrada.") 
+                ? <ErrorCard mensagem={transmissoes} />
+                : <>{transmissoes.map( item=>
+                    <Card
+                    key={item.id}
+                    estilo={2}
+                    id={item.id}
+                    name={item.nome}
+                    desc={item.descricao}
+                    img={item.imagem}
+                    video={item.video}
+                    para={0}
+                    />)}
+                </>} </>}
+
+
             </section>
         </section>
     )
