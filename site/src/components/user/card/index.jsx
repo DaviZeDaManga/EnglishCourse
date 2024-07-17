@@ -1,13 +1,17 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { useRef } from 'react'
+import storage from 'local-storage';
+
+//conexoes
+import { BuscarImagem, entrarSalaCon } from '../../../connection/alunoConnection';
 
 //outros
 import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
-import { BuscarImagem } from '../../../connection/alunoConnection';
 
-export default function Card({estilo, id, name, desc, img, video, status, para, importante, width}) {
-    const {idsala, idtrilha} = useParams()
+export default function Card({estilo, id, idProfessor, idSala, name, desc, img, video, status, para, importante, width, tipo}) {
+    const aluno = storage.get('aluno') || []; 
+    const {idtrilha, idsala} = useParams()
     const navigate = useNavigate()
     const ref = useRef()
 
@@ -17,19 +21,19 @@ export default function Card({estilo, id, name, desc, img, video, status, para, 
         try {
             if (status != "Não feita.") {
                 if (para == 0) {
-                    navigate(`/minhasala/${id}`)
+                    navigate(`/aluno/minhasala/${id}`)
                 }
                 if (para == 1) {
-                    navigate(`/minhasala/${idsala}/trilha/${id}`)
+                    navigate(`/aluno/minhasala/${idSala}/trilha/${id}`)
                 }
                 if (para == 2) {
-                    navigate(`/minhasala/${idsala}/aviso/${id}`)
+                    navigate(`/aluno/minhasala/${idSala}/aviso/${id}`)
                 }
                 if (para == 3) {
-                    navigate(`/minhasala/${idsala}/transmissão/${id}`)
+                    navigate(`/aluno/minhasala/${idSala}/transmissão/${id}`)
                 }
                 if (para == 4) {
-                    navigate(`/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}/${importante == false ? "assistir" : "lições"}`)
+                    navigate(`/aluno/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}/${importante == false ? "assistir" : "lições"}`)
                 }
             }
             else {
@@ -42,6 +46,18 @@ export default function Card({estilo, id, name, desc, img, video, status, para, 
         finally {
             ref.current.complete()
         }
+    }
+
+
+
+    async function funcoes() {
+        try {
+            if (tipo == "PedirEntrar") {
+                await entrarSalaCon(aluno.map(item=> item.id), id, idProfessor)
+                toast.dark("Pedido enviado!")
+            }
+        }
+        catch {toast.dark("Falha ao executar essa função.")}
     }
 
     return (
@@ -67,9 +83,13 @@ export default function Card({estilo, id, name, desc, img, video, status, para, 
                         <div className='linha'></div>
                         <h4>{desc}</h4>
                     </section>
-                    {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado.") &&
+                    {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado." && tipo == null) &&
                     <button onClick={()=> navegacao()} className='b cor3 cem'>
                         Acessar
+                    </button>}
+                    {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado." && tipo == "PedirEntrar") &&
+                    <button onClick={()=> funcoes()} className='b cor3 cem'>
+                        Pedir para entrar
                     </button>}
                 </section>}
             </main>

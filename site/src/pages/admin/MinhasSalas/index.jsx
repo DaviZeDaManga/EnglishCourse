@@ -1,5 +1,6 @@
 import './index.scss'
 import { useEffect, useState } from 'react'
+import storage from 'local-storage';
 
 // Conexões
 import { dadosSalasCon } from '../../../connection/userConnection'
@@ -15,13 +16,14 @@ import ErrorCard from '../../../components/user/error'
 import { toast } from 'react-toastify';
 
 export default function MinhasSalas() {
+    const professor = storage.get('professor');
     const [section, setSection] = useState(1)
     const [salas, setSalas] = useState([])
 
     async function minhasSalas() {
         setSalas("Loading")
         try {
-            let resposta = await dadosSalasCon(1)
+            let resposta = await dadosSalasCon(professor.map(item=> item.id))
             setSalas(resposta)
         } catch (error) {
             setSalas("Nenhuma sala encontrada.")
@@ -61,7 +63,7 @@ export default function MinhasSalas() {
         try {
             if (nome !== "" && desc !== "" && selectedImage !== null) {
                 const imgFile = document.getElementById('fileInput').files[0];
-                await inserirSalaCon(1, nome, desc, imgFile)
+                await inserirSalaCon(professor.map(item=> item.id), nome, desc, imgFile)
                 toast.dark("Sala criada!")
                 setNome('')
                 setDesc('')
@@ -84,7 +86,7 @@ export default function MinhasSalas() {
 
             {cardadd &&
                 <main className='FundoEscuro'>
-                    <section className='AddCard cor1 border'>
+                    <section className='Card normalPadding min cor1 border'>
                         <div className='Titulo'>
                             <button onClick={() => setCardadd(false)} className='b cor3'> 
                                 <img src='/assets/images/icones/voltar.png' alt="Voltar" /> 
@@ -128,16 +130,15 @@ export default function MinhasSalas() {
                     </section>
                 </main>
             }
+            <section onClick={() => setCardadd(true)} className='AddButton cor1 border marginTop'>
+                <img className='meio vinte' src='/assets/images/icones/mais.png' alt="Adicionar nova sala" />
+            </section>
 
+            <section className='SectionButtons'>
+                <button onClick={()=> setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}> <img src={`/assets/images/icones/salas${section == 1 ? "PE" : ""}.png`}/>Salas</button>
+                <button onClick={()=> setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}> <img src={`/assets/images/icones/Avisos${section == 2 ? "PE" : ""}.png`}/>Informações</button>
+            </section>
             <section className='SectionCards'>
-                <section onClick={() => setCardadd(true)} className='AddButton cor1 border'>
-                    <img className='meio vinte' src='/assets/images/icones/mais.png' alt="Adicionar nova sala" />
-                </section>
-
-                <section className='SectionButtons'>
-                    <button onClick={()=> setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}> <img src={`/assets/images/icones/salas${section == 1 ? "PE" : ""}.png`}/>Salas</button>
-                    <button onClick={()=> setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}> <img src={`/assets/images/icones/Avisos${section == 2 ? "PE" : ""}.png`}/>Informações</button>
-                </section>
 
                 {section == 1 &&
                 <>

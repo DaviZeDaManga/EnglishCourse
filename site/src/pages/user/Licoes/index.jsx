@@ -24,14 +24,14 @@ export default function Licoes() {
         try {
             const resposta = await dadosAtividadeCon(1, idsala, idtrilha, idatividade);
             setAtividade(resposta);
-        } catch { toast.dark('Ocorreu um erro ao buscar dados da atividade.'); }
+        } catch { toast.dark([]); }
     }
 
     async function dadosLicoes() {
         try {
             const resposta = await dadosLicoesCon(1, idsala, idtrilha, idatividade);
             setLicoes(resposta);
-        } catch { toast.dark('Ocorreu um erro ao buscar dados das lições.'); }
+        } catch { toast.dark([]); }
     }
 
     useEffect(()=> {
@@ -91,10 +91,14 @@ export default function Licoes() {
                 </section>
             </main>}
 
-            <section className='Info'>
+            <section className='Info marginTop'>
                 <section className='SectionLicoes'>
                     
-                    {licoes.map( item=> 
+                    {licoes.length === 0 ? (
+                        <ErrorCard/>
+                    ) : (
+                        <>
+                        {licoes.map( item=> 
                         <section className='CardLicoes cor1 border'>
                             <section className='TitleLicoes'>
                                 {item.licao.nome != "Nenhum título adicionado." 
@@ -103,7 +107,7 @@ export default function Licoes() {
                                 <button className='b cor2 min'>{item.licao.tipo}</button>
                             </section>
 
-                            {item.licao.descricao != "Nenhuma descrição adicionada." &&
+                            {item.licao.descricao != "Nenhum texto adicionado." &&
                             <section className="DescCard border cor2">
                                 <div className='linha'></div>
                                 <h4>{item.licao.descricao}</h4>
@@ -136,10 +140,13 @@ export default function Licoes() {
 
                         </section>
                     )}
+                        </>
+                    )}
 
-                    {respostas.length == licoes.length &&
+                    {(respostas.length == licoes.length && licoes != 0) &&
                     <button onClick={()=> setCardenvio(true)} className='b cem'>Enviar respostas</button>}
                 </section>
+
 
                 <section className='CardAtividadeLicoes'>
                     {atividade.map( item=> 
@@ -155,8 +162,7 @@ export default function Licoes() {
                         width={"cem"}
                         />
                     )}
-                </section>
-
+                </section> 
             </section>
         </section>
     )

@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import './index.scss'
 import { useEffect, useState, useRef } from 'react'
+import storage from 'local-storage';
 
 //conexoes
 import { dadosAtividadesCon } from '../../../connection/userConnection';
@@ -10,25 +11,33 @@ import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
 
 export default function BarraLateral({page}) {
-    const {idsala, idtrilha, idatividade} = useParams()
+    const aluno = storage.get('aluno') || [];
+    const {idtrilha, idatividade} = useParams()
     const [atividades, setAtividades] = useState([])
 
     async function dadosAtividades() {
+        setAtividades("Loading")
         try {
-            let resposta = await dadosAtividadesCon(1, idsala, idtrilha)
-            setAtividades(resposta)
+            const resposta = await dadosAtividadesCon(aluno.map(item=> item.id), aluno.map(item=> item.idSala), idtrilha)
+            if (Array.isArray(resposta)) {
+                setAtividades(resposta)
+            } else {
+                setAtividades([])
+            }
         }
-        catch { toast.dark('Ocorreu um erro ao buscar dados das atividades.'); }
+        catch { setAtividades('Nenhuma atividade encontrada.'); }
     }
 
     useEffect(()=> {
-        async function conections() {
-            if (page == "Trilha" || page == "Assistir" || page == "Lições") {
+        async function fetchData() {
+            try {
                 await dadosAtividades()
+            } catch {
+                toast.dark("Erro ao carregar as atividades!")
             }
         }
-        conections()
-    }, [atividades, idsala, idtrilha, idatividade])
+        fetchData()
+    }, [])
 
     const navigate = useNavigate()
     const ref = useRef()
@@ -41,10 +50,13 @@ export default function BarraLateral({page}) {
                 toast.dark("Você não pode acessar isso.")
             }
             if (para == 1) {
-                navigate(`/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}${outro != null && "/" + outro}`)
+                navigate(`/aluno/minhasala/trilha/${idtrilha}/atividade/${id}${outro != null && "/" + outro}`)
             }
             if (para == 2) {
-                navigate(`/minhasala/${idsala}`)
+                navigate(`/aluno/minhasala`)
+            }
+            if (para == 3) {
+                navigate(`/aluno/minhaconta`)
             }
         }
         catch {
@@ -61,23 +73,23 @@ export default function BarraLateral({page}) {
             
             <section className='BarraLateral border cor1'>
                 <div className='ButtonSections cor4'>
-                    <button className={`b cor3 cem ${page == "inicio" && "selecionado"}`}> 
-                        <img src={`/assets/images/icones/inicio${page === "inicio" ? "PE" : ""}.png`} />
-                        Inicio 
+                    <button onClick={()=> navegacao(3)} className={`b cor3 cem ${page == "minhaconta" && "selecionado"}`}> 
+                        <img src={`/assets/images/icones/user${page === "minhaconta" ? "PE" : ""}.png`} />
+                        Conta 
                     </button>
                 </div>
-                <div className='ButtonSections cor4'>
+                {/* <div className='ButtonSections cor4'>
                     <button className={`b cor3 cem ${page == "calendario" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/calendario${page === "calendario" ? "PE" : ""}.png`} />
                         Calendário 
                     </button>
-                </div>
+                </div> */}
                 <div className='ButtonSections cor4'>
                     <button onClick={()=> navegacao(2)} className={`b cem cor3 ${page == "minhasala" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/minhasala${page === "minhasala" ? "PE" : ""}.png`} />
                         Minha Sala 
                     </button>
-                    {page == "minhasala" &&
+                    {/* {page == "minhasala" &&
                     <>
                     <button className="b cem selecionado"> 
                         <img src={`/assets/images/icones/TrilhasPE.png`} />
@@ -87,7 +99,7 @@ export default function BarraLateral({page}) {
                         <img src={`/assets/images/icones/LivesPE.png`} />
                         Entrar na chamada
                     </button>
-                    </>}
+                    </>} */}
                 </div>
 
                 {(page == "Trilha" || page == "Assistir" || page == "Lições") &&
@@ -98,6 +110,9 @@ export default function BarraLateral({page}) {
                     </button>
 
                     <section className='CardAtividades'>
+                        {(atividades === "Loading" || atividades == "Nenhuma atividade encontrada.") ? (
+                            <button className='b selecionado cem'>{atividades}</button>
+                        ) : <>
                         {atividades.map( item =>
                             <>
                             <button onClick={()=> navegacao(1, item.id, (item.conteudo != true ? "assistir" : "licoes"))} className={`b ${idatividade == item.id ? "selecionado" : "mostrando"}`}> 
@@ -119,6 +134,7 @@ export default function BarraLateral({page}) {
                             </>}
                             </>
                         )}
+                        </>}
                     </section>
                 </section>}
             </section>

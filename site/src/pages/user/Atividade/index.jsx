@@ -12,7 +12,7 @@ import ErrorCard from '../../../components/user/error'
 
 //outros
 import { toast } from 'react-toastify';
-import { inserirFeitoConteudoCon } from '../../../connection/alunoConnection'
+import { BuscarImagem, inserirFeitoConteudoCon } from '../../../connection/alunoConnection'
 
 export default function Atividade() {
     const {idsala, idtrilha, idatividade} = useParams()
@@ -33,7 +33,7 @@ export default function Atividade() {
         try {
             const resposta = await dadosPalarvasCon(1, idsala, idtrilha, idatividade);
             setPalavras(resposta);
-        } catch { toast.dark('Ocorreu um erro ao buscar dados das palavras.'); }
+        } catch { setPalavras([]) }
     }
 
     useEffect(()=> {
@@ -48,7 +48,7 @@ export default function Atividade() {
 
     async function inserirFeitoConteudo() {
         try {
-            const resposta = await inserirFeitoConteudoCon(1, idatividade);
+            await inserirFeitoConteudoCon(1, idatividade);
             toast.dark('Partiu lições!');
             
         } catch { toast.dark('Ocorreu um erro ao inserir feito do conteudo.'); }
@@ -59,11 +59,11 @@ export default function Atividade() {
             <BarraLateral page={"Assistir"}/>
             <Titulo nome={"Atividade"}/>
 
-            <main className='Video cor1 border'>
+            <main className='Video cor1 border marginTop'>
                 <section className='FundoVideo'>
                     {atividade.map( item => 
                         <>
-                        {assistir == false && <img className='fundo' src={item.imagem} />}
+                        {assistir == false && <img className='fundo' src={BuscarImagem(item.imagem)} />}
                         {(assistir == false && item.video != "Nenhum vídeo adicionado.") && <img onClick={()=> setAssistir(true)} className='meio icon' src="/assets/images/icones/LivesPE.png" />}
                         {assistir == true && <video onEnded={()=> inserirFeitoConteudo()} controls="true">  <source src={item.video} type="video/mp4" /></video>}
                         </>
@@ -94,14 +94,14 @@ export default function Atividade() {
                             <div className='linha cor3'></div>
                             {atividade.map( item => <h4>{item.descricao}</h4>)}
                         </section>
-                        <button className='b cor3'> 
+                        <button className='b cor3 cem'> 
                             Mais dados
                         </button>
                     </div>
                 </section>
 
                 <section className='Card cem cor1 border'>
-                    <section className='Title  cor2'>
+                    <section className='Title cor2'>
                         <h3>Palavras</h3>
                     </section>
                     <div className='Desc'>

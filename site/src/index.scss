@@ -119,7 +119,7 @@ h4 {
 img {
     height: 100%;
     transition: 0.3s;
-    &.fundo { min-height: 100%; width: 100%; border-radius: 10px;}
+    &.fundo {width: 100%; aspect-ratio: 16 / 9; border-radius: 10px;}
     &.meio { position: absolute;}
     &.icon { max-width: 35px; max-height: 35px; &:hover {transform: scale(1.1);} cursor: pointer;}
     &.vinte {height: 20%; &:hover {transform: scale(1.1);} cursor: pointer;}
@@ -143,11 +143,11 @@ textarea {
     outline: none;
     border-radius: 10px;
 }
-input {
+input, select {
     width: 100%;
     min-height: 35px;
     max-height: 35px;
-    padding: 12px;
+    padding: 0px 12px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #898989;
     font-size: 15px;
@@ -198,7 +198,8 @@ input {
 .null {
     opacity: 0;
 }
-
+.marginTop {margin-top: 12px;}
+.marginBottom {margin-bottom: 12px;}
 
 
 
@@ -222,10 +223,20 @@ input {
     &:hover > .Desc > .DescCard { min-height: 182px; max-height: 182px;}
     &:hover > .Img > .Escuro > h3 {bottom: 6px;}
     &.min {min-width: calc((100% - 36px) / 4); max-width: calc((100% - 36px) / 4);}
+    &.minH {min-height: auto;}
     &.cem {max-width: none; min-width: none; width: 100%;}
     &.normalPadding {padding: 12px;}
     &:hover > button{opacity: 1;}
 
+    .AddImage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        border-radius: 10px;
+        min-height: 240px;
+        position: relative;
+    }
     .Desc {
         display: flex;
         flex-direction: column;
@@ -303,7 +314,7 @@ input {
     position: relative;
     transition: 0.3s;
     overflow: auto;
-    &.fix { min-height: 208px; max-height: 208px;}
+    &.fix { min-height: 228px; max-height: 228px;}
 }
 
 
@@ -313,10 +324,17 @@ input {
 .SectionButtons {
     display: flex;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: flex-end;
     width: 100%;
-    height: 35px;
     gap: 12px;
+    min-height: 59px;
+    max-height: 59px;
+    padding: 12px 0px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #151515;
+    &.default { padding: 0; background-color: rgba(255, 0, 0, 0); max-height: 35px; min-height: 35px;}
 }
 .SectionCards {
     display: flex;
@@ -324,9 +342,9 @@ input {
     align-items: flex-start;
     flex-wrap: wrap;
     width: 100%;
-    padding: 12px 0px;
     gap: 12px;
 }
+
 
 
 
@@ -361,27 +379,12 @@ input {
         border-radius: 10px;
         gap: 12px;
     }
+}
 
-    .AddCard {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        min-width: calc((100% - 388px) / 3);
-        max-width: calc((100% - 388px) / 3);
-        padding: 12px;
-        gap: 12px;
-        border-radius: 10px;
 
-        .AddImage {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            min-height: 260px;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-    }
+
+.invisible {
+    opacity: 0;
+    transition: 0.3s;
+    &.visible {opacity: 1;}
 }
