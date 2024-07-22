@@ -10,7 +10,7 @@ import { inserirSalaCon } from '../../../connection/professorConnection'
 import BarraLateral from '../../../components/admin/barraLateral'
 import Titulo from '../../../components/user/titulo'
 import Card from '../../../components/user/card'
-import ErrorCard from '../../../components/user/error'
+import StatusCard from '../../../components/user/statusCard'
 
 // Outros
 import { toast } from 'react-toastify';
@@ -143,7 +143,7 @@ export default function MinhasSalas() {
                 {section == 1 &&
                 <>
                 {(salas == "Loading" || salas == "Nenhuma sala encontrada.") 
-                ? <ErrorCard mensagem={salas} />
+                ? <StatusCard mensagem={salas} />
                 : <>
                 {salas.map( item=>
                     <Card
@@ -162,7 +162,7 @@ export default function MinhasSalas() {
                 }
 
                 {section == 2 &&
-                <ErrorCard mensagem={"Essa função ainda não está disponível."} />
+                <StatusCard mensagem={"Essa função ainda não está disponível."} />
                 }
             </section>
         </section>

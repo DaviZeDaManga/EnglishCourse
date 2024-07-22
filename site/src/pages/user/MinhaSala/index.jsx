@@ -9,50 +9,44 @@ import { dadosAvisosCon, dadosSalasCon, dadosTransmissoesCon, dadosTrilhasCon } 
 import BarraLateral from '../../../components/user/barraLateral';
 import Titulo from '../../../components/user/titulo';
 import Card from '../../../components/user/card';
-import ErrorCard from '../../../components/user/error';
+import StatusCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage';
 
 // outros
 import { BuscarImagem, dadosMinhaSalaCon } from '../../../connection/alunoConnection';
+import { toast } from 'react-toastify';
 
 export default function MinhaSala() {
     const aluno = storage.get('aluno') || [];
     const [sala, setSala] = useState([]);
-    const [section, setSection] = useState(1);
-    const [trilhas, setTrilhas] = useState([]);
-    const [avisos, setAvisos] = useState([]);
-    const [transmissoes, setTransmissoes] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [section2, setSection2] = useState(1);
-    const [salas, setSalas] = useState([]);
-
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                await dadosMinhaSala();
-                setLoading(false);
-            } catch (error) {
-                console.error('Erro ao carregar dados da minha sala:', error);
-                setLoading(false);
-            }
-        }
-        fetchData();
-    }, []);
 
     async function dadosMinhaSala() {
         setSala("Loading");
         try {
             const resposta = await dadosMinhaSalaCon(aluno.map(item => item.id));
-            if (Array.isArray(resposta)) {
-                setSala(resposta);
-            } else {
-                setSala([]);
-            }
+            setSala(resposta);
         } catch (error) {
             console.error('Erro ao buscar dados da minha sala:', error);
-            setSala([]);
+            setSala("Nenhuma sala encontrada.");
         }
     }
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                await dadosMinhaSala();
+            } catch (error) {
+                console.error('Erro ao carregar dados da minha sala:', error);
+                toast.dark("Erro ao carregar dados da minha sala.")
+            }
+        }
+        fetchData();
+    }, []);
+
+    const [section, setSection] = useState(1);
+    const [trilhas, setTrilhas] = useState([]);
+    const [avisos, setAvisos] = useState([]);
+    const [transmissoes, setTransmissoes] = useState([]);
 
     async function dadosTrilhas() {
         setTrilhas("Loading");
@@ -101,7 +95,7 @@ export default function MinhaSala() {
 
     useEffect(() => {
         async function fetchSectionData() {
-            if (!loading) {
+            if (Array.isArray(sala)) {
                 switch (section) {
                     case 1:
                         await dadosTrilhas();
@@ -118,44 +112,25 @@ export default function MinhaSala() {
             }
         }
         fetchSectionData();
-    }, [section, loading]);
-
-    async function Salas() {
-        setSalas("Loading");
-        try {
-            const resposta = await dadosSalasCon();
-            if (Array.isArray(resposta)) {
-                setSalas(resposta);
-            } else {
-                setSalas([]);
-            }
-        } catch {
-            setSalas([]);
-        }
-    }
-
-    useEffect(() => {
-        Salas();
-    }, []);
+    }, [section]);
 
     return (
         <div className='MinhaSala'>
             <BarraLateral page={"minhasala"} />
             <Titulo nome={"Minha Sala"} />
-            {Array.isArray(sala) && sala.length > 0 &&
-                <>
-                    {sala.some(item => item.statusAluno === "Análise") &&
-                    <StatusPage mensagem={{titulo: "Em análise", mensagem: "Voce ainda não pode acessar a sala, seu perfil está passando por uma análise."}} />}
-                </>
-            }
-
-            {loading ? (
-                <StatusPage status={"Loading"}/>
+    
+            {sala === "Loading" ? (
+                <StatusPage status={sala} />
             ) : (
                 <>
-                    {sala === "Loading" || sala === "Nenhuma sala encontrada." ? (
-                        <ErrorCard mensagem={sala} />
+                    {sala === "Nenhuma sala encontrada." ? (
+                        <section className='Info marginTop'>
+                            <StatusCard mensagem={"Entre em uma sala para começar suas aulas!"}>
+                                <button className='b cor3 min'>Participar da turma</button>
+                            </StatusCard>
+                        </section>
                     ) : (
+                        <>
                         <section className='Info marginTop'>
                             <section className='Card min cor1 border'>
                                 <section className='Title cor2'>
@@ -167,7 +142,7 @@ export default function MinhaSala() {
                                         {sala.map(item => <h4 key={item.id}>{item.descricao}</h4>)}
                                     </section>
                                     <button className='b cem cor3'>
-                                        {sala.map(item => <img key={item.id} src={`/assets/images/icones/pessoas.png`} alt="imagem sala" />)}
+                                        <img src={`/assets/images/icones/pessoas.png`} alt="imagem sala" />
                                         Pessoas
                                     </button>
                                 </div>
@@ -178,139 +153,46 @@ export default function MinhaSala() {
                                 ))}
                             </section>
                         </section>
-                    )}
-
-                    {(sala !== "Loading" || sala !== "Nenhuma sala encontrada.") &&
+                    
                         <section className='SectionButtons'>
-                            <button onClick={() => setSection(1)} className={`b cor3 ${section === 1 && "selecionado"}`}>
-                                <img src={`/assets/images/icones/Trilhas${section === 1 ? "PE" : ""}.png`} />
-                                Trilhas
-                            </button>
-                            <button onClick={() => setSection(2)} className={`b cor3 ${section === 2 && "selecionado"}`}>
-                                <img src={`/assets/images/icones/Avisos${section === 2 ? "PE" : ""}.png`} />
-                                Avisos
-                            </button>
-                            <button onClick={() => setSection(3)} className={`b cor3 ${section === 3 && "selecionado"}`}>
-                                <img src={`/assets/images/icones/Lives${section === 3 ? "PE" : ""}.png`} />
-                                Transmissões
-                            </button>
-                        </section>}
+                            {['Trilhas', 'Avisos', 'Lives'].map((tipo, idx) => (
+                                <button 
+                                    key={tipo} 
+                                    onClick={() => setSection(idx + 1)} 
+                                    className={`b cor3 ${section === idx + 1 && "selecionado"}`}
+                                >
+                                    <img src={`/assets/images/icones/${tipo}${section === idx + 1 ? "PE" : ""}.png`} />
+                                    {tipo === 'Lives' ? 'Transmissões' : tipo}
+                                </button>
+                            ))}
+                        </section>
 
-                    {sala === "Nenhuma sala encontrada." &&
-                        <section className='SectionButtons'>
-                            <button onClick={() => setSection2(1)} className={`b cor3 ${section2 === 1 && "selecionado"}`}>
-                                <img src={`/assets/images/icones/salas${section2 === 1 ? "PE" : ""}.png`} />
-                                Salas disponíveis
-                            </button>
-                            <button onClick={() => setSection2(2)} className={`b cor3 ${section2 === 2 && "selecionado"}`}>
-                                <img src={`/assets/images/icones/Avisos${section2 === 2 ? "PE" : ""}.png`} />
-                                Avisos
-                            </button>
-                        </section>}
-
-                    {(sala !== "Loading" || sala !== "Nenhuma sala encontrada.") &&
                         <main className='SectionCards'>
-                            {section === 1 && (
+                            {[trilhas, avisos, transmissoes][section - 1] === "Loading" || 
+                                [trilhas, avisos, transmissoes][section - 1] === "Parece que não tem nada aqui." ? (
+                                <StatusCard mensagem={[trilhas, avisos, transmissoes][section - 1]} />
+                            ) : (
                                 <>
-                                    {trilhas === "Loading" || trilhas === "Parece que não tem nada aqui." ? (
-                                        <ErrorCard mensagem={trilhas} />
-                                    ) : (
-                                        <>
-                                            {trilhas.map(item => (
-                                                <Card
-                                                    key={item.id}
-                                                    estilo={2}
-                                                    id={item.id}
-                                                    idSala={sala.map(item=> item.id)}
-                                                    name={item.nome}
-                                                    desc={item.descricao}
-                                                    img={item.imagem}
-                                                    video={item.video}
-                                                    para={1}
-                                                />
-                                            ))}
-                                        </>
-                                    )}
+                                    {([trilhas, avisos, transmissoes][section - 1]).map(item => (
+                                        <Card
+                                            key={item.id}
+                                            estilo={section === 1 ? 2 : 1}
+                                            id={item.id}
+                                            idsala={sala.map(item => item.id)}
+                                            name={item.nome}
+                                            desc={item.descricao}
+                                            img={item.imagem}
+                                            video={item.video}
+                                            para={section}
+                                        />
+                                    ))}
                                 </>
                             )}
-
-                            {section === 2 && (
-                                <>
-                                    {avisos === "Loading" || avisos === "Parece que não tem nada aqui." ? (
-                                        <ErrorCard mensagem={avisos} />
-                                    ) : (
-                                        <>
-                                            {avisos.map(item => (
-                                                <Card
-                                                    key={item.id}
-                                                    estilo={1}
-                                                    id={item.id}
-                                                    idsala={sala.map(item=> item.id)}
-                                                    name={item.nome}
-                                                    desc={item.descricao}
-                                                    img={item.imagem}
-                                                    video={item.video}
-                                                    para={2}
-                                                />
-                                            ))}
-                                        </>
-                                    )}
-                                </>
-                            )}
-
-                            {section === 3 && (
-                                <>
-                                    {transmissoes === "Loading" || transmissoes === "Parece que não tem nada aqui." ? (
-                                        <ErrorCard mensagem={transmissoes} />
-                                    ) : (
-                                        <>
-                                            {transmissoes.map(item => (
-                                                <Card
-                                                    key={item.id}
-                                                    estilo={1}
-                                                    id={item.id}
-                                                    idsala={sala.map(item=> item.id)}
-                                                    name={item.nome}
-                                                    desc={item.descricao}
-                                                    img={item.imagem}
-                                                    video={item.video}
-                                                    para={3}
-                                                />
-                                            ))}
-                                        </>
-                                    )}
-                                </>
-                            )}
-                        </main>}
-
-                    {sala === "Nenhuma sala encontrada." &&
-                        <main className='SectionCards marginTop'>
-                            {section2 === 1 && (
-                                <>
-                                    {(salas === "Loading" || salas === "Nenhuma sala encontrada.") ? (
-                                        <ErrorCard margin={"top"} mensagem={salas} />
-                                    ) : (
-                                        <>
-                                            {salas.map(item => (
-                                                <Card
-                                                    key={item.id}
-                                                    estilo={2}
-                                                    id={item.id}
-                                                    name={item.nome}
-                                                    desc={item.descricao}
-                                                    img={item.imagem}
-                                                    video={item.video}
-                                                    para={0}
-                                                    tipo={"PedirEntrar"}
-                                                />
-                                            ))}
-                                        </>
-                                    )}
-                                </>
-                            )}
-                        </main>}
+                        </main>
+                        </>
+                    )}
                 </>
             )}
         </div>
-    );
+    );    
 }

@@ -9,7 +9,7 @@ import { dadosAtividadesCon, dadosTrilhaCon } from '../../../connection/userConn
 import BarraLateral from '../../../components/user/barraLateral';
 import Titulo from '../../../components/user/titulo';
 import Card from '../../../components/user/card';
-import ErrorCard from '../../../components/user/error';
+import StatusCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage';
 
 // outros
@@ -134,7 +134,7 @@ export default function Trilha() {
                 {section === 1 && (
                     <>
                         {(atividades === "Loading" || atividades === "Parece que não tem nada aqui.") ? (
-                            <ErrorCard mensagem={atividades} />
+                            <StatusCard mensagem={atividades} />
                         ) : (
                             <>
                                 {atividades.map(item =>
@@ -159,7 +159,7 @@ export default function Trilha() {
                 {section === 2 && (
                     <>
                         {rendimento.length <= 0 ? (
-                            <ErrorCard mensagem={"Essa função ainda não está disponível."} />
+                            <StatusCard mensagem={"Essa função ainda não está disponível."} />
                         ) : (
                             <>
                                 {/* Conteúdo do rendimento aqui */}

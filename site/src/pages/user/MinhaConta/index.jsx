@@ -5,7 +5,7 @@ import storage from 'local-storage';
 // components
 import BarraLateral from '../../../components/user/barraLateral';
 import Titulo from '../../../components/user/titulo';
-import ErrorCard from '../../../components/user/error';
+import StatusCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage'; 
 
 // outros
@@ -60,13 +60,13 @@ export default function MinhaConta() {
                 </section>
 
                 <section className='SectionButtons'>
-                    <section className='PerfilImage cor1 border'>
+                    {/* <section className='PerfilImage cor1 border'>
                         <section className='imgPerfilImage cor2 border'>
                             {(alunoDados === "Loading" || alunoDados == "Nenhum aluno encontrado")
                                 ? <img className='Load icon' src='/assets/images/icones/Loading.png' />
                                 : <img src={BuscarImagem(alunoDados.map(item => item.imagem))} />}
                         </section>
-                    </section>
+                    </section> */}
                     <button onClick={() => setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}>
                         <img src={`/assets/images/icones/Avisos${section == 1 ? "PE" : ""}.png`} />Dados
                     </button>
@@ -76,11 +76,11 @@ export default function MinhaConta() {
                 </section>
                 <section className='SectionCards'>
                     {section == 1 &&
-                        <ErrorCard mensagem={"Essa função ainda não está disponível."} />
+                        <StatusCard mensagem={"Essa função ainda não está disponível."} />
                     }
 
                     {section == 2 &&
-                        <ErrorCard mensagem={"Essa função ainda não está disponível."} />}
+                        <StatusCard mensagem={"Essa função ainda não está disponível."} />}
                 </section>
                 </>
             )}

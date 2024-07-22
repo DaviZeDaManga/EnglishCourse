@@ -10,7 +10,7 @@ import { dadosSalasCon } from '../../../connection/userConnection';
 import BarraLateral from '../../../components/admin/barraLateral';
 import Titulo from '../../../components/user/titulo';
 import Card from '../../../components/user/card';
-import ErrorCard from '../../../components/user/error';
+import ErrorCard from '../../../components/user/statusCard';
 
 // Outros
 import { toast } from 'react-toastify';
@@ -115,7 +115,6 @@ export default function Criacao() {
     const [video, setVideo] = useState("");
     const [comentarios, setComentarios] = useState(false);
     const [status, setStatus] = useState("Ativo");
-    const [salaAdd, setSalaAdd] = useState([]);
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -134,19 +133,22 @@ export default function Criacao() {
 
     const handleCreate = async () => {
         try {
-            if (nome !== "" && desc !== "" && selectedImage !== null && video != "") {
+            if (nome !== "" && desc !== "" && selectedImage !== null) {
                 const imgFile = document.getElementById('fileInput').files[0];
-
+    
                 if (section == 1) {
                     await inserirTrilhaCon(professor.map(item => item.id), nome, desc, imgFile);          
-                } else if (section == 2) {
+                } 
+                if (section == 2) {
                     await inserirAvisoCon(professor.map(item => item.id), nome, desc, imgFile, video, comentarios, status);
-                } else if (section == 3) {
+                } 
+                if (section == 3) {
                     await inserirTransmissaoCon(professor.map(item => item.id), nome, desc, imgFile, video, comentarios, status);
-                } else if (section == 4) {
+                } 
+                if (section == 4) {
                     await inserirAtividadeCon(professor.map(item => item.id), nome, desc, imgFile, video, comentarios, status);
                 }
-
+    
                 toast.dark("Criado!");
                 setNome('');
                 setDesc('');
@@ -155,14 +157,20 @@ export default function Criacao() {
             } else {
                 toast.dark("Você não inseriu todos os dados!");
             }
-        } catch {
-            toast.dark("Não foi possível criar uma nova sala.");
+        } catch (error) {
+            console.error("Erro ao criar:", error);
+            toast.dark("Não foi possível criar.");
         } finally {
-            Trilhas();
-            Avisos();
-            Transmissoes();
+            try {
+                await Trilhas();
+                await Avisos();
+                await Transmissoes();
+                await Atividades();
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+            }
         }
-    };
+    };    
 
     return (
         <section className='Criacao'>
@@ -225,26 +233,6 @@ export default function Criacao() {
                             <button onClick={()=> setStatus(status != "Ativo" ? "Ativo" : "Desativado")} className={`b cor3 cem ${status == "Ativo" && "selecionado"}`}>{status == "Ativo" ? "Ativo" : "Desativado"}</button>
                         </section>
                         </>}
-
-                        <select className='cor2 border' onChange={(e)=> setSalaAdd(e.target.value)} value={salaAdd}>
-                           {section !== 4 ? (
-                            <>
-                            <option value="Adicionar em nenhuma sala">Adicionar em nenhuma sala</option>
-                            {Array.isArray(salas) && salas.length !== 0 && salas.map(item => (
-                                <option key={item.id} value={item.id}>{item.nome}</option>
-                            ))}
-                            <option value="Adicionar em todas">Adicionar em todas</option>
-                            </>
-                           ) : (
-                            <>
-                            <option value="Adicionar em nenhuma trilha">Adicionar em nenhuma trilha</option>
-                            {Array.isArray(trilhas) && trilhas.length !== 0 && trilhas.map(item => (
-                                <option key={item.id} value={item.id}>{item.nome}</option>
-                            ))}
-                            <option value="Adicionar em todas">Adicionar em todas</option>
-                            </>
-                           )}
-                        </select>
                         <button onClick={() => handleCreate()} className='b cor3 cem'>Criar</button>
                     </section>
                 </main>
@@ -295,7 +283,7 @@ export default function Criacao() {
                         avisos.map(item =>
                             <Card
                                 key={item.id}
-                                estilo={2}
+                                estilo={1}
                                 id={item.id}
                                 name={item.nome}
                                 desc={item.descricao}
@@ -314,7 +302,7 @@ export default function Criacao() {
                         transmissoes.map(item =>
                             <Card
                                 key={item.id}
-                                estilo={2}
+                                estilo={1}
                                 id={item.id}
                                 name={item.nome}
                                 desc={item.descricao}

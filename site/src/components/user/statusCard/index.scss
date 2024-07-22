@@ -1,9 +1,10 @@
-.errorCard {
+.StatusCard {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
+    gap: 12px;
     height: 300px;
     border-radius: 10px;
     position: relative;

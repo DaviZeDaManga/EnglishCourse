@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import './index.scss'
 import { useEffect, useState, useRef } from 'react'
 
 

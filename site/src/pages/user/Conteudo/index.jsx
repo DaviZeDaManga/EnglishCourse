@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 //components
 import BarraLateral from '../../../components/user/barraLateral'
 import Titulo from '../../../components/user/titulo'
-import ErrorCard from '../../../components/user/error'
+import StatusCard from '../../../components/user/statusCard'
 
 //outros
 import { toast } from 'react-toastify';
@@ -105,7 +105,7 @@ export default function Conteudo() {
 
                 {section == 2 && <>  
                 {comentarios.length <= 0 
-                    ? <ErrorCard mensagem={"Parece que não tem nada aqui."}/>
+                    ? <StatusCard mensagem={"Parece que não tem nada aqui."}/>
                     : <>
                     {comentarios.map( item =>
                         <></>

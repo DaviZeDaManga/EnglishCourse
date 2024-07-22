@@ -131,6 +131,7 @@ export async function inserirTrilhaSalaCon(idprofessor, idsala, idtrilha) {
 }
 
 
+
 //dados AVISOS professor
 export async function dadosAvisosProfessorCon(idprofessor) {
     try {

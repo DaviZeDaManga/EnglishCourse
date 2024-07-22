@@ -10,7 +10,7 @@ import { inserirFeitoLicoesCon, inserirResposta } from '../../../connection/alun
 import BarraLateral from '../../../components/user/barraLateral'
 import Titulo from '../../../components/user/titulo'
 import Card from '../../../components/user/card'
-import ErrorCard from '../../../components/user/error'
+import StatusCard from '../../../components/user/statusCard'
 
 //outros
 import { toast } from 'react-toastify';
@@ -95,7 +95,7 @@ export default function Licoes() {
                 <section className='SectionLicoes'>
                     
                     {licoes.length === 0 ? (
-                        <ErrorCard/>
+                        <StatusCard/>
                     ) : (
                         <>
                         {licoes.map( item=> 
