@@ -28,6 +28,7 @@ export default function MinhaSala() {
         } catch (error) {
             console.error('Erro ao buscar dados da minha sala:', error);
             setSala("Nenhuma sala encontrada.");
+            dadosSalas()
         }
     }
 
@@ -114,21 +115,125 @@ export default function MinhaSala() {
         fetchSectionData();
     }, [section]);
 
+    const [section2, setSection2] = useState(1)
+    const [joinByCode, setJoinByCode] = useState(false)
+    const [salas, setSalas] = useState([])
+    const [paisagem, setPaisagem] = useState(0);
+
+    async function dadosSalas() {
+        setSalas("Loading");
+        try {
+            const resposta = await dadosSalasCon();
+            setSalas(resposta);
+        } catch (error) {
+            console.error('Erro ao buscar dados das salas:', error);
+            setSalas("Nenhuma sala encontrada.");
+        }
+    }
+
+    useEffect(() => {
+        async function fetchSectionData() {
+            if (sala === "Nenhuma sala encontrada.") {
+                switch (section2) {
+                    case 1:
+                        await dadosSalas();
+                        break;
+                    case 2:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        fetchSectionData();
+    }, [section2]);
+
+    useEffect(() => {
+        setPaisagem(Math.floor(Math.random() * 6) + 1);
+    }, []);
+
     return (
         <div className='MinhaSala'>
             <BarraLateral page={"minhasala"} />
-            <Titulo nome={"Minha Sala"} />
     
             {sala === "Loading" ? (
                 <StatusPage status={sala} />
             ) : (
                 <>
                     {sala === "Nenhuma sala encontrada." ? (
-                        <section className='Info marginTop'>
-                            <StatusCard mensagem={"Entre em uma sala para começar suas aulas!"}>
-                                <button className='b cor3 min'>Participar da turma</button>
-                            </StatusCard>
+                        <>
+                        {joinByCode === true &&
+                        <StatusPage>
+                        <main className={`Card cor1 border visible normalPadding`}>
+                            <section className='Title cor2'>
+                                <h3 className="cor2">Inserir código</h3>
+                            </section>
+                            <section className='Desc'>
+                                <section className={`DescCard border fix cor2`}>
+                                    <div className='linha'></div>
+                                    <h4>Olá, já contem o código da sala? Perfeito! Apenas insira e aperte em entrar! Vamos começar nossas aulas, sem perda de tempo. Como entrar na minha sala por código? Faça login em sua conta, pegue o cõdigo com seu professor, insira no campo abaixo e inicie seus estudos!</h4>
+                                </section>
+                            </section>
+                            <input placeholder='Código da sala' className='cor2 border'></input>
+                            <section className='SectionButtons default'>
+                                <button onClick={()=> setJoinByCode(false)} className='b cem cor3'>Cancelar</button>
+                                <button className='b cem cor3'>Participar</button>
+                            </section>
+                        </main>
+                        </StatusPage>}
+
+                        <section className='Info'>
+                            <section className='InfoFundo border cor1'>
+                                <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
+                                <section className='Escuro'></section>
+                            </section>
                         </section>
+
+                        <section className='SectionButtons'>
+                            <button onClick={()=> setJoinByCode(true)} className='b min cor3'><img src={`/assets/images/icones/3pontos.png`} /></button>
+                            <button onClick={() => setSection2(1)} className={`b cor3 ${section2 == 1 && "selecionado"}`}>
+                                <img src={`/assets/images/icones/Salas${section2 == 1 ? "PE" : ""}.png`} />Salas disponíveis
+                            </button>
+                            <button onClick={() => setSection2(2)} className={`b cor3 ${section2 == 2 && "selecionado"}`}>
+                                <img src={`/assets/images/icones/Avisos${section2 == 2 ? "PE" : ""}.png`} />Pedidos para entrar
+                            </button>
+                        </section>
+
+                        {section2 == 1 &&
+                        <>
+                        {salas === "Loading" || salas === "Nenhuma sala encontrada." ? (
+                            <StatusCard mensagem={salas} />
+                        ) : (
+                            <>
+                            {salas.map( item=>
+                            <Card
+                            key={item.id}
+                            estilo={2}
+                            id={item.id}
+                            name={item.nome}
+                            desc={item.descricao}
+                            img={item.imagem}
+                            video={item.video}
+                            tipo={"PedirEntrar"}
+                            para={0}
+                            />
+                            )}
+                            </>
+                        )}
+                        </>}
+
+                        {section2 == 2 &&
+                        <>
+                        {salas === "Loading" || salas === "Nenhuma sala encontrada." ? (
+                            <StatusCard mensagem={salas} />
+                        ) : (
+                            <>
+                           <StatusCard mensagem={"Nenhuma sala encontrada."} />
+                            </>
+                        )}
+                        </>}
+                        
+                        </>
                     ) : (
                         <>
                         <section className='Info marginTop'>
@@ -155,16 +260,15 @@ export default function MinhaSala() {
                         </section>
                     
                         <section className='SectionButtons'>
-                            {['Trilhas', 'Avisos', 'Lives'].map((tipo, idx) => (
-                                <button 
-                                    key={tipo} 
-                                    onClick={() => setSection(idx + 1)} 
-                                    className={`b cor3 ${section === idx + 1 && "selecionado"}`}
-                                >
-                                    <img src={`/assets/images/icones/${tipo}${section === idx + 1 ? "PE" : ""}.png`} />
-                                    {tipo === 'Lives' ? 'Transmissões' : tipo}
-                                </button>
-                            ))}
+                            <button onClick={() => setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}>
+                                <img src={`/assets/images/icones/Trilhas${section == 1 ? "PE" : ""}.png`} />Trilhas
+                            </button>
+                            <button onClick={() => setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}>
+                                <img src={`/assets/images/icones/Avisos${section == 2 ? "PE" : ""}.png`} />Avisos
+                            </button>
+                            <button onClick={() => setSection(3)} className={`b cor3 ${section == 3 && "selecionado"}`}>
+                                <img src={`/assets/images/icones/Lives${section == 3 ? "PE" : ""}.png`} />Transmissões
+                            </button>
                         </section>
 
                         <main className='SectionCards'>

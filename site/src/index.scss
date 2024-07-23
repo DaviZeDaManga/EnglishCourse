@@ -32,11 +32,11 @@ body {
         line-height: 19px;
         border: 1px solid #39393972;
         position: relative;
-        > img {opacity: 0.7;}
+        > img {opacity: 0.3;}
         cursor: pointer;
 
         &.cem { min-width:none; max-width: none;}
-        &.min { width: auto;}
+        &.min { width: auto; max-width: 35px; padding: 6px;}
         &.mostrando { background-color: #7D4CBB; border: none; }
         &:hover { 
             background-color: #242424; 
@@ -220,7 +220,7 @@ input, select {
     padding: 12px 12px 0px 12px;
     position: relative;
     gap: 12px;
-    &:hover > .Desc > .DescCard { min-height: 182px; max-height: 182px;}
+    &:hover > .Desc > .DescCard { min-height: 182px;}
     &:hover > .Img > .Escuro > h3 {bottom: 6px;}
     &.min {min-width: calc((100% - 36px) / 4); max-width: calc((100% - 36px) / 4);}
     &.minH {min-height: auto;}
@@ -247,7 +247,6 @@ input, select {
         gap: 12px;
         overflow: hidden;
         transition: 0.3s;
-
     }
     .Img {
         display: flex;
@@ -255,42 +254,18 @@ input, select {
         height: 275px;
         border-radius: 10px;
         position: relative;
-
-        .Escuro {
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-end;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            background-color: rgba(0, 0, 0, 0.241);
-            padding: 12px;
-            border-radius: 10px;
-            overflow: hidden;
-            cursor: pointer;
-
-            > h3 {
-                position: absolute; 
-                padding: 7px 12px;
-                border-radius: 10px;
-                left: 12px;
-                bottom: -25px;
-                background-color: #242424;
-                transition: 0.3s;
-                cursor: pointer;
-            }
-        }
     }
 }
 .InfoFundo {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    height: 100%;
     border-radius: 10px;
+    min-height: 300px;
+    max-height: 300px;
     overflow: hidden;
+    position: relative;
 }
 .Title {
     display: flex;
@@ -314,7 +289,31 @@ input, select {
     position: relative;
     transition: 0.3s;
     overflow: auto;
-    &.fix { min-height: 228px; max-height: 228px;}
+    &.fix { min-height: 240px; max-height: 240px; height: 100%;}
+}
+.Escuro {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.249);
+    padding: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+
+    > h3 {
+        position: absolute; 
+        padding: 7px 12px;
+        border-radius: 10px;
+        left: 12px;
+        bottom: -25px;
+        background-color: #242424;
+        transition: 0.3s;
+        cursor: pointer;
+    }
 }
 
 
@@ -330,11 +329,8 @@ input, select {
     min-height: 59px;
     max-height: 59px;
     padding: 12px 0px;
-    // position: sticky;
-    // top: 0;
     z-index: 1;
     background-color: #151515;
-    // background: linear-gradient(180deg, #151515 70%, #15151500);
     &.default { padding: 0; background-color: rgba(255, 0, 0, 0); max-height: 35px; min-height: 35px;}
 }
 .SectionCards {

@@ -1,6 +1,6 @@
 import './index.scss'
 
-export default function StatusPage({status, mensagem}) {
+export default function StatusPage({status, mensagem, children}) {
     function RecarregarPagina() {
         window.location.reload()
     }
@@ -9,10 +9,11 @@ export default function StatusPage({status, mensagem}) {
         <>
         <main className="FundoEmbacado">
             
-            {status == "Loading" &&
+            {status === "Loading" &&
             <img className='icon Load' src="/assets/images/icones/Loading.png" />}
 
-            <main className={`Card min cor1 border ${mensagem == null ? "in" : ""}visible`}>
+            {mensagem != null &&
+            <main className={`Card min cor1 border ${mensagem == null && "in"}visible`}>
                 <section className='Title cor2'>
                     {mensagem != null &&
                     <h3 className="cor2">{mensagem.titulo}</h3>}
@@ -27,7 +28,9 @@ export default function StatusPage({status, mensagem}) {
                         Recarregar página
                     </button>
                 </section>
-            </main>
+            </main>}
+
+            {children}
         </main>
         </>
     )

@@ -16,7 +16,7 @@ export default function MinhaConta() {
     const [alunoDados, setAlunoDados] = useState([]);
     const [nome, setNome] = useState("");
     const [imagem, setImagem] = useState();
-    const [paisagem, setPaisagem] = useState(Math.floor(Math.random() * 6) + 1);
+    const [paisagem, setPaisagem] = useState(0);
     const [section, setSection] = useState(1);
     const [loading, setLoading] = useState(true); 
 
@@ -47,19 +47,12 @@ export default function MinhaConta() {
     return (
         <section className='MinhaConta'>
             <BarraLateral page={"minhaconta"} />
-            <Titulo margin={"left"} nome={"Minha conta"} />
 
             {loading ? (
                 <StatusPage status={"Carregando"} /> 
             ) : (
                 <>
-                <section className='FundoConta marginTop cor1 border'>
-                    {(alunoDados == "Loading" || alunoDados == "Nenhum aluno encontrado.") || alunoDados.map(item => item.imagem)
-                        ? <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
-                        : <>{alunoDados.map(item => <img className='fundo' key={item.id} src={BuscarImagem(item.imagemSala)} />)}</>}
-                </section>
-
-                <section className='SectionButtons'>
+                <section className='InfoFundo cor1 border'>
                     {/* <section className='PerfilImage cor1 border'>
                         <section className='imgPerfilImage cor2 border'>
                             {(alunoDados === "Loading" || alunoDados == "Nenhum aluno encontrado")
@@ -67,6 +60,14 @@ export default function MinhaConta() {
                                 : <img src={BuscarImagem(alunoDados.map(item => item.imagem))} />}
                         </section>
                     </section> */}
+
+                    {(alunoDados == "Loading" || alunoDados == "Nenhum aluno encontrado.") || alunoDados.map(item => item.imagem)
+                    ? <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
+                    : <>{alunoDados.map(item => <img className='fundo' key={item.id} src={BuscarImagem(item.imagemSala)} />)}</>}
+                    <section className='Escuro'></section>
+                </section>
+
+                <section className='SectionButtons'>
                     <button onClick={() => setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}>
                         <img src={`/assets/images/icones/Avisos${section == 1 ? "PE" : ""}.png`} />Dados
                     </button>
