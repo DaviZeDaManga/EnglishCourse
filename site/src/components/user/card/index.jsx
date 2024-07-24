@@ -9,7 +9,7 @@ import { BuscarImagem, entrarSalaCon } from '../../../connection/alunoConnection
 import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
 
-export default function Card({estilo, id, idProfessor, idSala, name, desc, img, video, status, para, importante, width, tipo}) {
+export default function Card({estilo, id, idSala, name, desc, img, video, status, para, importante, width}) {
     const aluno = storage.get('aluno') || []; 
     const {idtrilha, idsala} = useParams()
     const navigate = useNavigate()
@@ -48,18 +48,6 @@ export default function Card({estilo, id, idProfessor, idSala, name, desc, img, 
         }
     }
 
-
-
-    async function funcoes() {
-        try {
-            if (tipo == "PedirEntrar") {
-                await entrarSalaCon(aluno.map(item=> item.id), id, idProfessor)
-                toast.dark("Pedido enviado!")
-            }
-        }
-        catch {toast.dark("Falha ao executar essa função.")}
-    }
-
     return (
         <>
             <LoadingBar color="#f11946" ref={ref} />
@@ -83,13 +71,9 @@ export default function Card({estilo, id, idProfessor, idSala, name, desc, img, 
                         <div className='linha'></div>
                         <h4>{desc}</h4>
                     </section>
-                    {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado." && tipo == null) &&
+                    {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado.") &&
                     <button onClick={()=> navegacao()} className='b cor3 cem'>
                         Acessar
-                    </button>}
-                    {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado." && tipo == "PedirEntrar") &&
-                    <button onClick={()=> funcoes()} className='b cor3 cem'>
-                        Pedir para entrar
                     </button>}
                 </section>}
             </main>

@@ -55,11 +55,10 @@ export async function dadosAlunoCon(idaluno) {
     }
 }
 
-export async function entrarSalaCon(idaluno, idsala, idprofessor) {
+export async function entrarSalaCon(idaluno, codigo) {
     try {
         const resposta = await api.post(`/aluno/${idaluno}/entrar/sala`, {
-            sala: idsala,
-            professor: idprofessor
+            codigo: codigo
         })
         return resposta.data
     }

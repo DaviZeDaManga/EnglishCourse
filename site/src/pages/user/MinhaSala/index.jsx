@@ -13,7 +13,7 @@ import StatusCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage';
 
 // outros
-import { BuscarImagem, dadosMinhaSalaCon } from '../../../connection/alunoConnection';
+import { BuscarImagem, dadosMinhaSalaCon, entrarSalaCon } from '../../../connection/alunoConnection';
 import { toast } from 'react-toastify';
 
 export default function MinhaSala() {
@@ -117,6 +117,7 @@ export default function MinhaSala() {
 
     const [section2, setSection2] = useState(1)
     const [joinByCode, setJoinByCode] = useState(false)
+    const [codigo, setCodigo] = useState("")
     const [salas, setSalas] = useState([])
     const [paisagem, setPaisagem] = useState(0);
 
@@ -152,6 +153,18 @@ export default function MinhaSala() {
         setPaisagem(Math.floor(Math.random() * 6) + 1);
     }, []);
 
+    async function entrarSala() {
+        try {
+            await entrarSalaCon(aluno.map(item => item.id), codigo)
+            toast.dark("Seja bem-vindo(a)!")
+            dadosMinhaSala()
+        }
+        catch (error) {
+            console.error("Erro ao entrar na sala:", error)
+            toast.dark("Erro ao entrar na sala.")
+        }
+    }
+
     return (
         <div className='MinhaSala'>
             <BarraLateral page={"minhasala"} />
@@ -174,10 +187,10 @@ export default function MinhaSala() {
                                     <h4>Olá, já contem o código da sala? Perfeito! Apenas insira e aperte em entrar! Vamos começar nossas aulas, sem perda de tempo. Como entrar na minha sala por código? Faça login em sua conta, pegue o cõdigo com seu professor, insira no campo abaixo e inicie seus estudos!</h4>
                                 </section>
                             </section>
-                            <input placeholder='Código da sala' className='cor2 border'></input>
+                            <input onChange={(e)=> setCodigo(e.target.value)} value={codigo} placeholder='Código da sala' className='cor2 border'></input>
                             <section className='SectionButtons default'>
                                 <button onClick={()=> setJoinByCode(false)} className='b cem cor3'>Cancelar</button>
-                                <button className='b cem cor3'>Participar</button>
+                                <button onClick={()=> entrarSala()} className='b cem cor3'>Participar</button>
                             </section>
                         </main>
                         </StatusPage>}
@@ -214,7 +227,6 @@ export default function MinhaSala() {
                             desc={item.descricao}
                             img={item.imagem}
                             video={item.video}
-                            tipo={"PedirEntrar"}
                             para={0}
                             />
                             )}
@@ -236,7 +248,7 @@ export default function MinhaSala() {
                         </>
                     ) : (
                         <>
-                        <section className='Info marginTop'>
+                        <section className='Info'>
                             <section className='Card min cor1 border'>
                                 <section className='Title cor2'>
                                     {sala.map(item => <h3 key={item.id}>{item.nome}</h3>)}

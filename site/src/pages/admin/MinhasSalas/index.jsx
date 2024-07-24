@@ -11,6 +11,7 @@ import BarraLateral from '../../../components/admin/barraLateral'
 import Titulo from '../../../components/user/titulo'
 import Card from '../../../components/user/card'
 import StatusCard from '../../../components/user/statusCard'
+import StatusPage from '../../../components/user/statusPage';
 
 // Outros
 import { toast } from 'react-toastify';
@@ -82,11 +83,10 @@ export default function MinhasSalas() {
     return (
         <section className='MinhasSalas'>
             <BarraLateral page={"minhassalas"} />
-            <Titulo nome={"Minhas salas"} />
 
             {cardadd &&
-                <main className='FundoEscuro'>
-                    <section className='Card normalPadding min cor1 border'>
+                <StatusPage>
+                    <section className='Card normalPadding cor1 border'>
                         <div className='Titulo'>
                             <button onClick={() => setCardadd(false)} className='b cor3'> 
                                 <img src='/assets/images/icones/voltar.png' alt="Voltar" /> 
@@ -128,9 +128,9 @@ export default function MinhasSalas() {
                         </section>
                         <button onClick={handleCreateRoom} className='b cor3 cem'>Criar</button>
                     </section>
-                </main>
+                </StatusPage>
             }
-            <section onClick={() => setCardadd(true)} className='AddButton cor1 border marginTop'>
+            <section onClick={() => setCardadd(true)} className='AddButton cor1 border'>
                 <img className='meio vinte' src='/assets/images/icones/mais.png' alt="Adicionar nova sala" />
             </section>
 
