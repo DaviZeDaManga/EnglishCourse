@@ -8,7 +8,6 @@ import { dadosSalasCon } from '../../../connection/userConnection';
 
 // Componentes
 import BarraLateral from '../../../components/admin/barraLateral';
-import Titulo from '../../../components/user/titulo';
 import Card from '../../../components/user/card';
 import ErrorCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage';
@@ -24,7 +23,6 @@ export default function Criacao() {
     const [transmissoes, setTransmissoes] = useState([]);
     const [atividades, setAtividades] = useState([])
     const [salas, setSalas] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     async function Trilhas() {
         setTrilhas("Loading");
@@ -86,34 +84,40 @@ export default function Criacao() {
         setSalas("Loading");
         try {
             const resposta = await dadosSalasCon(professor.map(item => item.id));
-            if (Array.isArray(resposta)) {
-                setSalas(resposta);
-            } else {
-                setSalas([]);
-            }
+            setSalas(resposta);
         } catch (error) {
             setSalas("Nenhuma sala encontrada.");
         }
     }
 
     useEffect(() => {
-        async function load() {
-            setLoading(true);
-            await Trilhas();
-            await Avisos();
-            await Transmissoes();
-            await Atividades();
-            await minhasSalas();
-            setLoading(false);
+        async function fetchSectionData() {
+            switch (section) {
+                case 1:
+                    await Trilhas()
+                    break;
+                case 2:
+                    await Avisos()
+                    break;
+                case 3:
+                    await Transmissoes()
+                    break
+                case 4:
+                    await Atividades()
+                    break
+                default:
+                    break
+            }
         }
-        load();
-    }, []);
+        fetchSectionData();
+    }, [section]);
 
-    const [cardadd, setCardadd] = useState(false);
-    const [nome, setNome] = useState("");
-    const [desc, setDesc] = useState("");
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [video, setVideo] = useState("");
+    const [buttons, setButtons] = useState(false)
+    const [cardadd, setCardadd] = useState("");
+    const [nome, setNome] = useState("Nenhum título adicionado.");
+    const [desc, setDesc] = useState("Nenhuma descrição adicionada.");
+    const [selectedImage, setSelectedImage] = useState("Nenhuma imagem adicionada.");
+    const [video, setVideo] = useState("Nenhum vídeo adicionado.");
     const [comentarios, setComentarios] = useState(false);
     const [status, setStatus] = useState("Ativo");
 
@@ -137,24 +141,21 @@ export default function Criacao() {
             if (nome !== "" && desc !== "" && selectedImage !== null) {
                 const imgFile = document.getElementById('fileInput').files[0];
     
-                if (section == 1) {
-                    await inserirTrilhaCon(professor.map(item => item.id), nome, desc, imgFile);          
+                if (cardadd == "Trilha") {
+                    await inserirTrilhaCon(professor.map(item => item.id), nome, desc, imgFile, status);          
                 } 
-                if (section == 2) {
-                    await inserirAvisoCon(professor.map(item => item.id), nome, desc, imgFile, video, comentarios, status);
+                if (cardadd == "Aviso" || cardadd == "Aviso simples") {
+                    await inserirAvisoCon(professor.map(item => item.id), nome, desc, (selectedImage == "Nenhuma imagem adicionada." ? null : imgFile), video, comentarios, status);
                 } 
-                if (section == 3) {
+                if (cardadd == "Transmissão") {
                     await inserirTransmissaoCon(professor.map(item => item.id), nome, desc, imgFile, video, comentarios, status);
                 } 
-                if (section == 4) {
+                if (cardadd == "Atividade") {
                     await inserirAtividadeCon(professor.map(item => item.id), nome, desc, imgFile, video, comentarios, status);
                 }
     
                 toast.dark("Criado!");
-                setNome('');
-                setDesc('');
-                setSelectedImage(null);
-                setCardadd(false);
+                resetFormCreate()
             } else {
                 toast.dark("Você não inseriu todos os dados!");
             }
@@ -173,23 +174,27 @@ export default function Criacao() {
         }
     };    
 
+    function resetFormCreate() {
+        setNome("Nenhum título adicionado.");
+        setDesc("Nenhuma descrição adicionada.");
+        setSelectedImage("Nenhuma imagem adicionada.");
+        setVideo("Nenhum vídeo adicionado.")
+        setCardadd(false);
+    }
+
     return (
         <section className='Criacao'>
             <BarraLateral page={"criacao"} />
 
-            {cardadd && (
+            {cardadd != "" && (
                 <StatusPage>
                     <section className='Card normalPadding cor1 border'>
-                        <div className='Titulo'>
-                            <button onClick={() => setCardadd(false)} className='b cor3'>
-                                <img src='/assets/images/icones/voltar.png' alt="Voltar" />
-                            </button>
-                            <section className='NomeTitulo cem cor3'>
-                                <h3>Criar {section == 1 && "nova trilha"}  {section == 2 && "novo aviso"}  {section == 3 && "nova transmissão"} {section == 4 && "nova atividade"}</h3>
-                            </section>
-                        </div>
+                        <section className='Title cor2'>
+                            <h3 className="cor2">Criar {cardadd}</h3>
+                        </section>
 
-                        <section onClick={handleClick} className='AddImage cor2 border'>
+                        {selectedImage != "Nenhuma imagem adicionada." &&
+                        <section onClick={handleClick} className='Img cor2 border'>
                             {selectedImage ? (
                                 <img className='fundo' src={selectedImage} alt="Uploaded" />
                             ) : (
@@ -202,14 +207,17 @@ export default function Criacao() {
                                 onChange={handleImageUpload}
                                 style={{ display: 'none' }}
                             />
-                        </section>
+                        </section>}
 
+                        {nome != "Nenhum título adicionado." &&
                         <input
                             onChange={(e) => setNome(e.target.value)}
                             value={nome}
                             placeholder='Digite o nome'
                             className='cor2 border'
-                        />
+                        />}
+
+                        {desc != "Nenhuma descrição adicionada." &&
                         <section className="DescCard border cor2">
                             <div className='linha'></div>
                             <textarea
@@ -218,31 +226,57 @@ export default function Criacao() {
                                 placeholder='Digite a descrição'
                                 className='cor2 border'
                             />
-                        </section>
+                        </section>}
 
-                        {section !== 1 &&
-                        <>
+                        <select className='cor2 border' value={status} onChange={(e)=> setStatus(e.target.value)}>
+                            <option value="Ativo">Ativo</option>
+                            <option value="Em desenvolvimento">Em desenvolvimento</option>
+                            <option value="Desativado">Desativado</option>
+                        </select>
+
+                        {video != "Nenhum vídeo adicionado." &&
                         <input
                             onChange={(e) => setVideo(e.target.value)}
                             value={video}
                             placeholder='Endereço do vídeo'
                             className='cor2 border'
-                        />
+                        />}
+                        
+                        {(cardadd != "Trilha" && cardadd != "Aviso simples") &&
                         <section className='SectionButtons default'>
                             <button onClick={()=> setComentarios(!comentarios)} className={`b cor3 cem ${comentarios == true && "selecionado"}`}>Comentários</button>
-                            <button onClick={()=> setStatus(status != "Ativo" ? "Ativo" : "Desativado")} className={`b cor3 cem ${status == "Ativo" && "selecionado"}`}>{status == "Ativo" ? "Ativo" : "Desativado"}</button>
+                        </section>}
+                    
+                        <section className='SectionButtons default'>
+                            <button onClick={resetFormCreate} className='b cor3 cem'>Cancelar</button>
+                            <button onClick={handleCreate} className='b cor3 cem'>Próximo</button>
                         </section>
-                        </>}
-                        <button onClick={() => handleCreate()} className='b cor3 cem'>Criar</button>
                     </section>
                 </StatusPage>
             )}
-
-            <section onClick={() => setCardadd(true)} className='AddButton cor1 border'>
-                <img className='meio vinte' src='/assets/images/icones/mais.png' alt="Adicionar nova sala" />
-            </section>
-
             <section className='SectionButtons'>
+                <button onClick={()=> setButtons(!buttons)} className='b min cor3'><img src={`/assets/images/icones/3pontos.png`} /></button>
+                {buttons == true &&
+                <section className='Buttons cor2 border'>
+                    <h3>Criação</h3>
+                    <section className='SectionSelecionaveis cor3 autoH'>
+                        <button onClick={()=> (setCardadd("Trilha"), setNome(""), setDesc(""), setSelectedImage(null))} className='b transparente cem'>
+                            Trilha
+                        </button>
+                        <button onClick={()=> (setCardadd("Aviso"), setNome(""), setDesc(""), setSelectedImage(null), setVideo(""))} className='b transparente cem'>
+                            Aviso
+                        </button>
+                        <button onClick={()=> (setCardadd("Aviso simples"), setNome(""), setDesc(""))} className='b transparente cem'>
+                            Aviso simples
+                        </button>
+                        <button onClick={()=> (setCardadd("Transmissão"), setNome(""), setDesc(""), setSelectedImage(null), setVideo(""))} className='b transparente cem'>
+                            Transmissão
+                        </button>
+                        <button onClick={()=> (setCardadd("Atividade"), setNome(""), setDesc(""), setSelectedImage(null), setVideo(""))} className='b transparente cem'>
+                            Atividade
+                        </button>
+                    </section>
+                </section>}
                 <button onClick={() => setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}>
                     <img src={`/assets/images/icones/Trilhas${section == 1 ? "PE" : ""}.png`} />Trilhas
                 </button>

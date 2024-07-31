@@ -3,13 +3,13 @@ import { useRef } from 'react'
 import storage from 'local-storage';
 
 //conexoes
-import { BuscarImagem, entrarSalaCon } from '../../../connection/alunoConnection';
+import { BuscarImagem } from '../../../connection/userConnection';
 
 //outros
 import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
 
-export default function Card({estilo, id, idSala, name, desc, img, video, status, para, importante, width}) {
+export default function Card({estilo, id, idSala, name, desc, img, video, status, para, conteudo, licoes, width}) {
     const aluno = storage.get('aluno') || []; 
     const {idtrilha, idsala} = useParams()
     const navigate = useNavigate()
@@ -19,7 +19,7 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
         ref.current.continuousStart()
 
         try {
-            if (status != "Não feita.") {
+            if (status !== "Não feita") {
                 if (para == 0) {
                     navigate(`/aluno/minhasala/${id}`)
                 }
@@ -33,7 +33,7 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
                     navigate(`/aluno/minhasala/${idSala}/transmissão/${id}`)
                 }
                 if (para == 4) {
-                    navigate(`/aluno/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}/${importante == false ? "assistir" : "lições"}`)
+                    navigate(`/aluno/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}/${(conteudo == false || (conteudo == true && licoes == true)) ? "assistir" : "lições"}`)
                 }
             }
             else {
@@ -50,7 +50,7 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
 
     return (
         <>
-            <LoadingBar color="#f11946" ref={ref} />
+            <LoadingBar color="#cd9555" ref={ref} />
 
             <main className={`Card ${width} cor1 border ${(estilo == 1 && img != "Nenhuma imagem adicionada.") && "normalPadding"}`}>
 

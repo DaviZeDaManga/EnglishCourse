@@ -9,36 +9,82 @@ import StatusCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage'; 
 
 // outros
-import { BuscarImagem, dadosAlunoCon } from '../../../connection/alunoConnection';
+import { dadosAlunoCon, dadosMinhaSalaCon } from '../../../connection/alunoConnection';
+import { BuscarImagem } from '../../../connection/userConnection';
 
 export default function MinhaConta() {
     const aluno = storage.get('aluno');
     const [alunoDados, setAlunoDados] = useState([]);
-    const [nome, setNome] = useState("");
-    const [imagem, setImagem] = useState();
-    const [paisagem, setPaisagem] = useState(0);
+    const [carddados, setCarddados] = useState(false)
+    const [nome, setNome] = useState("")
+    const [email, setEmail] = useState("")
+    const [numero, setNumero] = useState("")
+    const [tipo, setTipo] = useState("")
+    const [status, setStatus] = useState("")
+    const [nascimento, setNascimento] = useState("")
     const [section, setSection] = useState(1);
-    const [loading, setLoading] = useState(true); 
 
     async function AlunoDados() {
         setAlunoDados("Loading");
         try {
-            let resposta = await dadosAlunoCon(aluno.map(item => item.id));
+            const resposta = await dadosAlunoCon(aluno.map(item => item.id));
+            setNome(resposta.map(item=> item.nome))
+            setEmail(resposta.map(item=> item.email))
+            setNumero(resposta.map(item=> item.numero))
+            setTipo(resposta.map(item=> item.tipo))
+            setStatus(resposta.map(item=> item.status))
+            setNascimento(resposta.map(item=> item.nascimento))
             setAlunoDados(resposta);
-            setLoading(false); 
-        }
-        catch {
+        } catch (error) {
+            console.error("Nenhum aluno encontrado", error);
             setAlunoDados("Nenhum aluno encontrado.");
-            setLoading(false);
         }
     }
 
     useEffect(() => {
-        async function load() {
+        async function fetchData() {
             await AlunoDados();
         }
-        load();
+        fetchData();
     }, []);
+
+    const [sala, setSala] = useState([]);
+    const [rendimento, setRendimento] = useState([])
+
+    async function dadosMinhaSala() {
+        setSala("Loading");
+        try {
+            const resposta = await dadosMinhaSalaCon(aluno.map(item => item.id));
+            setSala(resposta);
+        } catch (error) {
+            console.error('Erro ao buscar dados da minha sala:', error);
+            setSala("Nenhuma sala encontrada.");
+        }
+    }
+    
+    async function dadosRendimento() {
+        setRendimento("Essa função ainda não está disponível.");
+    }
+
+    useEffect(()=> {
+        async function fetchDataSection() {
+            if (Array.isArray(alunoDados)) {
+                switch (section) {
+                    case 1:
+                        await dadosMinhaSala()
+                        break
+                    case 2:
+                        await dadosRendimento()
+                        break
+                    default:
+                        break
+                }
+            }
+        }
+        fetchDataSection()
+    }, [section, alunoDados])
+
+    const [paisagem, setPaisagem] = useState(0);
 
     useEffect(() => {
         setPaisagem(Math.floor(Math.random() * 6) + 1);
@@ -48,19 +94,62 @@ export default function MinhaConta() {
         <section className='MinhaConta'>
             <BarraLateral page={"minhaconta"} />
 
-            {loading ? (
-                <StatusPage status={"Carregando"} /> 
+            {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado.") ? (
+                <StatusPage status={alunoDados} /> 
             ) : (
                 <>
-                <section className='InfoFundo cor1 border'>
-                    {/* <section className='PerfilImage cor1 border'>
-                        <section className='imgPerfilImage cor2 border'>
-                            {(alunoDados === "Loading" || alunoDados == "Nenhum aluno encontrado")
-                                ? <img className='Load icon' src='/assets/images/icones/Loading.png' />
-                                : <img src={BuscarImagem(alunoDados.map(item => item.imagem))} />}
+                {carddados == true &&
+                <StatusPage>
+                    <section className='Card normalPadding cor1 border'>
+                        <section className='Title cor2'>
+                            <h3 className="cor2">Meus dados</h3>
                         </section>
-                    </section> */}
 
+                        <input 
+                            onChange={(e) => setNome(e.target.value)} 
+                            value={nome}              
+                            placeholder='Meu nome' 
+                            className='cor2 border' 
+                        />
+                        <input 
+                            onChange={(e) => setEmail(e.target.value)} 
+                            value={email}              
+                            placeholder='Meu email' 
+                            className='cor2 border' 
+                        />
+                        <input 
+                            onChange={(e) => setNumero(e.target.value)} 
+                            value={numero}              
+                            placeholder='Meu numero' 
+                            className='cor2 border' 
+                        />
+                        <input 
+                            onChange={(e) => setTipo(e.target.value)} 
+                            value={tipo}              
+                            placeholder='Meu tipo' 
+                            className='cor2 border' 
+                        />
+                        <input 
+                            onChange={(e) => setStatus(e.target.value)} 
+                            value={status}              
+                            placeholder='Meu status' 
+                            className='cor2 border' 
+                        />
+                        <input 
+                            onChange={(e) => setNascimento(e.target.value)} 
+                            type='date'
+                            value={nascimento}              
+                            placeholder='Meu nascimento' 
+                            className='cor2 border' 
+                        />
+                        <section className='SectionButtons default'>
+                            <button onClick={()=> (setCarddados(false), AlunoDados())} className='b cor3 cem'>Voltar</button>
+                            {/* <button className='b cor3 cem'>Alterar dados</button> */}
+                        </section>
+                    </section>
+                </StatusPage>}
+
+                <section className='InfoFundo marginTop cor1 border'>
                     {(alunoDados == "Loading" || alunoDados == "Nenhum aluno encontrado.") || alunoDados.map(item => item.imagem)
                     ? <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
                     : <>{alunoDados.map(item => <img className='fundo' key={item.id} src={BuscarImagem(item.imagemSala)} />)}</>}
@@ -68,6 +157,13 @@ export default function MinhaConta() {
                 </section>
 
                 <section className='SectionButtons'>
+                <section className='PerfilImage cor0'>
+                        <section className='imgPerfilImage cor2 border'>
+                            {(alunoDados === "Loading" || alunoDados == "Nenhum aluno encontrado")
+                                ? <img className='Load icon' src='/assets/images/icones/Loading.png' />
+                                : <img src={BuscarImagem(alunoDados.map(item => item.imagem))} />}
+                        </section>
+                    </section>
                     <button onClick={() => setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}>
                         <img src={`/assets/images/icones/Avisos${section == 1 ? "PE" : ""}.png`} />Dados
                     </button>
@@ -77,11 +173,52 @@ export default function MinhaConta() {
                 </section>
                 <section className='SectionCards'>
                     {section == 1 &&
-                        <StatusCard mensagem={"Essa função ainda não está disponível."} />
+                        <>
+                        {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado.") ? (
+                            <StatusCard mensagem={alunoDados} />
+                        ) : (
+                            <section className='Info'>
+                                <section className='Card cem cor1 border'>
+                                    <section className='Title  cor2'>
+                                        <h3>{alunoDados.map(item=> item.nome)}</h3>
+                                    </section>
+                                    <div className='Desc'>
+                                        <section className='DescCard border cor2'>
+                                            <div className='linha cor3'></div>
+                                            <h4>Bem-vindo à Smart Lingu! Esta é a sua página de perfil, onde você pode acompanhar seu progresso no curso. Aqui, você encontrará uma visão detalhada do seu desempenho, incluindo as trilhas de aprendizado que você já completou e as atividades que você concluiu. Além disso, você poderá ver as lições que já foram respondidas e aquelas que ainda estão pendentes. Acompanhe seu avanço e continue se dedicando para alcançar seus objetivos de aprendizado!</h4>
+                                        </section>
+                                        <button onClick={()=> setCarddados(true)} className='b cor3 cem'> 
+                                            Ver meus dados
+                                        </button>
+                                    </div>
+                                </section>
+
+                                {(sala === "Loading" || sala === "Nenhuma sala encontrada.") ? (
+                                    <StatusCard mensagem={sala} />
+                                ) : (
+                                    <section className='InfoFundo cor1 border'>
+                                        {sala.map(item=> 
+                                            <>
+                                            <img src={BuscarImagem(item.sala.imagem)}/>
+                                            <section className='Escuro'><h3>{item.sala.nome}</h3></section>
+                                            </>
+                                        )}
+                                    </section>
+                                )}
+                            </section>
+                        )}
+                        </>
                     }
 
                     {section == 2 &&
-                        <StatusCard mensagem={"Essa função ainda não está disponível."} />}
+                        <>
+                        {(rendimento === "Loading" || rendimento === "Parece que não tem nada aqui." || rendimento === "Essa função ainda não está disponível.") ? (
+                            <StatusCard mensagem={rendimento} />
+                        ) : (
+                            <></>
+                        )}
+                        </>
+                    }
                 </section>
                 </>
             )}

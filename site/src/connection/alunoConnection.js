@@ -55,6 +55,9 @@ export async function dadosAlunoCon(idaluno) {
     }
 }
 
+
+
+
 export async function entrarSalaCon(idaluno, codigo) {
     try {
         const resposta = await api.post(`/aluno/${idaluno}/entrar/sala`, {
@@ -81,17 +84,122 @@ export async function dadosMinhaSalaCon(idaluno) {
 
 
 
-
-export async function proximaAtividadeCon(idaluno, idatividade) {
+export async function dadosTrilhasAlunoCon(idaluno, idsala) {
     try {
-        const resposta = await api.post(`/aluno/${idaluno}/proxima/atividade/${idatividade}`)
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/trilhas`)
         return resposta.data
     }
     catch(error) {
-        console.error('Erro ao passar para o próximo vídeo:', error);
-        throw new Error(`Erro ao passar para o próximo vídeo: ${error.message}`);
+        console.error('Erro ao obter dados das trilhas:', error);
+        throw new Error(`Erro ao obter dados das trilhas: ${error.message}`);
     }
 }
+
+export async function dadosTrilhaAlunoCon(idaluno, idsala, idtrilha) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/trilha/${idtrilha}`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados da trilha:', error);
+        throw new Error(`Erro ao obter dados da trilha: ${error.message}`);
+    }
+}
+
+export async function dadosAtividadesAlunoCon(idaluno, idsala, idtrilha) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/trilha/${idtrilha}/atividades`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados das atividades:', error);
+        throw new Error(`Erro ao obter dados das atividades: ${error.message}`);
+    }
+}
+
+export async function dadosAtividadeAlunoCon(idaluno, idsala, idtrilha, idatividade) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/trilha/${idtrilha}/atividade/${idatividade}`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados da atividade:', error);
+        throw new Error(`Erro ao obter dados da atividade: ${error.message}`);
+    }
+}
+
+export async function dadosPalarvasAlunoCon(idaluno, idsala, idtrilha, idatividade) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/trilha/${idtrilha}/atividade/${idatividade}/palavras`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados das palavras:', error);
+        throw new Error(`Erro ao obter dados das palavras: ${error.message}`);
+    }
+}
+
+export async function dadosLicoesAlunoCon(idaluno, idsala, idtrilha, idatividade) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/trilha/${idtrilha}/atividade/${idatividade}/licoes`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados das lições:', error);
+        throw new Error(`Erro ao obter dados das lições: ${error.message}`);
+    }
+}
+
+
+
+
+export async function dadosAvisosAlunoCon(idaluno, idsala) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/avisos`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados dos avisos:', error);
+        throw new Error(`Erro ao obter dados dos avisos: ${error.message}`);
+    }
+}
+
+export async function dadosAvisoAlunoCon(idaluno, idsala, idaviso) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/aviso/${idaviso}`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados do aviso:', error);
+        throw new Error(`Erro ao obter dados do aviso: ${error.message}`);
+    }
+}
+
+
+
+export async function dadosTransmissoesAlunoCon(idaluno, idsala) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/transmissoes`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados das transmissões:', error);
+        throw new Error(`Erro ao obter dados das transmissões: ${error.message}`);
+    }
+}
+
+export async function dadosTransmissaoAlunoCon(idaluno, idsala, idtransmissao) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/sala/${idsala}/transmissao/${idtransmissao}`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados da transmissão:', error);
+        throw new Error(`Erro ao obter dados da transmissão: ${error.message}`);
+    }
+}
+
+
 
 export async function inserirFeitoConteudoCon(idaluno, idatividade) {
     try {
@@ -104,23 +212,12 @@ export async function inserirFeitoConteudoCon(idaluno, idatividade) {
     }
 }
 
-export async function inserirFeitoLicoesCon(idaluno, idatividade) {
-    try {
-        const resposta = await api.post(`/aluno/${idaluno}/feito/atividade/${idatividade}/licoes`)
-        return resposta.data
-    }
-    catch(error) {
-        console.error('Erro ao inserir feito nessa atividade:', error);
-        throw new Error(`Erro ao inserir feito nessa atividade: ${error.message}`);
-    }
-}
-
-export async function inserirResposta(idaluno, idlicao, idalternativa, escrita, nota) {
+export async function inserirRespostaCon(idaluno, idlicao, resp, tipo, status) {
     try {
         const resposta = await api.post(`/aluno/${idaluno}/responder/licao/${idlicao}`, {
-            idalternativa: idalternativa,
-            escrita: escrita,
-            nota: nota
+            resposta: resp,
+            tipo: tipo,
+            status: status
         })
         return resposta.data
     }
@@ -128,8 +225,4 @@ export async function inserirResposta(idaluno, idlicao, idalternativa, escrita, 
         console.error('Erro ao inserir resposta nessa lição:', error);
         throw new Error(`Erro ao inserir resposta nessa lição: ${error.message}`);
     }
-}
-
-export function BuscarImagem(imagem){
-    return (`${api.getUri()}/${imagem}`)    
 }

@@ -7,12 +7,13 @@ export default function Titulo({nome, voltar}) {
 
     return (
         <>
-            <div className='Titulo'>
-                <button onClick={voltarPage} className='b cor3'> <img src='/assets/images/icones/voltar.png'/> </button>
-                <section className='NomeTitulo cor3'>
+            {/* <div className='Titulo cor1'>
+                {voltar != false &&
+                <button onClick={voltarPage} className='b cor2'> <img src='/assets/images/icones/voltar.png'/> </button>}
+                <section className='NomeTitulo cor2 border'>
                     <h3>{nome}</h3>
                 </section>
-            </div>
+            </div> */}
         </>
     )
 }

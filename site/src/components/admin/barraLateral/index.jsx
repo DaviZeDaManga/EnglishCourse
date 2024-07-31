@@ -36,7 +36,7 @@ export default function BarraLateral({page}) {
 
     return ( 
         <>
-            <LoadingBar color="#f11946" ref={ref} />
+            <LoadingBar color="#cd9555" ref={ref} />
             
             <section className='BarraLateral border cor1'>
                 <div className='ButtonSections cor4'>

@@ -86,11 +86,11 @@ export default function Inicio() {
                     </section>
                 </div>
 
-                <section onClick={() => document.getElementById('fileInput').click()} className='AddImage cor2 border'>
+                <section onClick={() => document.getElementById('fileInput').click()} className='Img cor2 border'>
                     {selectedImage ? (
                         <img className='fundo' src={selectedImage} alt="Uploaded" />
                     ) : (
-                        <img className='meio forty' src='/assets/images/icones/mais.png' alt="Adicionar imagem" />
+                        <img className='meio vinte' src='/assets/images/icones/mais.png' alt="Adicionar imagem" />
                     )}
                     <input
                         id="fileInput"

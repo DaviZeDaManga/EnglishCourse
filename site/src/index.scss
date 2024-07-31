@@ -18,7 +18,7 @@ body {
         justify-content: flex-start;
         align-items: center;
         min-width: 35px;
-        max-width: calc((100% - 36px) / 4);
+        max-width: calc((100% - 36px) / 5);
         width: 100%;
         height: 35px;
         padding: 7px 12px;
@@ -30,16 +30,29 @@ body {
         font-size: 15px;
         font-weight: 500;
         line-height: 19px;
-        border: 1px solid #39393972;
+        border: 1px solid #393939bc;
         position: relative;
-        > img {opacity: 0.3;}
         cursor: pointer;
 
-        &.cem { min-width:none; max-width: none;}
-        &.min { width: auto; max-width: 35px; padding: 6px;}
-        &.mostrando { background-color: #7D4CBB; border: none; }
+        > img {
+            opacity: 0.3;
+            height: 85%;
+        }
+            
+        
+
+
+        &.cem { 
+            min-width:none; 
+            max-width: none;}
+        &.min { 
+            width: auto; 
+            max-width: 35px; 
+            padding: 6px;}
+        &.mostrando { 
+            background-color: #7D4CBB; 
+            border: none; }
         &:hover { 
-            background-color: #242424; 
             color: #D9D9D9; 
             > img {opacity: 1;}
         }
@@ -60,18 +73,37 @@ body {
             line-height: 19px;
         }
         &.green {
-            background-color: #43c13c;
+            background-color: #43c13c7f;
+            border: solid 2px #43c13c;
             color: #e0e0e0;
         }
         &.red {
-            background-color: #c13c3c;
+            background-color: #c13c3c82;
+            border: solid 2px #c13c3c;
             color: #e0e0e0;
+        }
+        &.transparente {
+            background-color: rgba(255, 0, 0, 0);
+            border-radius: 0px;
+            border: none;
+        }
+        &.amarelo {
+            background-color: rgba(255, 186, 83, 0.529);
+            border: solid 2px rgb(255, 186, 83);
+            color: #e0e0e0;
+        }
+        &.ContLight {
+            color: #D9D9D9; 
+            > img {opacity: 1;}
         }
     }
 }
 
 
 
+.cor0 {
+    background-color: #151515;
+}
 .cor1 {
     background-color: #1F1F1F;
     &.selecionado { background-color: #8A55CD; }
@@ -96,30 +128,29 @@ body {
 }
 
 
-
 h1 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #DADADA;
+    color: #b8b8b8;
     font-size: 15px;
 }
 
 h3 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #C5C5C5;
+    color: #acacac;
     font-size: 15px;
     font-weight: 600;
 }
 h4 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #898989;
+    color: #767676;
     font-size: 15px;
     font-weight: 450;
-    line-height: 19px;
+    line-height: 20px;
 }
 img {
     height: 100%;
     transition: 0.3s;
-    &.fundo {width: 100%; aspect-ratio: 16 / 9; border-radius: 10px;}
+    &.fundo {width: 100%; aspect-ratio: 16 / 9;}
     &.meio { position: absolute;}
     &.icon { max-width: 35px; max-height: 35px; &:hover {transform: scale(1.1);} cursor: pointer;}
     &.vinte {height: 20%; &:hover {transform: scale(1.1);} cursor: pointer;}
@@ -155,6 +186,7 @@ input, select {
     line-height: 19px;
     outline: none;
     border-radius: 10px;
+
 }
 
 
@@ -217,43 +249,37 @@ input, select {
     max-width: calc((100% / 3) - 8px);
     min-height: 300px;
     border-radius: 10px;
-    padding: 12px 12px 0px 12px;
+    padding: 6px 6px 0px 6px;
     position: relative;
-    gap: 12px;
-    &:hover > .Desc > .DescCard { min-height: 182px;}
+    gap: 10px;
+    &:hover > .Desc > .DescCard { min-height: 196px;}
     &:hover > .Img > .Escuro > h3 {bottom: 6px;}
     &.min {min-width: calc((100% - 36px) / 4); max-width: calc((100% - 36px) / 4);}
     &.minH {min-height: auto;}
     &.cem {max-width: none; min-width: none; width: 100%;}
-    &.normalPadding {padding: 12px;}
+    &.normalPadding {padding: 6px;}
     &:hover > button{opacity: 1;}
-
-    .AddImage {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        border-radius: 10px;
-        height: 275px;
-        position: relative;
-    }
+    
     .Desc {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-content: flex-start;
         width: 100%;
-        height: 240px;
-        gap: 12px;
+        height: 248px;
+        gap: 10px;
         overflow: hidden;
         transition: 0.3s;
     }
     .Img {
         display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
-        height: 275px;
+        height: 284px;
         border-radius: 10px;
         position: relative;
+        overflow: hidden;
     }
 }
 .InfoFundo {
@@ -282,14 +308,14 @@ input, select {
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
-    min-height: 220px;
-    max-height: 220px;
+    min-height: 230px;
+    max-height: 230px;
     padding: 12px 12px 12px 17px;
     border-radius: 10px;
     position: relative;
     transition: 0.3s;
-    overflow: auto;
-    &.fix { min-height: 240px; max-height: 240px; height: 100%;}
+    overflow: hidden;
+    &.fix { min-height: 238px; max-height: 238px; height: 100%;}
 }
 .Escuro {
     display: flex;
@@ -314,22 +340,39 @@ input, select {
         transition: 0.3s;
         cursor: pointer;
     }
+    &:hover > h3 {bottom: 6px;}
 }
-
-
-
-
-
+.SectionSelecionaveis {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 562px;
+    border-radius: 10px;
+    overflow: hidden;
+    &.autoH {min-height: auto; }
+}
+.CardSelecionavel {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    aspect-ratio: 16 / 5;
+    position: relative;
+    overflow: hidden;
+}
 .SectionButtons {
     display: flex;
     justify-content: flex-start;
     align-items: flex-end;
     width: 100%;
-    gap: 12px;
+    gap: 10px;
     min-height: 59px;
     max-height: 59px;
     padding: 12px 0px;
     z-index: 1;
+    position: relative;
     background-color: #151515;
     &.default { padding: 0; background-color: rgba(255, 0, 0, 0); max-height: 35px; min-height: 35px;}
 }
@@ -339,11 +382,82 @@ input, select {
     align-items: flex-start;
     flex-wrap: wrap;
     width: 100%;
-    gap: 12px;
+    gap: 10px;
 }
+.Buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 300px;
+    padding: 6px;
+    border-radius: 10px;
+    position: absolute;
+    border: #383838 solid 1px;
+    left: 0;
+    top: 59px;
+    z-index: 1;
+    gap: 10px;
+}
+.Video {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 650px;
+    padding: 6px;
+    border-radius: 10px;
 
+    .FundoVideo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+        background-color: black;
+    }
+}
+.Info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+.CardPerfil {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 6px;
+    border-radius: 10px;
+    gap: 10px;
 
-
+    .CardPerfilImg {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 45px;
+        height: 45px;
+        border-radius: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+    .CardPerfilCont {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        min-height: 35px;
+        border-radius: 10px;
+    }
+}
 
 
 
@@ -363,19 +477,18 @@ input, select {
     backdrop-filter: blur(2px); 
     -webkit-backdrop-filter: blur(2px); 
     z-index: 5;
-    gap: 12px;
-
-    .EnviarRespostas {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        min-width: calc((100% - 388px) / 3);
-        max-width: calc((100% - 388px) / 3);
-        padding: 12px;
-        border-radius: 10px;
-        gap: 12px;
-    }
+    gap: 10px;
+}
+.EnviarRespostas {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    min-width: calc((100% - 388px) / 3);
+    max-width: calc((100% - 388px) / 3);
+    padding: 6px;
+    border-radius: 10px;
+    gap: 10px;
 }
 
 

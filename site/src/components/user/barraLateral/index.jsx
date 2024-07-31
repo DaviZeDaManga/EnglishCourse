@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import storage from 'local-storage';
 
 //conexoes
-import { dadosAtividadesCon } from '../../../connection/userConnection';
+import { dadosAtividadesAlunoCon, dadosTrilhaAlunoCon } from '../../../connection/alunoConnection';
 
 //outros
 import { toast } from 'react-toastify';
@@ -12,32 +12,58 @@ import LoadingBar from "react-top-loading-bar";
 
 export default function BarraLateral({page}) {
     const aluno = storage.get('aluno') || [];
-    const {idtrilha, idatividade} = useParams()
+    const {idsala, idtrilha, idatividade} = useParams()
+    const [trilha, setTrilha] = useState([])
     const [atividades, setAtividades] = useState([])
 
-    async function dadosAtividades() {
-        setAtividades("Loading")
+    async function dadosTrilha() {
+        setTrilha("Loading")
         try {
-            const resposta = await dadosAtividadesCon(aluno.map(item=> item.id), aluno.map(item=> item.idSala), idtrilha)
-            if (Array.isArray(resposta)) {
-                setAtividades(resposta)
-            } else {
-                setAtividades([])
+            const resposta = await dadosTrilhaAlunoCon(aluno.map(item => item.id), idsala, idtrilha);
+            setTrilha(resposta)
+        } catch (error) {
+            console.error('Erro ao buscar dados das trilhas:', error);
+            setTrilha("Nenhuma trilha encontrada.")
+        }
+    }
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                await dadosTrilha();
+            } catch (error) {
+                console.error('Erro ao carregar dados da trilha:', error);
+                toast.dark("Erro ao carregar dados da trilha.")
             }
         }
-        catch { setAtividades('Nenhuma atividade encontrada.'); }
+        fetchData();
+    }, [idsala, idtrilha, idatividade]);
+
+    async function dadosAtividades() {
+        setAtividades("Loading");
+        try {
+            let resposta = await dadosAtividadesAlunoCon(aluno.map(item => item.id), idsala, idtrilha);
+            setAtividades(resposta);
+        } catch (error) {
+            console.error('Erro ao buscar dados das atividades:', error);
+            setAtividades("Parece que não tem nada aqui.")
+        }
     }
 
     useEffect(()=> {
         async function fetchData() {
             try {
                 await dadosAtividades()
-            } catch {
+            } catch (error) {
+                console.error('Erro ao carregar dados das atividades:', error);
                 toast.dark("Erro ao carregar as atividades!")
             }
         }
         fetchData()
     }, [])
+
+
+
 
     const navigate = useNavigate()
     const ref = useRef()
@@ -50,7 +76,7 @@ export default function BarraLateral({page}) {
                 toast.dark("Você não pode acessar isso.")
             }
             if (para == 1) {
-                navigate(`/aluno/minhasala/trilha/${idtrilha}/atividade/${id}${outro != null && "/" + outro}`)
+                navigate(`/aluno/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}${outro != null && "/" + outro}`)
             }
             if (para == 2) {
                 navigate(`/aluno/minhasala`)
@@ -69,7 +95,7 @@ export default function BarraLateral({page}) {
 
     return ( 
         <>
-            <LoadingBar color="#f11946" ref={ref} />
+            <LoadingBar color="#cd9555" ref={ref} />
             
             <section className='BarraLateral border cor1'>
                 <div className='ButtonSections cor4'>
@@ -103,40 +129,55 @@ export default function BarraLateral({page}) {
                 </div>
 
                 {(page == "Trilha" || page == "Assistir" || page == "Lições") &&
-                <section className='Atividades cor4'>
-                    <button className="b cem selecionado"> 
-                        <img src={`/assets/images/icones/TrilhasPE.png`} />
-                        Trilha 2 - No ritmo certo
-                    </button>
+                <>
+                {trilha === "Loading" || trilha === "Nenhuma trilha encontrada." ? (
+                    <button className='b cem selecionado'>Nenhuma trilha encontrada.</button>
+                ) : (
+                    <section className='Atividades cor4'>
+                        <button className="b cem selecionado"> 
+                            <img src={`/assets/images/icones/TrilhasPE.png`} />
+                            {trilha.map( item=> item.nome)}
+                        </button>
 
-                    <section className='CardAtividades'>
-                        {(atividades === "Loading" || atividades == "Nenhuma atividade encontrada.") ? (
-                            <button className='b selecionado cem'>{atividades}</button>
-                        ) : <>
-                        {atividades.map( item =>
-                            <>
-                            <button onClick={()=> navegacao(1, item.id, (item.conteudo != true ? "assistir" : "licoes"))} className={`b ${idatividade == item.id ? "selecionado" : "mostrando"}`}> 
-                                {item.nome}
-                            </button>
-                            {idatividade == item.id &&
-                            <>
-                            <button onClick={()=> navegacao(1, item.id, "assistir")} className="b selecionado"> 
-                                <img src={`/assets/images/icones/LivesPE.png`} />
-                                Assistir vídeo
-                                <div className={`bolinha ${item.conteudo == true && "preenchido"}`}></div>
-                            </button>
-                            <button onClick={()=> navegacao((item.conteudo == true ? 1 : 0), item.id, "lições")} className="b selecionado"> 
-                                <img src={`/assets/images/icones/atividadesPE.png`} />
-                                Fazer lições
-                                {item.conteudo == true &&
-                                <div className={`bolinha ${item.licoes == true && "preenchido"}`}></div>}
-                            </button>
+                        <section className='CardAtividades'>
+                            {(atividades === "Loading" || atividades == "Parece que não tem nada aqui.") ? (
+                                <button className='b selecionado cem'>{atividades}</button>
+                            ) : <>
+                            {atividades.map( item =>
+                                <>
+                                <button onClick={()=> navegacao(((item.status === "Fazendo" || item.status === "Feito") ? 1 : 0), item.id, ((item.conteudo == false || (item.conteudo == true && item.licoes == true)) ? "assistir" : "lições"))} className={`b cem ${idatividade == item.id ? "selecionado" : "mostrando"}`}> 
+                                    {item.nome}
+                                    {idatividade != item.id && <div className={`bolinha ${(item.conteudo == true && item.licoes == true) && "preenchido"}`}></div>}
+                                </button>
+                                {idatividade == item.id &&
+                                <section className='AtividadeButtons'>
+                                    <section className='Atividades'>
+                                        {item.status === "Não feita" ? (
+                                            <button className='b cem mostrando'>Você não pode acessar isso.</button> 
+                                        ) : (
+                                            <>
+                                            <button onClick={()=> navegacao(1, item.id, "assistir")} className={`b cem mostrando ${page == "Assistir" && "ContLight"}`}> 
+                                                <img src={`/assets/images/icones/LivesPE.png`} />
+                                                Assistir vídeo
+                                                <h4>{item.conteudo == true ? "Concluído" : "Fazendo"}</h4>
+                                            </button>
+                                            <button onClick={()=> navegacao((item.conteudo == true ? 1 : 0), item.id, "lições")} className={`b cem mostrando ${page == "Lições" && "ContLight"}`}> 
+                                                <img src={`/assets/images/icones/atividadesPE.png`} />
+                                                Fazer lições
+                                                {item.conteudo == true &&
+                                                <h4>{item.licoes == true ? "Concluído" : "Fazendo"}</h4>}
+                                            </button>
+                                            </>
+                                        )}
+                                    </section>
+                                </section>}
+                                </>
+                            )}
                             </>}
-                            </>
-                        )}
-                        </>}
+                        </section>
                     </section>
-                </section>}
+                )}
+                </>}
             </section>
         </>
     )

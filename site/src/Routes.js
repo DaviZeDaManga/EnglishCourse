@@ -8,7 +8,8 @@ import MinhaSala from './pages/user/MinhaSala'
 import Trilha from './pages/user/Trilha'
 import Atividade from './pages/user/Atividade'
 import Licoes from './pages/user/Licoes'
-import Conteudo from './pages/user/Conteudo'
+import Aviso from './pages/user/Aviso'
+import Transmissao from './pages/user/Transmissao'
 
 //ADMIN
 import MinhasSalas from './pages/admin/MinhasSalas'
@@ -26,7 +27,8 @@ export default function Routess(){
                 <Route path='/aluno/minhasala/:idsala/trilha/:idtrilha' element={<Trilha/>} /> 
                 <Route path='/aluno/minhasala/:idsala/trilha/:idtrilha/atividade/:idatividade/assistir' element={<Atividade/>} /> 
                 <Route path='/aluno/minhasala/:idsala/trilha/:idtrilha/atividade/:idatividade/lições' element={<Licoes/>} /> 
-                <Route path='/aluno/minhasala/:idsala/:tipoconteudo/:idconteudo' element={<Conteudo/>} />
+                <Route path='/aluno/minhasala/:idsala/aviso/:idaviso' element={<Aviso/>} />
+                <Route path='/aluno/minhasala/:idsala/transmissao/:idtransmissao' element={<Transmissao/>} />
 
                 {/* ADMIN */}
                 <Route path='/admin/minhassalas' element={<MinhasSalas/>} /> 

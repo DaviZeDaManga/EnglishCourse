@@ -3,22 +3,24 @@ import { useEffect, useState } from 'react';
 import storage from 'local-storage';
 
 // conexoes
-import { dadosAvisosCon, dadosSalasCon, dadosTransmissoesCon, dadosTrilhasCon } from '../../../connection/userConnection';
+import { dadosSalasCon } from '../../../connection/userConnection';
+import { dadosAvisosAlunoCon, dadosMinhaSalaCon, dadosTransmissoesAlunoCon, dadosTrilhasAlunoCon, entrarSalaCon } from '../../../connection/alunoConnection';
+import { BuscarImagem } from '../../../connection/userConnection';
 
 // components
 import BarraLateral from '../../../components/user/barraLateral';
-import Titulo from '../../../components/user/titulo';
 import Card from '../../../components/user/card';
 import StatusCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage';
+import Titulo from '../../../components/user/titulo';
 
 // outros
-import { BuscarImagem, dadosMinhaSalaCon, entrarSalaCon } from '../../../connection/alunoConnection';
 import { toast } from 'react-toastify';
 
 export default function MinhaSala() {
     const aluno = storage.get('aluno') || [];
     const [sala, setSala] = useState([]);
+    const [cardpessoas, setCardpessoas] = useState(false)
 
     async function dadosMinhaSala() {
         setSala("Loading");
@@ -31,6 +33,7 @@ export default function MinhaSala() {
             dadosSalas()
         }
     }
+    console.log(sala)
 
     useEffect(() => {
         async function fetchData() {
@@ -52,7 +55,7 @@ export default function MinhaSala() {
     async function dadosTrilhas() {
         setTrilhas("Loading");
         try {
-            const resposta = await dadosTrilhasCon(aluno.map(item => item.id), sala.map(item => item.id));
+            const resposta = await dadosTrilhasAlunoCon(aluno.map(item => item.id), sala.map(item => item.sala.id));
             if (Array.isArray(resposta)) {
                 setTrilhas(resposta);
             } else {
@@ -67,7 +70,7 @@ export default function MinhaSala() {
     async function dadosAvisos() {
         setAvisos("Loading");
         try {
-            const resposta = await dadosAvisosCon(aluno.map(item => item.id), sala.map(item => item.id));
+            const resposta = await dadosAvisosAlunoCon(aluno.map(item => item.id), sala.map(item => item.sala.id));
             if (Array.isArray(resposta)) {
                 setAvisos(resposta);
             } else {
@@ -82,7 +85,7 @@ export default function MinhaSala() {
     async function dadosTransmissoes() {
         setTransmissoes("Loading");
         try {
-            const resposta = await dadosTransmissoesCon(aluno.map(item => item.id), sala.map(item => item.id));
+            const resposta = await dadosTransmissoesAlunoCon(aluno.map(item => item.id), sala.map(item => item.sala.id));
             if (Array.isArray(resposta)) {
                 setTransmissoes(resposta);
             } else {
@@ -113,9 +116,10 @@ export default function MinhaSala() {
             }
         }
         fetchSectionData();
-    }, [section]);
+    }, [section, sala]);
 
     const [section2, setSection2] = useState(1)
+    const [buttons, setButtons] = useState(false)
     const [joinByCode, setJoinByCode] = useState(false)
     const [codigo, setCodigo] = useState("")
     const [salas, setSalas] = useState([])
@@ -147,7 +151,7 @@ export default function MinhaSala() {
             }
         }
         fetchSectionData();
-    }, [section2]);
+    }, [section2, sala]);
 
     useEffect(() => {
         setPaisagem(Math.floor(Math.random() * 6) + 1);
@@ -173,6 +177,7 @@ export default function MinhaSala() {
                 <StatusPage status={sala} />
             ) : (
                 <>
+                    <Titulo nome={"Minha sala"} voltar={false}/>
                     {sala === "Nenhuma sala encontrada." ? (
                         <>
                         {joinByCode === true &&
@@ -195,7 +200,7 @@ export default function MinhaSala() {
                         </main>
                         </StatusPage>}
 
-                        <section className='Info'>
+                        <section className='Info marginTop'>
                             <section className='InfoFundo border cor1'>
                                 <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
                                 <section className='Escuro'></section>
@@ -203,7 +208,25 @@ export default function MinhaSala() {
                         </section>
 
                         <section className='SectionButtons'>
-                            <button onClick={()=> setJoinByCode(true)} className='b min cor3'><img src={`/assets/images/icones/3pontos.png`} /></button>
+                            <button onClick={()=> setButtons(!buttons)} className='b min cor3'><img src={`/assets/images/icones/3pontos.png`} /></button>
+                            {buttons == true &&
+                            <section className='Buttons cor2 border'>
+                                <h3>Filtros</h3>
+                                <section className='SectionSelecionaveis cor3 autoH'>
+                                    <button className='b transparente cem'>
+                                        Salas novas
+                                    </button>
+                                    <button className='b transparente cem'>
+                                        Melhores avaliadas
+                                    </button>
+                                </section>
+                                <h3>Outros</h3>
+                                <section className='SectionSelecionaveis cor3 autoH'>
+                                    <button onClick={()=> setJoinByCode(true)} className='b transparente cem'>
+                                        Entrar na sala
+                                    </button>
+                                </section>
+                            </section>}
                             <button onClick={() => setSection2(1)} className={`b cor3 ${section2 == 1 && "selecionado"}`}>
                                 <img src={`/assets/images/icones/Salas${section2 == 1 ? "PE" : ""}.png`} />Salas disponíveis
                             </button>
@@ -212,62 +235,88 @@ export default function MinhaSala() {
                             </button>
                         </section>
 
-                        {section2 == 1 &&
-                        <>
-                        {salas === "Loading" || salas === "Nenhuma sala encontrada." ? (
-                            <StatusCard mensagem={salas} />
-                        ) : (
+                        <main className='SectionCards'>
+                            {section2 == 1 &&
                             <>
-                            {salas.map( item=>
-                            <Card
-                            key={item.id}
-                            estilo={2}
-                            id={item.id}
-                            name={item.nome}
-                            desc={item.descricao}
-                            img={item.imagem}
-                            video={item.video}
-                            para={0}
-                            />
+                            {salas === "Loading" || salas === "Nenhuma sala encontrada." ? (
+                                <StatusCard mensagem={salas} />
+                            ) : (
+                                <>
+                                {salas.map( item=>
+                                <Card
+                            
+                                estilo={2}
+                                id={item.id}
+                                name={item.nome}
+                                desc={item.descricao}
+                                img={item.imagem}
+                                video={item.video}
+                                para={0}
+                                />
+                                )}
+                                </>
                             )}
-                            </>
-                        )}
-                        </>}
+                            </>}
 
-                        {section2 == 2 &&
-                        <>
-                        {salas === "Loading" || salas === "Nenhuma sala encontrada." ? (
-                            <StatusCard mensagem={salas} />
-                        ) : (
+                            {section2 == 2 &&
                             <>
-                           <StatusCard mensagem={"Nenhuma sala encontrada."} />
-                            </>
-                        )}
-                        </>}
+                            {salas === "Loading" || salas === "Nenhuma sala encontrada." ? (
+                                <StatusCard mensagem={salas} />
+                            ) : (
+                                <>
+                                <StatusCard mensagem={"Nenhuma sala encontrada."} />
+                                </>
+                            )}
+                            </>}
+                        </main>
                         
                         </>
                     ) : (
                         <>
-                        <section className='Info'>
+                        {cardpessoas == true &&
+                        <StatusPage>
+                            <section className='Card cor1'>
+                                <section className='Title cor2'>
+                                    <h3>Professor</h3>
+                                </section>
+                                <section className='CardPerfil cor2 border marginBottom'>
+                                    <section className='CardPerfilImg cor3'>
+                                        {sala.map(item => ( <img className='fundo' src={BuscarImagem(item.sala.imagemProfessor)} alt="imagem de fundo" />))}
+                                        <section className='Escuro'></section>
+                                    </section>
+                                    <section className='CardPerfilCont'>
+                                        {sala.map(item => <h3>{item.sala.nomeProfessor}</h3>)}
+                                        {sala.map(item => <h4>{item.sala.emailProfessor}</h4>)}
+                                    </section>
+                                </section>
+
+                                <section className='Title cor2'>
+                                    <h3>Alunos</h3>
+                                </section>
+                            </section>
+                        </StatusPage>}
+
+                        <section className='Info marginTop'>
                             <section className='Card min cor1 border'>
                                 <section className='Title cor2'>
-                                    {sala.map(item => <h3 key={item.id}>{item.nome}</h3>)}
+                                    {sala.map(item => <h3>{item.sala.nome}</h3>)}
                                 </section>
                                 <div className='Desc'>
                                     <section className='DescCard border cor2'>
                                         <div className='linha cor3'></div>
-                                        {sala.map(item => <h4 key={item.id}>{item.descricao}</h4>)}
+                                        {sala.map(item => <h4>{item.sala.descricao}</h4>)}
                                     </section>
-                                    <button className='b cem cor3'>
-                                        <img src={`/assets/images/icones/pessoas.png`} alt="imagem sala" />
+                                    <button onClick={()=> setCardpessoas(true)} className='b cor3 cem'>
+                                        {sala.map(item => <img src="/assets/images/icones/pessoas.png" />)}
                                         Pessoas
                                     </button>
                                 </div>
                             </section>
                             <section className='InfoFundo border cor1'>
                                 {sala.map(item => (
-                                    <img key={item.id} className='fundo' src={BuscarImagem(item.imagem)} alt="imagem de fundo" />
+                                    <img className='fundo' src={BuscarImagem(item.sala.imagem)} alt="imagem de fundo" />
                                 ))}
+                                <section className='Escuro'></section>
                             </section>
                         </section>
                     
@@ -291,10 +340,10 @@ export default function MinhaSala() {
                                 <>
                                     {([trilhas, avisos, transmissoes][section - 1]).map(item => (
                                         <Card
-                                            key={item.id}
+                                        
                                             estilo={section === 1 ? 2 : 1}
                                             id={item.id}
-                                            idsala={sala.map(item => item.id)}
+                                            idSala={sala.map(item => item.sala.id)}
                                             name={item.nome}
                                             desc={item.descricao}
                                             img={item.imagem}

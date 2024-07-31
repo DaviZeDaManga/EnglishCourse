@@ -1,57 +1,94 @@
 import './index.scss'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import storage from 'local-storage';
 
 //conexoes
-import { dadosAtividadeCon, dadosPalarvasCon } from '../../../connection/userConnection'
+import { dadosAtividadeAlunoCon, dadosPalarvasAlunoCon, inserirFeitoConteudoCon } from '../../../connection/alunoConnection'
+import { BuscarImagem } from '../../../connection/userConnection';
 
 //components
 import BarraLateral from '../../../components/user/barraLateral'
 import Titulo from '../../../components/user/titulo'
 import StatusCard from '../../../components/user/statusCard'
+import StatusPage from '../../../components/user/statusPage';
 
 //outros
 import { toast } from 'react-toastify';
-import { BuscarImagem, inserirFeitoConteudoCon } from '../../../connection/alunoConnection'
 
 export default function Atividade() {
+    const aluno = storage.get('aluno') || [];
     const {idsala, idtrilha, idatividade} = useParams()
     const [atividade, setAtividade] = useState([])
+    const [assistir, setAssistir] = useState(false)
 
     async function dadosAtividade() {
+        setAtividade("Loading")
         try {
-            const resposta = await dadosAtividadeCon(1, idsala, idtrilha, idatividade);
+            const resposta = await dadosAtividadeAlunoCon(aluno.map( item=> item.id), idsala, idtrilha, idatividade);
             setAtividade(resposta);
-        } catch { toast.dark('Ocorreu um erro ao buscar dados da atividade.'); }
+        } catch (error) { 
+            console.error("Nenhuma atividade encontrada:", error)
+            setAtividade("Nenhuma atividade encontrada.")    
+        }
     }
+
+    useEffect(()=> {
+        async function fetchData() {
+            try {
+                await dadosAtividade()
+            } catch (error) {
+                console.error("Erro ao tentar carregar atividade:", error)
+                toast.dark("Erro ao tentar carregar atividade.")
+            }
+        }
+        fetchData()
+    }, [idatividade])
 
     const [section, setSection] = useState(1)
     const [palavras, setPalavras] = useState([])
     const [comentarios, setComentarios] = useState([])
 
     async function dadosPalavras() {
+        setPalavras("Loading")
         try {
-            const resposta = await dadosPalarvasCon(1, idsala, idtrilha, idatividade);
+            const resposta = await dadosPalarvasAlunoCon(aluno.map( item=> item.id), idsala, idtrilha, idatividade);
             setPalavras(resposta);
-        } catch { setPalavras([]) }
+        } catch (error) { 
+            console.error("Nenhuma palavra encontrada:", error)
+            setPalavras("Nenhuma palavra encontrada.")    
+        }
+    }
+
+    async function dadosComentarios() {
+       setComentarios("Essa função ainda não está disponível.")
     }
 
     useEffect(()=> {
-        async function conections() {
-            await dadosAtividade()
-            await dadosPalavras()
+        async function fetchDataSection() {
+            if (Array.isArray(atividade)) {
+                switch (section) {
+                    case 1:
+                        await dadosPalavras()
+                        break
+                    case 2:
+                        await dadosComentarios()
+                        break
+                    default:
+                        break
+                }
+            }
         }
-        conections()
-    }, [idsala, idtrilha, idatividade])
-
-    const [assistir, setAssistir] = useState(false)
+        fetchDataSection()
+    }, [section, atividade])
 
     async function inserirFeitoConteudo() {
         try {
-            await inserirFeitoConteudoCon(1, idatividade);
+            await inserirFeitoConteudoCon(aluno.map( item=> item.id), idatividade);
             toast.dark('Partiu lições!');
-            
-        } catch { toast.dark('Ocorreu um erro ao inserir feito do conteudo.'); }
+        } catch { 
+            toast.dark('Ocorreu um erro ao inserir feito do conteudo.'); 
+        }
     }
 
     return(
@@ -59,69 +96,81 @@ export default function Atividade() {
             <BarraLateral page={"Assistir"}/>
             <Titulo nome={"Atividade"}/>
 
-            <main className='Video cor1 border marginTop'>
-                <section className='FundoVideo'>
-                    {atividade.map( item => 
-                        <>
-                        {assistir == false && <img className='fundo' src={BuscarImagem(item.imagem)} />}
-                        {(assistir == false && item.video != "Nenhum vídeo adicionado.") && <img onClick={()=> setAssistir(true)} className='meio icon' src="/assets/images/icones/LivesPE.png" />}
-                        {assistir == true && <video onEnded={()=> inserirFeitoConteudo()} controls="true">  <source src={item.video} type="video/mp4" /></video>}
-                        </>
-                    )}
-                </section>
-            </main>
-
-            <section className='SectionButtons'>
-                <button onClick={()=> setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}> 
-                    <img src={`/assets/images/icones/Avisos${section == 1 ? "PE" : ""}.png`} />
-                    Informações
-                </button>
-                <button onClick={()=> setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}> 
-                    <img src={`/assets/images/icones/comentario${section == 2 ? "PE" : ""}.png`} />
-                    Comentários
-                </button>
-            </section>
-
-            <section className='Info'>
-                {section == 1 &&
+            {((atividade === "Loading" || atividade === "Nenhuma atividade encontrada.") || atividade.map(item=> item.status) == "Não feita") ? (
+                <StatusPage status={atividade} />
+            ) : (
                 <>
-                <section className='Card cem cor1 border'>
-                    <section className='Title  cor2'>
-                        <h3>Descrição</h3>
+                <main className='Video cor1 border marginTop'>
+                    <section className='FundoVideo'>
+                        {atividade.map( item => 
+                            <>
+                            {assistir == false && <> <img className='fundo' src={BuscarImagem(item.imagem)}/> <section className='Escuro'></section> </>}
+                            {(assistir == false && item.video != "Nenhum vídeo adicionado.") && <img onClick={()=> setAssistir(true)} className='meio icon' src="/assets/images/icones/LivesPE.png" />}
+                            {assistir == true && <video onEnded={()=> inserirFeitoConteudo()} controls="true">  <source src={item.video} type="video/mp4" /></video>}
+                            </>
+                        )}
                     </section>
-                    <div className='Desc'>
-                        <section className='DescCard border cor2'>
-                            <div className='linha cor3'></div>
-                            {atividade.map( item => <h4>{item.descricao}</h4>)}
-                        </section>
-                        <button className='b cor3 cem'> 
-                            Mais dados
-                        </button>
-                    </div>
+                </main>
+
+                <section className='SectionButtons'>
+                    <button onClick={()=> setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}> 
+                        <img src={`/assets/images/icones/Avisos${section == 1 ? "PE" : ""}.png`} />
+                        Informações
+                    </button>
+                    <button onClick={()=> setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}> 
+                        <img src={`/assets/images/icones/comentario${section == 2 ? "PE" : ""}.png`} />
+                        Comentários
+                    </button>
                 </section>
 
-                <section className='Card cem cor1 border'>
-                    <section className='Title cor2'>
-                        <h3>Palavras</h3>
-                    </section>
-                    <div className='Desc'>
-                        <section className='DescCard fix border cor2'>
-                            <div className='linha cor3'></div>
-                            {palavras.map( item => <button className='b cor3 min'>{item.nome}</button>)}
+                <section className='Info'>
+                    {section == 1 &&
+                    <>
+                    <section className='Card cem cor1 border'>
+                        <section className='Title  cor2'>
+                            <h3>Descrição</h3>
                         </section>
-                    </div>
-                </section>
-                </>}
+                        <div className='Desc'>
+                            <section className='DescCard border cor2'>
+                                <div className='linha cor3'></div>
+                                {atividade.map( item => <h4>{item.descricao}</h4>)}
+                            </section>
+                            <button className='b cor3 cem'> 
+                                Mais dados
+                            </button>
+                        </div>
+                    </section>
 
-                {section == 2 && <>  
-                {comentarios.length <= 0 
-                    ? <StatusCard mensagem={"Parece que não tem nada aqui."}/>
-                    : <>
-                    {comentarios.map( item =>
+                    <section className='Card cem cor1 border'>
+                        <section className='Title cor2'>
+                            <h3>Palavras</h3>
+                        </section>
+                        <div className='Desc'>
+                            <section className='DescCard fix border cor2'>
+                                <div className='linha cor3'></div>
+                                {(palavras === "Loading" || palavras === "Nenhuma palavra encontrada.") ? (
+                                    <h4>{palavras}</h4>
+                                ) : (
+                                    <>
+                                    {palavras.map( item => <button className='b cor3 min'>{item.nome}</button>)}
+                                    </>
+                                )}
+                            </section>
+                        </div>
+                    </section>
+                    </>}
+
+                    {section == 2 && 
+                    <>  
+                    {(comentarios === "Loading" || comentarios === "Nenhum comentário encontrado." || comentarios === "Essa função ainda não está disponível.") ? (
+                        <StatusCard mensagem={comentarios}/>
+                    ) : (
                         <></>
-                    )}</>
-                }</>}
-            </section>
+                    )}
+                    </>}
+                </section>
+                </>
+            )}
         </div>
     )
 }

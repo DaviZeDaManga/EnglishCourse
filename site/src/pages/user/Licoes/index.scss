@@ -1,6 +1,6 @@
 .Licoes {
     width: 100vw;
-    padding: 15px 12px 15px 362px;
+    padding: 0px 12px 12px 362px;
 
     .Info {
         display: flex;
@@ -8,7 +8,7 @@
         justify-content: space-between;
         align-items: flex-start;
         width: 100%;
-        gap: 12px;
+        gap: 10px;
 
         .SectionLicoes {
             display: flex;
@@ -16,7 +16,7 @@
             justify-content: flex-start;
             align-items: flex-start;
             width: 100%;
-            gap: 12px;
+            gap: 10px;
 
             .CardLicoes {
                 display: flex;
@@ -24,9 +24,9 @@
                 justify-content: flex-start;
                 align-items: flex-start;
                 width: 100%;
-                padding: 12px;
+                padding: 6px;
                 border-radius: 10px;
-                gap: 12px;
+                gap: 10px;
 
                 .TitleLicoes {
                     display: flex;
@@ -34,7 +34,7 @@
                     align-items: center;
                     width: 100%;
                     min-height: 35px;
-                    gap: 12px;
+                    gap: 10px;
                 }
                 .DescCard {
                     display: flex;
@@ -49,12 +49,6 @@
                     transition: 0.3s;
                     overflow: auto;
                 }
-            }
-
-            > button {
-                background-color: rgb(255, 186, 83);
-                color: white;
-                font-weight: 600;
             }
         }
 

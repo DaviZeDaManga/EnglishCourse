@@ -57,14 +57,26 @@ export async function dadosProfessorCon(idprofessor) {
 
 
 
+//dados salas professor
+export async function dadosSalasProfessorCon(idprofessor) {
+    try {
+        const resposta = await api.get(`/professor/${idprofessor}/dados/salas`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados das salas:', error);
+        throw new Error(`Erro ao obter dados das salas: ${error.message}`);
+    }
+}
 
 //inserir sala
-export async function inserirSalaCon(idprofessor, nome, desc, img) {
+export async function inserirSalaCon(idprofessor, nome, desc, img, status) {
     try {
         const formData = new FormData();
         formData.append('nome', nome);
         formData.append('desc', desc);
         formData.append('imagem', img);
+        formData.append('status', status);
 
         const resposta = await api.post(`/professor/${idprofessor}/novo/sala`, formData, {
             headers: {
@@ -95,12 +107,13 @@ export async function dadosTrilhasProfessorCon(idprofessor) {
 }
 
 //inseri trilha
-export async function inserirTrilhaCon(idprofessor, nome, desc, img) {
+export async function inserirTrilhaCon(idprofessor, nome, desc, img, status) {
     try {
         const formData = new FormData();
         formData.append('nome', nome);
         formData.append('desc', desc);
         formData.append('imagem', img);
+        formData.append('status', status);
 
         const resposta = await api.post(`/professor/${idprofessor}/novo/trilha`, formData, {
             headers: {
