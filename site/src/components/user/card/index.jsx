@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
 import { pedirEntrarSalaCon } from '../../../connection/alunoConnection';
 
-export default function Card({estilo, id, idSala, name, desc, img, video, status, statusAluno, para, acao, conteudo, licoes, width}) {
+export default function Card({estilo, id, idSala, name, desc, img, video, status, para, conteudo, licoes, width, children}) {
     const aluno = storage.get('aluno') || []; 
     const {idtrilha, idsala} = useParams()
     const navigate = useNavigate()
@@ -49,21 +49,6 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
         }
     }
 
-    async function acoes() {
-        try {
-            if (acao == 0) {
-                if (statusAluno != "Solicitado") {
-                    await pedirEntrarSalaCon(aluno.map(item=> item.id), id)
-                    toast.dark("Entrada solicitada!")
-                } else {
-                    toast.dark("Já foi solicitada!")
-                }
-            }
-        } catch {
-            toast.dark("Algo deu errado.")
-        } 
-    }
-
     return (
         <>
             <LoadingBar color="#8A55CD" ref={ref} />
@@ -92,11 +77,7 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
                         <button onClick={()=> navegacao()} className='b cor3 cem'>
                             Acessar
                         </button>}
-                        {acao != null &&
-                        <button onClick={()=> acoes()} className='b cor3 cem'>
-                            {(acao == 0 && statusAluno != "Solicitado") && "Pedir para entrar"}
-                            {(acao == 0 && statusAluno == "Solicitado") && "Solicitado"}
-                        </button>}
+                        {children}                     
                     </section>
                 </section>}
             </main>

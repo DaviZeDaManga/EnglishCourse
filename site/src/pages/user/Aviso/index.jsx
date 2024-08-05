@@ -49,7 +49,7 @@ export default function Aviso() {
     const [comentarios, setComentarios] = useState([])
 
     return(
-        <div className='Aviso'>
+        <div className='PageSize'>
             <BarraLateral page={"Aviso"}/>
             <Titulo nome={"Aviso"}/>
 
@@ -70,11 +70,11 @@ export default function Aviso() {
                 </main>
 
                 <section className='SectionButtons'>
-                    <button onClick={()=> setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}> 
+                    <button onClick={()=> setSection(1)} className={`b nav cor3 ${section == 1 && "selecionado"}`}> 
                         <img src={`/assets/images/icones/Avisos${section == 1 ? "PE" : ""}.png`} />
                         Informações
                     </button>
-                    <button onClick={()=> setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}> 
+                    <button onClick={()=> setSection(2)} className={`b nav cor3 ${section == 2 && "selecionado"}`}> 
                         <img src={`/assets/images/icones/comentario${section == 2 ? "PE" : ""}.png`} />
                         Comentários
                     </button>

@@ -87,7 +87,7 @@ export default function Trilha() {
     }, [section, trilha]);
 
     return (
-        <div className='PageSize'>
+        <div className='PageSize PageTrilha'>
             <BarraLateral page={"Trilha"} />
 
             {(trilha == "Loading" || trilha == "Nenhuma trilha encontrada.") ? (
@@ -116,11 +116,11 @@ export default function Trilha() {
                 </section>
 
                 <section className='SectionButtons'>
-                    <button onClick={() => setSection(1)} className={`b cor3 ${section === 1 && "selecionado"}`}>
+                    <button onClick={() => setSection(1)} className={`b nav cor3 ${section === 1 && "selecionado"}`}>
                         <img src={`/assets/images/icones/Trilhas${section === 1 ? "PE" : ""}.png`} />
                         Atividades
                     </button>
-                    <button onClick={() => setSection(2)} className={`b cor3 ${section === 2 && "selecionado"}`}>
+                    <button onClick={() => setSection(2)} className={`b nav cor3 ${section === 2 && "selecionado"}`}>
                         <img src={`/assets/images/icones/Avisos${section === 2 ? "PE" : ""}.png`} />
                         Meu rendimento
                     </button>

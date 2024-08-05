@@ -85,13 +85,18 @@ body {
             line-height: 19px;
         }
         &.green {
-            background-color: #43c13c7f;
-            border: solid 2px #43c13c;
+            background-color: #43c13c7f !important;
+            border: solid 2px #43c13c !important;
             color: #e0e0e0;
         }
         &.red {
             background-color: #c13c3c82;
             border: solid 2px #c13c3c;
+            color: #e0e0e0;
+        }
+        &.grey {
+            background-color: #a9a9a957;
+            border: solid 2px #757575;
             color: #e0e0e0;
         }
         &.transparente {
@@ -133,7 +138,6 @@ body {
 }
 .border {
     border: 1px solid #2c2c2c74;
-    .selecionado { border: 1px solid #43c13c; }
 }
 .border2 {
     border: solid 2px rgba(56, 56, 56, 0.233);
@@ -259,6 +263,7 @@ input, select {
     width: 100%;
     height: 300px;
     gap: 10px;
+    position: relative;
 }
 .Card {
     display: flex;
@@ -330,9 +335,8 @@ input, select {
     align-items: center;
     width: 100%;
     min-height: 35px;
-    max-height: 35px;
     border-radius: 10px;
-    padding: 12px;
+    padding: 0px 12px;
 }
 .DescCard {
     display: flex;
@@ -345,7 +349,8 @@ input, select {
     border-radius: 10px;
     position: relative;
     transition: 0.3s;
-    overflow: hidden;
+    overflow: auto;
+
     &.fix { 
         min-height: 238px; 
         max-height: 238px; 
@@ -365,11 +370,17 @@ input, select {
     overflow: hidden;
     cursor: pointer;
 
+    > button {
+        position: absolute;
+        bottom: 6px;
+        right: 6px;
+        display: none;
+    }
     > h3 {
         position: absolute; 
         padding: 7px 12px;
         border-radius: 10px;
-        left: 12px;
+        left: 6px;
         bottom: -25px;
         background-color: #242424;
         transition: 0.3s;
@@ -493,13 +504,6 @@ input, select {
         border-radius: 10px;
     }
 }
-
-
-
-
-
-
-
 .FundoEscuro {
     display: flex;
     justify-content: center;
@@ -519,8 +523,8 @@ input, select {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    min-width: calc((100% - 388px) / 3);
-    max-width: calc((100% - 388px) / 3);
+    min-width: calc((100% / 3) - 8px);
+    max-width: calc((100% / 3) - 8px);
     padding: 6px;
     border-radius: 10px;
     gap: 10px;
@@ -547,16 +551,16 @@ input, select {
 
 
 @media screen and (max-width: 1720px) {
-    .PageSize {
-        padding: 0px 12px 12px 232px;
+    .PageSize, .FundoEmbacado {
+        padding: 0px 12px 12px 232px !important;
     }
     .BarraLateral {
         max-width: 220px;
     }
 }
 @media screen and (max-width: 1520px) {
-    .PageSize {
-        padding: 0px 12px 12px 62px;
+    .PageSize, .FundoEmbacado {
+        padding: 0px 12px 12px 62px !important;
     }
     .BarraLateral {
         max-width: 50px;
@@ -604,43 +608,24 @@ input, select {
         aspect-ratio: 16 / 9;
     }
 }
-@media screen and (max-width: 1170px) {
-    .Info {
-        flex-direction: column;
-        height: auto;
-    }
-    .Card {
-        &.min {
-            position: absolute;
+@media screen and (max-width: 1190px) {
+    .Card { 
+        &.CardDados {
+            min-width: calc((100% / 3) - 5px);
+            max-width: calc((100% / 3) - 5px);
+            width: 100%;
         }
     }
 }
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1025px) {
     button {
-        font-size: 0px !important;
-        justify-content: center !important;
+        &.nav {
+            font-size: 0px !important;
+            justify-content: center !important;
 
-        img {
-            margin-left: 10px;
-        }
-    }
-    .PageSize {
-        padding: 0px 12px 62px 12px;
-    }
-    .BarraLateral {
-        min-width: 100% !important;
-        min-height: 50px;
-        max-height: 50px;
-        top: calc(100% - 50px) !important;
-        flex-direction: row !important;
-        justify-content: center !important;
-
-        .ButtonSections {
-            max-width: 35px;
-        }
-        .Atividades {
-            max-width: 35px;
-            max-height: 35px;
+            img {
+                margin-left: 10px;
+            }
         }
     }
     button {
@@ -649,7 +634,19 @@ input, select {
     .Escuro > h3 {
         bottom: 6px;
     }
+    .Escuro > button {
+        display: flex;
+    }
     .Card { 
+        &.min {
+            display: none;
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            min-width: 300px;
+            max-width: 300px;
+        }
         .Desc {
             .DescCard {
                 min-height: 195px;
@@ -673,6 +670,132 @@ input, select {
                     max-height: 240px;
                 }
             }
+        }
+    }
+}
+@media screen and (max-width: 992px) {
+    .Info {
+        flex-direction: column !important;
+
+        &.InfoDados {
+            flex-direction: row !important;
+        }
+    }
+    .PageSize, .FundoEmbacado {
+        padding: 0px 12px 60px 12px !important;
+
+        &.PageAtividade {
+            padding: 48px 12px 420px 12px !important;
+        }
+        &.PageLicoes {
+            padding: 48px 12px 110px 12px !important;
+        }
+        &.PageTrilha {
+            padding: 0px 12px 110px 12px !important;
+        }
+    }
+    .FundoEmbacado{ 
+        justify-content: flex-end !important;
+
+        > .Card {
+            max-width: auto !important; 
+            min-width: 100% !important;
+        }
+    }
+    .EnviarRespostas {
+        max-width: auto !important; 
+        min-width: 100% !important;
+        margin-bottom: 45px;
+    }
+    .BarraLateral {
+        min-width: 100% !important;
+        min-height: 50px;
+        max-height: 50px;
+        top: calc(100% - 50px) !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+
+        .ButtonSections {
+            max-width: 35px;
+        }
+        .Atividades {
+            position: absolute;
+            bottom: 50px;
+            padding: 6px !important;
+            border-radius: 0px !important;
+            border-top-left-radius: 10px !important;
+            border-top-right-radius: 10px !important;
+            overflow: visible !important;
+
+            .CardAtividades {
+                transition: 0.3s;
+                overflow: auto;
+                margin-bottom: 6px;
+                max-height: 500px !important;
+                padding: 6px 0px;
+                position: absolute;
+                bottom: 50px;
+                left: -100%;
+                z-index: 1;
+                width: calc(100% - 12px) !important;
+
+                .AtividadeButtons {
+                    background-color: #1F1F1F;
+                    width: 100% !important;
+                    position: fixed !important;
+                    height: 47px;
+                    flex-direction: column !important;
+                    justify-content: center !important;
+                    align-items: center !important;
+                    padding: 6px 0px;
+                    top: 0;
+                    border-bottom-left-radius: 10px !important;
+                    border-bottom-right-radius: 10px !important;
+                    left: 0;
+                    z-index: 1 !important;
+
+                    > .Atividades {
+                        gap: 10px;
+                        width: calc(100% - 12px);
+                        flex-direction: row !important;
+                        bottom: 6px;
+                        padding: 0px !important;
+                        > button {
+                            border-radius: 10px;
+                            background-color: #313131 !important;
+                        }
+                    }
+                }
+            }
+            .MostrarAtividades {
+                display: flex !important;
+            }
+        }
+    }
+}
+@media screen and (max-width: 850px) {
+    .PageSize, .FundoEmbacado {
+        &.PageAtividade {
+            padding: 48px 12px 110px 12px !important;
+        }
+    }
+    .Info {
+        height: auto;
+        
+        &.InfoDados {
+            flex-direction: row !important;
+        }
+    }
+    .Info {
+        &.InfoDados {
+            flex-direction: column !important;
+        }
+    }
+    .Card { 
+        &.CardDados {
+            min-width: 100%;
+            max-width: 100%;
+            width: 100%;
         }
     }
 }
@@ -701,6 +824,23 @@ input, select {
                     max-height: 240px;
                 }
             }
+        }
+    }
+    .InfoLicoes {
+        .CardAtividadeLicoes {
+            .Card {
+                flex-direction: column;
+            }
+        }
+    }
+    .TitleLicoes {
+        flex-direction: column !important;
+
+        > .Title {
+            padding: 12px;
+        }
+        > button {
+            display: none;
         }
     }
 }

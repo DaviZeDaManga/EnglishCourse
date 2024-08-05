@@ -156,7 +156,7 @@ export default function MinhaConta() {
                 <>
                 {carddados &&
                 <StatusPage>
-                    <section className='Card normalPadding cor1 border'>
+                    <section className='Card normalPadding cor1 border minH'>
                         <section className='Title cor2'>
                             <h3 className="cor2">Meus dados</h3>
                         </section>
@@ -227,10 +227,10 @@ export default function MinhaConta() {
                 </section>
 
                 <section className='SectionButtons'>
-                    <button onClick={() => setSection(1)} className={`b cor3 ${section === 1 && "selecionado"}`}>
+                    <button onClick={() => setSection(1)} className={`b nav cor3 ${section === 1 && "selecionado"}`}>
                         <img src={`/assets/images/icones/Avisos${section === 1 ? "PE" : ""}.png`} />Dados
                     </button>
-                    <button onClick={() => setSection(2)} className={`b cor3 ${section === 2 && "selecionado"}`}>
+                    <button onClick={() => setSection(2)} className={`b nav cor3 ${section === 2 && "selecionado"}`}>
                         <img src={`/assets/images/icones/Trilhas${section === 2 ? "PE" : ""}.png`} />Meu rendimento
                     </button>
                 </section>
@@ -240,8 +240,8 @@ export default function MinhaConta() {
                         {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado.") ? (
                             <StatusCard mensagem={alunoDados} />
                         ) : (
-                            <section className='Info'>
-                                <section className='Card cem cor1 border'>
+                            <section className='Info InfoDados'>
+                                <section className='Card CardDados cem cor1 border'>
                                     <section className='Title  cor2'>
                                         <h3>{alunoDados.map(item => item.nome)}</h3>
                                     </section>

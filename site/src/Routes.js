@@ -28,7 +28,7 @@ export default function Routess(){
                 <Route path='/aluno/minhasala/:idsala/trilha/:idtrilha/atividade/:idatividade/assistir' element={<Atividade/>} /> 
                 <Route path='/aluno/minhasala/:idsala/trilha/:idtrilha/atividade/:idatividade/lições' element={<Licoes/>} /> 
                 <Route path='/aluno/minhasala/:idsala/aviso/:idaviso' element={<Aviso/>} />
-                <Route path='/aluno/minhasala/:idsala/transmissao/:idtransmissao' element={<Transmissao/>} />
+                <Route path='/aluno/minhasala/:idsala/transmissão/:idtransmissao' element={<Transmissao/>} />
 
                 {/* ADMIN */}
                 <Route path='/admin/minhassalas' element={<MinhasSalas/>} /> 

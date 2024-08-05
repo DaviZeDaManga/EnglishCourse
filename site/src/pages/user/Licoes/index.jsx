@@ -18,7 +18,7 @@ import StatusPage from '../../../components/user/statusPage';
 
 export default function Licoes() {
     const aluno = storage.get('aluno') || [];
-    const { idsala, idtrilha, idatividade } = useParams();
+    const {idsala, idtrilha, idatividade} = useParams();
     const [atividade, setAtividade] = useState([]);
     const [licoes, setLicoes] = useState([]);
     const [respostas, setRespostas] = useState([]);
@@ -73,6 +73,8 @@ export default function Licoes() {
         }
     }, [atividade]);
 
+    const [buttonEnviarRespostas, setButtonsEnviarRespostas] = useState(true)
+ 
     function adicionarRespostas(resposta, tipo, status, idlicao) {
         const copiaRespostas = [...respostas];
         const index = copiaRespostas.findIndex(item => item.idlicao === idlicao);
@@ -98,41 +100,44 @@ export default function Licoes() {
                 }
             }
             toast.dark("Suas respostas foram enviadas com sucesso.");
+            dadosLicoes()
+            setButtonsEnviarRespostas(false)
+            setCardenvio(false)
         } catch (error) {
             console.error("Erro ao enviar respostas:", error);
             toast.dark("Suas respostas não foram enviadas.");
         }
     }
 
-    const todasLicoesRespondidas = licoes !== "Loading" && licoes !== "Nenhuma lição encontrada." && licoes.every(licao =>
+    const todasLicoesRespondidas = buttonEnviarRespostas == true && licoes !== "Loading" && licoes !== "Nenhuma lição encontrada." && licoes.every(licao =>
         respostas.some(resposta => resposta.idlicao === licao.licao.id && resposta.resposta)
     );
 
     return (
-        <section className='PageSize'>
+        <section className='PageSize PageLicoes'>
             <BarraLateral page={"Lições"} />
             <Titulo nome={"Lições"} />
 
             {cardenvio && (
                 <StatusPage>
                     <section className='EnviarRespostas cor1 border'>
-                        <div className='Titulo'>
-                            <button onClick={() => setCardenvio(false)} className='b cor3'>
-                                <img src='/assets/images/icones/voltar.png' alt="Voltar" />
-                            </button>
-                            <section className='NomeTitulo cem cor3'>
-                                <h3>Deseja enviar suas respostas?</h3>
-                            </section>
-                        </div>
+                        <section className='Title cor2'>
+                            <h3>Deseja enviar suas respostas?</h3>
+                        </section>
                         <input
                             onChange={(e) => setEnviar(e.target.value)}
                             value={enviar}
                             className='cor2 border'
                             placeholder='Digite "Confirmar" para fazer essa ação'
                         />
-                        {enviar === "Confirmar" && (
-                            <button onClick={() => enviarRespostas()} className='b cor3 cem'>Enviar</button>
-                        )}
+                        <section className='SectionButtons default'>
+                            <button onClick={() => setCardenvio(false)} className='b cor3 border cem'>
+                                Voltar
+                            </button>
+                            {enviar === "Confirmar" && (
+                                <button onClick={() => enviarRespostas()} className='b cor3 cem'>Enviar</button>
+                            )}
+                        </section>
                     </section>
                 </StatusPage>
             )}
@@ -198,7 +203,7 @@ export default function Licoes() {
                                             item.alternativas.map(alternativa => (
                                                 <button
                                                     key={alternativa.id}
-                                                    className={`b cor3 cem ${item.licao.resposta === alternativa.nome ? (alternativa.correto ? 'green' : 'red') : ''}`}
+                                                    className={`b cor3 cem ${alternativa.correto === true && "grey"} ${item.licao.resposta === alternativa.nome ? (alternativa.correto ? 'green' : 'red') : ''}`}
                                                 >
                                                     {alternativa.nome}
                                                 </button>
@@ -211,7 +216,7 @@ export default function Licoes() {
                             </>
                         )}
 
-                        {respostas.length > 0 && (
+                        {todasLicoesRespondidas && (
                             <button onClick={() => setCardenvio(true)} className='b cem amarelo'>Enviar respostas</button>
                         )}
                     </section>

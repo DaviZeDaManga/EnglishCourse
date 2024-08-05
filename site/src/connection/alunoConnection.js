@@ -108,6 +108,17 @@ export async function entrarSalaCon(idaluno, codigo) {
     }
 }
 
+export async function sairSalaCon(idaluno) {
+    try {
+        const resposta = await api.delete(`/aluno/${idaluno}/sair/sala`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao sair na sala:', error);
+        throw new Error(`Erro ao sair na sala: ${error.message}`);
+    }
+}
+
 export async function dadosMinhaSalaCon(idaluno) {
     try {
         const resposta = await api.get(`/aluno/${idaluno}/dados/minhasala`)
