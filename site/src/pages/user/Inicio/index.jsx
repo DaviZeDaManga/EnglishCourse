@@ -46,7 +46,7 @@ export default function Inicio() {
                         try {
                             let dadosAluno = await loginAlunoCon(email, senha)
                             localStorage.setItem("aluno", JSON.stringify(dadosAluno))
-                            navigate(`/user/minhaconta`)
+                            navigate(`/aluno/minhaconta`)
                         }
                         catch { toast.dark("Erro ao fazer login")}
                     }
@@ -60,7 +60,7 @@ export default function Inicio() {
                         try {
                             let dadosProfessor = await loginProfessorCon(email, senha)
                             localStorage.setItem("professor", JSON.stringify(dadosProfessor))
-                            navigate(`/admin/minhaconta`)
+                            navigate(`/admin/minhassalas`)
                         }
                         catch { toast.dark("Erro ao fazer login")}
                     }

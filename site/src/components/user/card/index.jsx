@@ -8,8 +8,9 @@ import { BuscarImagem } from '../../../connection/userConnection';
 //outros
 import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
+import { pedirEntrarSalaCon } from '../../../connection/alunoConnection';
 
-export default function Card({estilo, id, idSala, name, desc, img, video, status, para, conteudo, licoes, width}) {
+export default function Card({estilo, id, idSala, name, desc, img, video, status, statusAluno, para, acao, conteudo, licoes, width}) {
     const aluno = storage.get('aluno') || []; 
     const {idtrilha, idsala} = useParams()
     const navigate = useNavigate()
@@ -19,9 +20,9 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
         ref.current.continuousStart()
 
         try {
-            if (status !== "Não feita") {
+            if (status !== "Não feita" && para != null) {
                 if (para == 0) {
-                    navigate(`/aluno/minhasala/${id}`)
+                    navigate(`/aluno/minhasala`)
                 }
                 if (para == 1) {
                     navigate(`/aluno/minhasala/${idSala}/trilha/${id}`)
@@ -48,11 +49,26 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
         }
     }
 
+    async function acoes() {
+        try {
+            if (acao == 0) {
+                if (statusAluno != "Solicitado") {
+                    await pedirEntrarSalaCon(aluno.map(item=> item.id), id)
+                    toast.dark("Entrada solicitada!")
+                } else {
+                    toast.dark("Já foi solicitada!")
+                }
+            }
+        } catch {
+            toast.dark("Algo deu errado.")
+        } 
+    }
+
     return (
         <>
-            <LoadingBar color="#cd9555" ref={ref} />
+            <LoadingBar color="#8A55CD" ref={ref} />
 
-            <main className={`Card ${width} cor1 border ${(estilo == 1 && img != "Nenhuma imagem adicionada.") && "normalPadding"}`}>
+            <main className={`Card ${width} conts cor1 border ${(estilo == 1 && img != "Nenhuma imagem adicionada.") && "normalPadding"}`}>
 
                 {(estilo == 1 && img == "Nenhuma imagem adicionada.") &&
                 <section className='Title cor2'>
@@ -71,10 +87,17 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
                         <div className='linha'></div>
                         <h4>{desc}</h4>
                     </section>
-                    {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado.") &&
-                    <button onClick={()=> navegacao()} className='b cor3 cem'>
-                        Acessar
-                    </button>}
+                    <section className='SectionButtons default'>
+                        {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado." && para != null) &&
+                        <button onClick={()=> navegacao()} className='b cor3 cem'>
+                            Acessar
+                        </button>}
+                        {acao != null &&
+                        <button onClick={()=> acoes()} className='b cor3 cem'>
+                            {(acao == 0 && statusAluno != "Solicitado") && "Pedir para entrar"}
+                            {(acao == 0 && statusAluno == "Solicitado") && "Solicitado"}
+                        </button>}
+                    </section>
                 </section>}
             </main>
         </>

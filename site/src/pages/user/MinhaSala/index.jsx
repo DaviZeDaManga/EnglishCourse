@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import storage from 'local-storage';
 
 // conexoes
-import { dadosSalasCon } from '../../../connection/userConnection';
-import { dadosAvisosAlunoCon, dadosMinhaSalaCon, dadosTransmissoesAlunoCon, dadosTrilhasAlunoCon, entrarSalaCon } from '../../../connection/alunoConnection';
+import { dadosAvisosAlunoCon, dadosMinhaSalaCon, dadosSalasAlunoCon, dadosTransmissoesAlunoCon, dadosTrilhasAlunoCon, entrarSalaCon } from '../../../connection/alunoConnection';
 import { BuscarImagem } from '../../../connection/userConnection';
 
 // components
@@ -33,7 +32,6 @@ export default function MinhaSala() {
             dadosSalas()
         }
     }
-    console.log(sala)
 
     useEffect(() => {
         async function fetchData() {
@@ -128,7 +126,7 @@ export default function MinhaSala() {
     async function dadosSalas() {
         setSalas("Loading");
         try {
-            const resposta = await dadosSalasCon();
+            const resposta = await dadosSalasAlunoCon(aluno.map(item=> item.id));
             setSalas(resposta);
         } catch (error) {
             console.error('Erro ao buscar dados das salas:', error);
@@ -170,7 +168,7 @@ export default function MinhaSala() {
     }
 
     return (
-        <div className='MinhaSala'>
+        <div className='PageSize'>
             <BarraLateral page={"minhasala"} />
     
             {sala === "Loading" ? (
@@ -210,20 +208,11 @@ export default function MinhaSala() {
                         <section className='SectionButtons'>
                             <button onClick={()=> setButtons(!buttons)} className='b min cor3'><img src={`/assets/images/icones/3pontos.png`} /></button>
                             {buttons == true &&
-                            <section className='Buttons cor2 border'>
-                                <h3>Filtros</h3>
-                                <section className='SectionSelecionaveis cor3 autoH'>
-                                    <button className='b transparente cem'>
-                                        Salas novas
-                                    </button>
-                                    <button className='b transparente cem'>
-                                        Melhores avaliadas
-                                    </button>
-                                </section>
+                            <section className='Buttons cor2 border'>   
                                 <h3>Outros</h3>
-                                <section className='SectionSelecionaveis cor3 autoH'>
+                                <section className='SectionItems cor3 autoH'>
                                     <button onClick={()=> setJoinByCode(true)} className='b transparente cem'>
-                                        Entrar na sala
+                                        Entrar com código
                                     </button>
                                 </section>
                             </section>}
@@ -231,7 +220,7 @@ export default function MinhaSala() {
                                 <img src={`/assets/images/icones/Salas${section2 == 1 ? "PE" : ""}.png`} />Salas disponíveis
                             </button>
                             <button onClick={() => setSection2(2)} className={`b cor3 ${section2 == 2 && "selecionado"}`}>
-                                <img src={`/assets/images/icones/Avisos${section2 == 2 ? "PE" : ""}.png`} />Pedidos para entrar
+                                <img src={`/assets/images/icones/Avisos${section2 == 2 ? "PE" : ""}.png`} />Solicitada
                             </button>
                         </section>
 
@@ -244,14 +233,14 @@ export default function MinhaSala() {
                                 <>
                                 {salas.map( item=>
                                 <Card
-                            
                                 estilo={2}
                                 id={item.id}
                                 name={item.nome}
                                 desc={item.descricao}
                                 img={item.imagem}
                                 video={item.video}
-                                para={0}
+                                acao={0}
+                                statusAluno={item.statusAluno}
                                 />
                                 )}
                                 </>
@@ -275,11 +264,11 @@ export default function MinhaSala() {
                         <>
                         {cardpessoas == true &&
                         <StatusPage>
-                            <section className='Card cor1'>
+                            <section className='Card cor1 border normalPadding'>
                                 <section className='Title cor2'>
                                     <h3>Professor</h3>
                                 </section>
-                                <section className='CardPerfil cor2 border marginBottom'>
+                                <section className='CardPerfil cor2 border'>
                                     <section className='CardPerfilImg cor3'>
                                         {sala.map(item => ( <img className='fundo' src={BuscarImagem(item.sala.imagemProfessor)} alt="imagem de fundo" />))}
                                         <section className='Escuro'></section>
@@ -293,6 +282,21 @@ export default function MinhaSala() {
                                 <section className='Title cor2'>
                                     <h3>Alunos</h3>
                                 </section>
+                                <section className='SectionItems cor2 border'>
+                                    {sala[0].alunos.map(item=>
+                                        <section className='CardPerfil cor2 border'>
+                                            <section className='CardPerfilImg cor3'>
+                                                <img className='fundo' src={BuscarImagem(item.imagem)} alt="imagem de fundo" />
+                                                <section className='Escuro'></section>
+                                            </section>
+                                            <section className='CardPerfilCont'>
+                                                <h3>{item.nome}</h3>
+                                                <h4>{item.tipo}</h4>
+                                            </section>
+                                        </section>
+                                    )}
+                                </section>
+                                <button onClick={()=> setCardpessoas(false)} className='b cem cor3'>Voltar</button>
                             </section>
                         </StatusPage>}
 

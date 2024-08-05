@@ -87,7 +87,7 @@ export default function Trilha() {
     }, [section, trilha]);
 
     return (
-        <div className='Trilha'>
+        <div className='PageSize'>
             <BarraLateral page={"Trilha"} />
 
             {(trilha == "Loading" || trilha == "Nenhuma trilha encontrada.") ? (

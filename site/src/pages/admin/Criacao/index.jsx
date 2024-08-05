@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import storage from 'local-storage';
 
 // Conexões
-import { dadosAtividadesProfessorCon, dadosAvisosProfessorCon, dadosTransmissoesProfessorCon, dadosTrilhasProfessorCon, inserirAtividadeCon, inserirAvisoCon, inserirTransmissaoCon, inserirTrilhaCon, inserirTrilhaSalaCon } from '../../../connection/professorConnection';
-import { dadosSalasCon } from '../../../connection/userConnection';
+import { dadosAtividadesProfessorCon, dadosAvisosProfessorCon, dadosSalasProfessorCon, dadosTransmissoesProfessorCon, dadosTrilhasProfessorCon, inserirAtividadeCon, inserirAvisoCon, inserirTransmissaoCon, inserirTrilhaCon, inserirTrilhaSalaCon } from '../../../connection/professorConnection';
 
 // Componentes
 import BarraLateral from '../../../components/admin/barraLateral';
@@ -83,7 +82,7 @@ export default function Criacao() {
     async function minhasSalas() {
         setSalas("Loading");
         try {
-            const resposta = await dadosSalasCon(professor.map(item => item.id));
+            const resposta = await dadosSalasProfessorCon(professor.map(item => item.id));
             setSalas(resposta);
         } catch (error) {
             setSalas("Nenhuma sala encontrada.");
@@ -111,6 +110,12 @@ export default function Criacao() {
         }
         fetchSectionData();
     }, [section]);
+
+    const [paisagem, setPaisagem] = useState(0);
+
+    useEffect(() => {
+        setPaisagem(Math.floor(Math.random() * 6) + 1);
+    }, []);
 
     const [buttons, setButtons] = useState(false)
     const [cardadd, setCardadd] = useState("");
@@ -254,12 +259,16 @@ export default function Criacao() {
                     </section>
                 </StatusPage>
             )}
+            <section className='InfoFundo marginTop cor1 border'>
+                <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
+                <section className='Escuro'></section>
+            </section>
             <section className='SectionButtons'>
                 <button onClick={()=> setButtons(!buttons)} className='b min cor3'><img src={`/assets/images/icones/3pontos.png`} /></button>
                 {buttons == true &&
                 <section className='Buttons cor2 border'>
                     <h3>Criação</h3>
-                    <section className='SectionSelecionaveis cor3 autoH'>
+                    <section className='SectionItems cor3 autoH'>
                         <button onClick={()=> (setCardadd("Trilha"), setNome(""), setDesc(""), setSelectedImage(null))} className='b transparente cem'>
                             Trilha
                         </button>

@@ -109,7 +109,7 @@ export default function Licoes() {
     );
 
     return (
-        <section className='Licoes'>
+        <section className='PageSize'>
             <BarraLateral page={"Lições"} />
             <Titulo nome={"Lições"} />
 
@@ -140,7 +140,7 @@ export default function Licoes() {
             {atividade === "Loading" || atividade === "Nenhuma atividade encontrada." || atividade.map(item => item.status) === "Não feita" ? (
                 <StatusPage status={atividade} />
             ) : (
-                <section className='Info marginTop'>
+                <section className='InfoLicoes marginTop'>
                     <section className='SectionLicoes'>
                         {licoes === "Loading" || licoes === "Nenhuma lição encontrada." ? (
                             <StatusCard mensagem={licoes} />
@@ -153,6 +153,10 @@ export default function Licoes() {
                                                 ? <section className='Title border cor2'><h3>{item.licao.nome}</h3></section>
                                                 : <section className='Title border cor2'><h3>{item.licao.pergunta}</h3></section>}
                                             <button className='b cor2 min'><img src={`/assets/images/icones/${item.licao.tipo}.png`} /></button>
+                                            {item.licao.status == "Respondida" &&
+                                            <button className='b cor2 min'>{item.licao.nota}</button>}
+                                            {(item.licao.status != "Respondida" && item.licao.status != null) &&
+                                            <button className='b cor2 auto'>{item.licao.status}</button>}
                                         </section>
 
                                         {item.licao.descricao !== "Nenhuma descrição adicionada." &&

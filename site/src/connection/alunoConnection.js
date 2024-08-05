@@ -50,13 +50,50 @@ export async function dadosAlunoCon(idaluno) {
         return resposta.data
     }
     catch(error) {
-        console.error('Erro ao ao consultar dados do aluno:', error);
-        throw new Error(`Erro ao ao consultar dados do aluno: ${error.message}`);
+        console.error('Erro ao consultar dados do aluno:', error);
+        throw new Error(`Erro ao consultar dados do aluno: ${error.message}`);
+    }
+}
+
+export async function alterarDadosAlunoCon(idaluno, nome, email, numero, nascimento) {
+    try {
+        const resposta = await api.put(`/aluno/${idaluno}/alterar`, {
+            nome: nome,
+            email: email,
+            numero: numero,
+            nascimento: nascimento
+        })
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao alterar dados do aluno:', error);
+        throw new Error(`Erro ao alterar dados do aluno: ${error.message}`);
     }
 }
 
 
 
+export async function dadosSalasAlunoCon(idaluno) {
+    try {
+        const resposta = await api.get(`/aluno/${idaluno}/dados/salas`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao obter dados das salas:', error);
+        throw new Error(`Erro ao obter dados das salas: ${error.message}`);
+    }
+}
+
+export async function pedirEntrarSalaCon(idaluno, idsala) {
+    try {
+        const resposta = await api.post(`/aluno/${idaluno}/solicitar/entrar/sala/${idsala}`)
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao pedir para entrar na sala:', error);
+        throw new Error(`Erro ao pedir para entrar na sala: ${error.message}`);
+    }
+}
 
 export async function entrarSalaCon(idaluno, codigo) {
     try {
@@ -66,8 +103,8 @@ export async function entrarSalaCon(idaluno, codigo) {
         return resposta.data
     }
     catch(error) {
-        console.error('Erro ao obter dados da sala:', error);
-        throw new Error(`Erro ao obter dados da sala: ${error.message}`);
+        console.error('Erro ao entrar na sala:', error);
+        throw new Error(`Erro ao entrar na sala: ${error.message}`);
     }
 }
 

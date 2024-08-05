@@ -37,7 +37,11 @@ export default function MinhasSalas() {
         load()
     }, [])
 
+    const [paisagem, setPaisagem] = useState(0);
 
+    useEffect(() => {
+        setPaisagem(Math.floor(Math.random() * 6) + 1);
+    }, []);
 
     const [buttons, setButtons] = useState(false)
     const [cardadd, setCardadd] = useState(false)
@@ -134,12 +138,16 @@ export default function MinhasSalas() {
                     </section>
                 </StatusPage>
             }
+            <section className='InfoFundo marginTop cor1 border'>
+                <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
+                <section className='Escuro'></section>
+            </section>
             <section className='SectionButtons'>
                 <button onClick={()=> setButtons(!buttons)} className='b min cor3'><img src={`/assets/images/icones/3pontos.png`} /></button>
                 {buttons == true &&
                 <section className='Buttons cor2 border'>
                     <h3>Filtros</h3>
-                    <section className='SectionSelecionaveis cor3 autoH'>
+                    <section className='SectionItems cor3 autoH'>
                         <button className='b transparente cem'>
                             Novas
                         </button>
@@ -148,7 +156,7 @@ export default function MinhasSalas() {
                         </button>
                     </section>
                     <h3>Criação</h3>
-                    <section className='SectionSelecionaveis cor3 autoH'>
+                    <section className='SectionItems cor3 autoH'>
                         <button onClick={()=> setCardadd(true)} className='b transparente cem'>
                             Sala
                         </button>

@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import './index.scss'
 import { useEffect, useState, useRef } from 'react'
 import storage from 'local-storage';
+import React from 'react';
 
 //conexoes
 import { dadosAtividadesAlunoCon, dadosTrilhaAlunoCon } from '../../../connection/alunoConnection';
@@ -95,7 +96,7 @@ export default function BarraLateral({page}) {
 
     return ( 
         <>
-            <LoadingBar color="#cd9555" ref={ref} />
+            <LoadingBar color="#8A55CD" ref={ref} />
             
             <section className='BarraLateral border cor1'>
                 <div className='ButtonSections cor4'>
@@ -143,36 +144,54 @@ export default function BarraLateral({page}) {
                             {(atividades === "Loading" || atividades == "Parece que não tem nada aqui.") ? (
                                 <button className='b selecionado cem'>{atividades}</button>
                             ) : <>
-                            {atividades.map( item =>
-                                <>
-                                <button onClick={()=> navegacao(((item.status === "Fazendo" || item.status === "Feito") ? 1 : 0), item.id, ((item.conteudo == false || (item.conteudo == true && item.licoes == true)) ? "assistir" : "lições"))} className={`b cem ${idatividade == item.id ? "selecionado" : "mostrando"}`}> 
-                                    {item.nome}
-                                    {idatividade != item.id && <div className={`bolinha ${(item.conteudo == true && item.licoes == true) && "preenchido"}`}></div>}
-                                </button>
-                                {idatividade == item.id &&
-                                <section className='AtividadeButtons'>
-                                    <section className='Atividades'>
-                                        {item.status === "Não feita" ? (
-                                            <button className='b cem mostrando'>Você não pode acessar isso.</button> 
-                                        ) : (
-                                            <>
-                                            <button onClick={()=> navegacao(1, item.id, "assistir")} className={`b cem mostrando ${page == "Assistir" && "ContLight"}`}> 
-                                                <img src={`/assets/images/icones/LivesPE.png`} />
-                                                Assistir vídeo
-                                                <h4>{item.conteudo == true ? "Concluído" : "Fazendo"}</h4>
-                                            </button>
-                                            <button onClick={()=> navegacao((item.conteudo == true ? 1 : 0), item.id, "lições")} className={`b cem mostrando ${page == "Lições" && "ContLight"}`}> 
-                                                <img src={`/assets/images/icones/atividadesPE.png`} />
-                                                Fazer lições
-                                                {item.conteudo == true &&
-                                                <h4>{item.licoes == true ? "Concluído" : "Fazendo"}</h4>}
-                                            </button>
-                                            </>
-                                        )}
-                                    </section>
-                                </section>}
-                                </>
-                            )}
+                            {atividades.map((item, index) => (
+                                <React.Fragment key={item.id}>
+                                    <button 
+                                        onClick={() => navegacao(
+                                            ((item.status === "Fazendo" || item.status === "Feito") ? 1 : 0), 
+                                            item.id, 
+                                            ((item.conteudo == false || (item.conteudo == true && item.licoes == true)) ? "assistir" : "lições")
+                                        )} 
+                                        className={`b cem ${idatividade == item.id ? "selecionado" : "mostrando"}`}
+                                    > 
+                                        <h3>{(index + 1).toString().padStart(2, '0')}</h3>
+                                        {item.nome}
+                                        {idatividade != item.id && 
+                                            <div className={`bolinha ${(item.conteudo == true && item.licoes == true) && "preenchido"}`}></div>
+                                        }
+                                    </button>
+                                    {idatividade == item.id && (
+                                        <section className='AtividadeButtons'>
+                                            <section className='Atividades'>
+                                                {item.status === "Não feita" ? (
+                                                    <button className='b cem mostrando'>Você não pode acessar isso.</button> 
+                                                ) : (
+                                                    <>
+                                                        <button 
+                                                            onClick={() => navegacao(1, item.id, "assistir")} 
+                                                            className={`b cem mostrando ${page == "Assistir" && "ContLight"}`}
+                                                        > 
+                                                            <img src={`/assets/images/icones/LivesPE.png`} alt="Assistir vídeo" />
+                                                            Assistir vídeo
+                                                            <h4>{item.conteudo == true ? "Concluído" : "Fazendo"}</h4>
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => navegacao((item.conteudo == true ? 1 : 0), item.id, "lições")} 
+                                                            className={`b cem mostrando ${page == "Lições" && "ContLight"}`}
+                                                        > 
+                                                            <img src={`/assets/images/icones/atividadesPE.png`} alt="Fazer lições" />
+                                                            Fazer lições
+                                                            {item.conteudo == true && (
+                                                                <h4>{item.licoes == true ? "Concluído" : "Fazendo"}</h4>
+                                                            )}
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </section>
+                                        </section>
+                                    )}
+                                </React.Fragment>
+                            ))}
                             </>}
                         </section>
                     </section>

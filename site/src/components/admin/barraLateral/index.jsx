@@ -36,10 +36,10 @@ export default function BarraLateral({page}) {
 
     return ( 
         <>
-            <LoadingBar color="#cd9555" ref={ref} />
+            <LoadingBar color="#8A55CD" ref={ref} />
             
             <section className='BarraLateral border cor1'>
-                <div className='ButtonSections cor4'>
+                {/* <div className='ButtonSections cor4'>
                     <button className={`b cem cor3 ${page == "dash" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/inicio${page === "dash" ? "PE" : ""}.png`} />
                         Dash 
@@ -50,7 +50,7 @@ export default function BarraLateral({page}) {
                         <img src={`/assets/images/icones/pessoas.png`} />
                         Gerenciamento de alunos 
                     </button>
-                </div>
+                </div> */}
                 <div className='ButtonSections cor4'>
                     <button onClick={()=> navegacao(1)} className={`b cem cor3 ${page == "minhassalas" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/minhasala${page === "minhassalas" ? "PE" : ""}.png`} />

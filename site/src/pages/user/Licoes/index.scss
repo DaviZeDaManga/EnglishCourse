@@ -1,62 +1,57 @@
-.Licoes {
-    width: 100vw;
-    padding: 0px 12px 12px 362px;
+.InfoLicoes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 10px;
 
-    .Info {
+    .SectionLicoes {
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+        flex-direction: column;
+        justify-content: flex-start;
         align-items: flex-start;
         width: 100%;
         gap: 10px;
 
-        .SectionLicoes {
+        .CardLicoes {
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: flex-start;
             width: 100%;
+            padding: 6px;
+            border-radius: 10px;
             gap: 10px;
 
-            .CardLicoes {
+            .TitleLicoes {
                 display: flex;
-                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                min-height: 35px;
+                gap: 10px;
+            }
+            .DescCard {
+                display: flex;
                 justify-content: flex-start;
                 align-items: flex-start;
                 width: 100%;
-                padding: 6px;
+                min-height: 200px;
+                max-height: 200px;
+                padding: 12px 12px 12px 17px;
                 border-radius: 10px;
-                gap: 10px;
-
-                .TitleLicoes {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    width: 100%;
-                    min-height: 35px;
-                    gap: 10px;
-                }
-                .DescCard {
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: flex-start;
-                    width: 100%;
-                    min-height: 200px;
-                    max-height: 200px;
-                    padding: 12px 12px 12px 17px;
-                    border-radius: 10px;
-                    position: relative;
-                    transition: 0.3s;
-                    overflow: auto;
-                }
+                position: relative;
+                transition: 0.3s;
+                overflow: auto;
             }
         }
+    }
 
-        .CardAtividadeLicoes {
-            min-width: calc((100% / 3) - 8px);
-            max-width: calc((100% / 3) - 8px);
-            position: sticky;
-            top: 15px;
-        }
+    .CardAtividadeLicoes {
+        min-width: calc((100% / 3) - 8px);
+        max-width: calc((100% / 3) - 8px);
+        position: sticky;
+        top: 15px;
     }
 }

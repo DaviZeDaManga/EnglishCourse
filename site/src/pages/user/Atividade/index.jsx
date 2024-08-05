@@ -92,7 +92,7 @@ export default function Atividade() {
     }
 
     return(
-        <div className='Atividade'>
+        <div className='PageSize'>
             <BarraLateral page={"Assistir"}/>
             <Titulo nome={"Atividade"}/>
 

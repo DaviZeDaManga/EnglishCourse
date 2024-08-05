@@ -1,39 +1,63 @@
 import './index.scss';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import storage from 'local-storage';
+import { useNavigate } from 'react-router-dom';
+
+//conexoes
+import { alterarDadosAlunoCon, dadosAlunoCon, dadosMinhaSalaCon } from '../../../connection/alunoConnection';
+import { BuscarImagem } from '../../../connection/userConnection';
 
 // components
 import BarraLateral from '../../../components/user/barraLateral';
-import Titulo from '../../../components/user/titulo';
 import StatusCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage'; 
 
 // outros
-import { dadosAlunoCon, dadosMinhaSalaCon } from '../../../connection/alunoConnection';
-import { BuscarImagem } from '../../../connection/userConnection';
+import { toast } from 'react-toastify';
+import LoadingBar from "react-top-loading-bar";
 
 export default function MinhaConta() {
     const aluno = storage.get('aluno');
     const [alunoDados, setAlunoDados] = useState([]);
-    const [carddados, setCarddados] = useState(false)
-    const [nome, setNome] = useState("")
-    const [email, setEmail] = useState("")
-    const [numero, setNumero] = useState("")
-    const [tipo, setTipo] = useState("")
-    const [status, setStatus] = useState("")
-    const [nascimento, setNascimento] = useState("")
+    const [carddados, setCarddados] = useState(false);
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [numero, setNumero] = useState("");
+    const [nascimento, setNascimento] = useState(""); 
     const [section, setSection] = useState(1);
 
-    async function AlunoDados() {
+    useEffect(()=> {
+        if (!aluno) {
+            ref.current.continuousStart()
+            try {
+                navigate("/")
+                toast.dark("Voce preciosa logar antes de acessar essa página!")
+            } catch {
+                toast.dark("Algo deu errado.")
+            } finally {
+                ref.current.complete()
+            }
+        }
+    }, [aluno])
+
+    async function dadosAluno() {
         setAlunoDados("Loading");
         try {
             const resposta = await dadosAlunoCon(aluno.map(item => item.id));
-            setNome(resposta.map(item=> item.nome))
-            setEmail(resposta.map(item=> item.email))
-            setNumero(resposta.map(item=> item.numero))
-            setTipo(resposta.map(item=> item.tipo))
-            setStatus(resposta.map(item=> item.status))
-            setNascimento(resposta.map(item=> item.nascimento))
+
+            setNome(resposta.map(item => item.nome)[0] || ""); 
+            setEmail(resposta.map(item => item.email)[0] || "");
+            setNumero(resposta.map(item => item.numero)[0] || "");
+
+            const dataFormatada = resposta.map(item => {
+                const date = new Date(item.nascimento);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${year}-${month}-${day}`;
+            })[0] || ""; 
+
+            setNascimento(dataFormatada); 
             setAlunoDados(resposta);
         } catch (error) {
             console.error("Nenhum aluno encontrado", error);
@@ -43,13 +67,13 @@ export default function MinhaConta() {
 
     useEffect(() => {
         async function fetchData() {
-            await AlunoDados();
+            await dadosAluno();
         }
         fetchData();
     }, []);
 
     const [sala, setSala] = useState([]);
-    const [rendimento, setRendimento] = useState([])
+    const [rendimento, setRendimento] = useState([]);
 
     async function dadosMinhaSala() {
         setSala("Loading");
@@ -61,28 +85,28 @@ export default function MinhaConta() {
             setSala("Nenhuma sala encontrada.");
         }
     }
-    
+
     async function dadosRendimento() {
         setRendimento("Essa função ainda não está disponível.");
     }
 
-    useEffect(()=> {
+    useEffect(() => {
         async function fetchDataSection() {
             if (Array.isArray(alunoDados)) {
                 switch (section) {
                     case 1:
-                        await dadosMinhaSala()
-                        break
+                        await dadosMinhaSala();
+                        break;
                     case 2:
-                        await dadosRendimento()
-                        break
+                        await dadosRendimento();
+                        break;
                     default:
-                        break
+                        break;
                 }
             }
         }
-        fetchDataSection()
-    }, [section, alunoDados])
+        fetchDataSection();
+    }, [section, alunoDados]);
 
     const [paisagem, setPaisagem] = useState(0);
 
@@ -90,15 +114,47 @@ export default function MinhaConta() {
         setPaisagem(Math.floor(Math.random() * 6) + 1);
     }, []);
 
+    async function alterarDadosAluno() {
+        try {
+            await alterarDadosAlunoCon(aluno.map(item => item.id), nome, email, numero, nascimento)
+            toast.dark("Dados alterados!")
+            setCarddados(false)
+            dadosAluno()
+        } catch (error) {
+            toast.dark("Voce não pode executar essa ação!")
+        }
+    }
+
+    const navigate = useNavigate()
+    const ref = useRef()
+
+    function navegacao(para) {
+        ref.current.continuousStart()
+
+        try {
+            if (para == 1) {
+                navigate(`/aluno/minhasala`)
+            } 
+        }
+        catch {
+            toast.dark("Algo deu errado.")
+        }
+        finally {
+            ref.current.complete()
+        }
+    }
+    console.log(sala)
+
     return (
-        <section className='MinhaConta'>
+        <section className='PageSize'>
+            <LoadingBar color="#8A55CD" ref={ref} />
             <BarraLateral page={"minhaconta"} />
 
             {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado.") ? (
                 <StatusPage status={alunoDados} /> 
             ) : (
                 <>
-                {carddados == true &&
+                {carddados &&
                 <StatusPage>
                     <section className='Card normalPadding cor1 border'>
                         <section className='Title cor2'>
@@ -120,19 +176,7 @@ export default function MinhaConta() {
                         <input 
                             onChange={(e) => setNumero(e.target.value)} 
                             value={numero}              
-                            placeholder='Meu numero' 
-                            className='cor2 border' 
-                        />
-                        <input 
-                            onChange={(e) => setTipo(e.target.value)} 
-                            value={tipo}              
-                            placeholder='Meu tipo' 
-                            className='cor2 border' 
-                        />
-                        <input 
-                            onChange={(e) => setStatus(e.target.value)} 
-                            value={status}              
-                            placeholder='Meu status' 
+                            placeholder='Meu número' 
                             className='cor2 border' 
                         />
                         <input 
@@ -143,36 +187,55 @@ export default function MinhaConta() {
                             className='cor2 border' 
                         />
                         <section className='SectionButtons default'>
-                            <button onClick={()=> (setCarddados(false), AlunoDados())} className='b cor3 cem'>Voltar</button>
-                            {/* <button className='b cor3 cem'>Alterar dados</button> */}
+                            <button className='b cem cor3'>
+                                {alunoDados.map(item => item.tipo)}
+                            </button>
+                            <button className='b cem cor3'>
+                                {alunoDados.map(item => item.status)}
+                            </button>
+                        </section>
+                        <section className='SectionButtons default'>
+                            <button onClick={() => setCarddados(false)} className='b cor3 cem'>Voltar</button>
+                            {(nome !== alunoDados.map(item => item.nome)[0] ||
+                              email !== alunoDados.map(item => item.email)[0] ||
+                              numero !== alunoDados.map(item => item.numero)[0] ||
+                              nascimento !== alunoDados.map(item => {
+                                const date = new Date(item.nascimento);
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const year = date.getFullYear();
+                                return `${year}-${month}-${day}`;
+                              })[0]) &&
+                            <button onClick={alterarDadosAluno} className='b cor3 cem'>Alterar dados</button>}
                         </section>
                     </section>
                 </StatusPage>}
 
                 <section className='InfoFundo marginTop cor1 border'>
-                    {(alunoDados == "Loading" || alunoDados == "Nenhum aluno encontrado.") || alunoDados.map(item => item.imagem)
+                    {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado.") || alunoDados.map(item => item.imagem)
                     ? <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
                     : <>{alunoDados.map(item => <img className='fundo' key={item.id} src={BuscarImagem(item.imagemSala)} />)}</>}
-                    <section className='Escuro'></section>
+                    <section className='Escuro'>
+                        <section className='PerfilImage cor0'>
+                            <section className='imgPerfilImage cor2 border'>
+                                {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado")
+                                    ? <img className='Load icon' src='/assets/images/icones/Loading.png' />
+                                    : <img src={BuscarImagem(alunoDados.map(item => item.imagem))} />}
+                            </section>
+                        </section>
+                    </section>
                 </section>
 
                 <section className='SectionButtons'>
-                <section className='PerfilImage cor0'>
-                        <section className='imgPerfilImage cor2 border'>
-                            {(alunoDados === "Loading" || alunoDados == "Nenhum aluno encontrado")
-                                ? <img className='Load icon' src='/assets/images/icones/Loading.png' />
-                                : <img src={BuscarImagem(alunoDados.map(item => item.imagem))} />}
-                        </section>
-                    </section>
-                    <button onClick={() => setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}>
-                        <img src={`/assets/images/icones/Avisos${section == 1 ? "PE" : ""}.png`} />Dados
+                    <button onClick={() => setSection(1)} className={`b cor3 ${section === 1 && "selecionado"}`}>
+                        <img src={`/assets/images/icones/Avisos${section === 1 ? "PE" : ""}.png`} />Dados
                     </button>
-                    <button onClick={() => setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}>
-                        <img src={`/assets/images/icones/Trilhas${section == 2 ? "PE" : ""}.png`} />Meu rendimento
+                    <button onClick={() => setSection(2)} className={`b cor3 ${section === 2 && "selecionado"}`}>
+                        <img src={`/assets/images/icones/Trilhas${section === 2 ? "PE" : ""}.png`} />Meu rendimento
                     </button>
                 </section>
                 <section className='SectionCards'>
-                    {section == 1 &&
+                    {section === 1 &&
                         <>
                         {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado.") ? (
                             <StatusCard mensagem={alunoDados} />
@@ -180,14 +243,14 @@ export default function MinhaConta() {
                             <section className='Info'>
                                 <section className='Card cem cor1 border'>
                                     <section className='Title  cor2'>
-                                        <h3>{alunoDados.map(item=> item.nome)}</h3>
+                                        <h3>{alunoDados.map(item => item.nome)}</h3>
                                     </section>
                                     <div className='Desc'>
                                         <section className='DescCard border cor2'>
                                             <div className='linha cor3'></div>
                                             <h4>Bem-vindo à Smart Lingu! Esta é a sua página de perfil, onde você pode acompanhar seu progresso no curso. Aqui, você encontrará uma visão detalhada do seu desempenho, incluindo as trilhas de aprendizado que você já completou e as atividades que você concluiu. Além disso, você poderá ver as lições que já foram respondidas e aquelas que ainda estão pendentes. Acompanhe seu avanço e continue se dedicando para alcançar seus objetivos de aprendizado!</h4>
                                         </section>
-                                        <button onClick={()=> setCarddados(true)} className='b cor3 cem'> 
+                                        <button onClick={() => setCarddados(true)} className='b cor3 cem'> 
                                             Ver meus dados
                                         </button>
                                     </div>
@@ -197,10 +260,10 @@ export default function MinhaConta() {
                                     <StatusCard mensagem={sala} />
                                 ) : (
                                     <section className='InfoFundo cor1 border'>
-                                        {sala.map(item=> 
+                                        {sala.map(item => 
                                             <>
-                                            <img src={BuscarImagem(item.sala.imagem)}/>
-                                            <section className='Escuro'><h3>{item.sala.nome}</h3></section>
+                                            <img className='fundo' src={BuscarImagem(item.sala.imagem)} alt={item.sala.nome} />
+                                            <section onClick={()=> navegacao(1)} className='Escuro'><h3>{item.sala.nome}</h3></section>
                                             </>
                                         )}
                                     </section>
@@ -210,7 +273,7 @@ export default function MinhaConta() {
                         </>
                     }
 
-                    {section == 2 &&
+                    {section === 2 &&
                         <>
                         {(rendimento === "Loading" || rendimento === "Parece que não tem nada aqui." || rendimento === "Essa função ainda não está disponível.") ? (
                             <StatusCard mensagem={rendimento} />

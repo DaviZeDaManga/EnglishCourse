@@ -4,6 +4,11 @@
     padding: 0;
 }
 
+.PageSize {
+    width: 100vw;
+    padding: 0px 12px 12px 362px;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -18,10 +23,11 @@ body {
         justify-content: flex-start;
         align-items: center;
         min-width: 35px;
-        max-width: calc((100% - 36px) / 5);
+        max-width: calc((100% - 36px) / 4);
         width: 100%;
-        height: 35px;
-        padding: 7px 12px;
+        min-height: 35px;
+        max-height: 35px;
+        padding: 7px 8px;
         gap: 10px;
         border-radius: 10px;
         transition: 0.3s;
@@ -30,28 +36,37 @@ body {
         font-size: 15px;
         font-weight: 500;
         line-height: 19px;
+        overflow: hidden;
         border: 1px solid #393939bc;
         position: relative;
         cursor: pointer;
 
         > img {
             opacity: 0.3;
-            height: 85%;
+            height: 18px;
         }
             
         
 
 
         &.cem { 
-            min-width:none; 
-            max-width: none;}
+            min-width: none; 
+            max-width: none;
+        }
         &.min { 
             width: auto; 
             max-width: 35px; 
-            padding: 6px;}
+            padding: 6px;
+            justify-content: center;
+        }
+        .auto {
+            max-width: auto;
+            width: 100px;
+        }
         &.mostrando { 
             background-color: #7D4CBB; 
-            border: none; }
+            border: none; 
+        }
         &:hover { 
             color: #D9D9D9; 
             > img {opacity: 1;}
@@ -59,10 +74,7 @@ body {
         &.selecionado { 
             background-color: #8A55CD; 
             border: none; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #C5C5C5;
-            font-size: 15px;
-            font-weight: 500;
             > img {opacity: 1;}
         }
         &.h4 {
@@ -239,7 +251,15 @@ input, select {
 
 
 
-
+.Info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 300px;
+    gap: 10px;
+}
 .Card {
     display: flex;
     flex-direction: column;
@@ -248,6 +268,7 @@ input, select {
     min-width: calc((100% / 3) - 8px);
     max-width: calc((100% / 3) - 8px);
     min-height: 300px;
+    max-height: 680px;
     border-radius: 10px;
     padding: 6px 6px 0px 6px;
     position: relative;
@@ -280,6 +301,16 @@ input, select {
         border-radius: 10px;
         position: relative;
         overflow: hidden;
+        position: relative;
+    }
+    .CardCont {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        height: 550px;
+        gap: 10px;
     }
 }
 .InfoFundo {
@@ -315,7 +346,11 @@ input, select {
     position: relative;
     transition: 0.3s;
     overflow: hidden;
-    &.fix { min-height: 238px; max-height: 238px; height: 100%;}
+    &.fix { 
+        min-height: 238px; 
+        max-height: 238px; 
+        height: 100%;
+    }
 }
 .Escuro {
     display: flex;
@@ -324,7 +359,7 @@ input, select {
     width: 100%;
     height: 100%;
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.249);
+    background-color: rgba(0, 0, 0, 0.349);
     padding: 12px;
     border-radius: 10px;
     overflow: hidden;
@@ -342,16 +377,16 @@ input, select {
     }
     &:hover > h3 {bottom: 6px;}
 }
-.SectionSelecionaveis {
+.SectionItems {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
-    min-height: 562px;
+    height: 600px;
     border-radius: 10px;
     overflow: hidden;
-    &.autoH {min-height: auto; }
+    &.autoH {height: auto; }
 }
 .CardSelecionavel {
     display: flex;
@@ -497,4 +532,218 @@ input, select {
     opacity: 0;
     transition: 0.3s;
     &.visible {opacity: 1;}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media screen and (max-width: 1720px) {
+    .PageSize {
+        padding: 0px 12px 12px 232px;
+    }
+    .BarraLateral {
+        max-width: 220px;
+    }
+}
+@media screen and (max-width: 1520px) {
+    .PageSize {
+        padding: 0px 12px 12px 62px;
+    }
+    .BarraLateral {
+        max-width: 50px;
+
+        button {
+            font-size: 0px;
+        }
+    }
+}
+@media screen and (max-width: 1320px) {
+    .InfoLicoes {
+        flex-direction: column-reverse !important;
+
+        .CardAtividadeLicoes {
+            min-width: 100% !important;
+            max-width: 100% !important;
+            position: relative !important;
+            margin-bottom: 15px;
+            margin-top: -15px;
+            .Card {
+                flex-direction: row;
+                .Desc {
+                    height: 292px;
+                }
+                .DescCard {
+                    min-height: 240px;
+                    max-height: 240px;
+                }
+            }
+        }
+    }
+    .Card {
+        min-width: calc((100% / 2) - 5px);
+        max-width: calc((100% / 2) - 5px);
+        &.min {min-width: calc((100% - 36px) / 3); max-width: calc((100% - 36px) / 3);}
+    }
+    button {
+        max-width: auto;
+        width: auto;
+    }
+}
+@media screen and (max-width: 1290px) {
+    .Video {
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+}
+@media screen and (max-width: 1170px) {
+    .Info {
+        flex-direction: column;
+        height: auto;
+    }
+    .Card {
+        &.min {
+            position: absolute;
+        }
+    }
+}
+@media screen and (max-width: 992px) {
+    button {
+        font-size: 0px !important;
+        justify-content: center !important;
+
+        img {
+            margin-left: 10px;
+        }
+    }
+    .PageSize {
+        padding: 0px 12px 62px 12px;
+    }
+    .BarraLateral {
+        min-width: 100% !important;
+        min-height: 50px;
+        max-height: 50px;
+        top: calc(100% - 50px) !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+
+        .ButtonSections {
+            max-width: 35px;
+        }
+        .Atividades {
+            max-width: 35px;
+            max-height: 35px;
+        }
+    }
+    button {
+        max-width: 100% !important;
+    }
+    .Escuro > h3 {
+        bottom: 6px;
+    }
+    .Card { 
+        .Desc {
+            .DescCard {
+                min-height: 195px;
+                max-height: 195px;
+                &.fix { 
+                    min-height: 238px; 
+                    max-height: 238px; 
+                    height: 100%;
+                }
+            }
+        }
+        &.conts {
+            flex-direction: row;
+            min-width: 100%;
+            max-width: 100%;
+    
+            .Desc {
+                height: 292px;
+                .DescCard {
+                    min-height: 240px;
+                    max-height: 240px;
+                }
+            }
+        }
+    }
+}
+@media screen and (max-width: 650px) {
+    .Card { 
+        .Desc {
+            .DescCard {
+                min-height: 195px;
+                max-height: 195px;
+                &.fix { 
+                    min-height: 238px; 
+                    max-height: 238px; 
+                    height: 100%;
+                }
+            }
+        }
+        &.conts {
+            flex-direction: column;
+            min-width: 100%;
+            max-width: 100%;
+    
+            .Desc {
+                height: 292px;
+                .DescCard {
+                    min-height: 240px;
+                    max-height: 240px;
+                }
+            }
+        }
+    }
+}
+@media screen and (max-width: 570px) {
+    .InfoFundo {
+        aspect-ratio: 16 / 9;
+        height: auto;
+        min-height: auto;
+        max-height: auto;
+    }
+    .StatusCard {
+        aspect-ratio: 16 / 9;
+        height: auto !important;
+    }
+    .Img {
+        height: auto !important;
+        aspect-ratio: 16 / 9 !important;
+    }
+    .Card {
+        height: auto;
+        min-height: auto;
+        max-height: auto;
+    }
+    .Desc {
+        height: auto !important;
+        margin-bottom: 6px;
+    }
+    .DescCard {
+        height: auto !important;
+        min-height: auto !important;
+        max-height: auto !important;
+        aspect-ratio: 16 / 8 !important;
+    }
+    .PerfilImage {
+        height: 120px !important;
+        width: 120px !important;
+        border-radius: 100% !important;
+        padding: 6px !important;
+        bottom: calc(50% - 60px) !important;
+        left: calc(50% - 60px) !important;
+
+        .imgPerfilImage {
+            border-radius: 100% !important;
+        }
+    }
 }
