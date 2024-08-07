@@ -1,17 +1,27 @@
 import './index.scss'
+import { useEffect, useRef } from 'react'
+import LoadingBar from 'react-top-loading-bar'
 
-export default function StatusPage({status, mensagem, children}) {
+export default function StatusPage({loading, mensagem, children}) {
     function RecarregarPagina() {
         window.location.reload()
     }
 
+    const ref = useRef()
+    useEffect(()=> {
+        if (loading == true) {
+            ref.current.continuousStart()
+        } else {
+            ref.current.complete()
+        }
+    }, [loading])
+
     return (
         <>
-        <main className="FundoEmbacado">
-            
-            {status === "Loading" &&
-            <img className='icon Load' src="/assets/images/icones/Loading.png" />}
+        <LoadingBar color="#8A55CD" ref={ref} />
 
+        {(loading == true || mensagem != null || children != null) &&
+        <main className="FundoEmbacado">
             {mensagem != null &&
             <main className={`Card min cor1 border ${mensagem == null && "in"}visible`}>
                 <section className='Title cor2'>
@@ -29,9 +39,8 @@ export default function StatusPage({status, mensagem, children}) {
                     </button>
                 </section>
             </main>}
-
             {children}
-        </main>
+        </main>}
         </>
     )
 }

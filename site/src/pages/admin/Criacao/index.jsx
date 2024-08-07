@@ -188,7 +188,7 @@ export default function Criacao() {
     }
 
     return (
-        <section className='Criacao'>
+        <section className='PageSize'>
             <BarraLateral page={"criacao"} />
 
             {cardadd != "" && (
@@ -286,16 +286,16 @@ export default function Criacao() {
                         </button>
                     </section>
                 </section>}
-                <button onClick={() => setSection(1)} className={`b cor3 ${section == 1 && "selecionado"}`}>
+                <button onClick={() => setSection(1)} className={`b cor3 nav ${section == 1 && "selecionado"}`}>
                     <img src={`/assets/images/icones/Trilhas${section == 1 ? "PE" : ""}.png`} />Trilhas
                 </button>
-                <button onClick={() => setSection(2)} className={`b cor3 ${section == 2 && "selecionado"}`}>
+                <button onClick={() => setSection(2)} className={`b cor3 nav ${section == 2 && "selecionado"}`}>
                     <img src={`/assets/images/icones/Avisos${section == 2 ? "PE" : ""}.png`} />Avisos
                 </button>
-                <button onClick={() => setSection(3)} className={`b cor3 ${section == 3 && "selecionado"}`}>
+                <button onClick={() => setSection(3)} className={`b cor3 nav ${section == 3 && "selecionado"}`}>
                     <img src={`/assets/images/icones/Lives${section == 3 ? "PE" : ""}.png`} />Transmissões
                 </button>
-                <button onClick={() => setSection(4)} className={`b cor3 ${section == 4 && "selecionado"}`}>
+                <button onClick={() => setSection(4)} className={`b cor3 nav ${section == 4 && "selecionado"}`}>
                     <img src={`/assets/images/icones/atividades${section == 4 ? "PE" : ""}.png`} />Atividades
                 </button>
             </section>

@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
 import { pedirEntrarSalaCon } from '../../../connection/alunoConnection';
 
-export default function Card({estilo, id, idSala, name, desc, img, video, status, para, conteudo, licoes, width, children}) {
+export default function Card({estilo, id, idSala, name, desc, img, video, status, para, conteudo, licoes, width, children, nomeProf, emailProf, imgProf}) {
     const aluno = storage.get('aluno') || []; 
     const {idtrilha, idsala} = useParams()
     const navigate = useNavigate()
@@ -59,14 +59,20 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
                 <section className='Title cor2'>
                     <h3 className="cor2">{name}</h3>
                 </section>}
-                {(estilo == 2 || (estilo == 1 && img != "Nenhuma imagem adicionada.")) &&
+                {((estilo == 2 || estilo == 3) || (estilo == 1 && img != "Nenhuma imagem adicionada.")) &&
                 <section className={`Img cor2 `}>
                     <img src={BuscarImagem(img)} className='fundo'/>
                     <section onClick={()=> navegacao()} className='Escuro'>
+                        {estilo == 3 &&
+                        <section className='PerfilImage cor1 baixoDireta min'>
+                            <section className='imgPerfilImage cor2 min border'>
+                                <img src={BuscarImagem(imgProf)} />
+                            </section>
+                        </section>}
                         <h3 onClick={()=> navegacao()}>{name}</h3>
                     </section>
                 </section>}
-                {(estilo == 2 || (estilo == 1 && img == "Nenhuma imagem adicionada.")) &&
+                {((estilo == 2 || estilo == 3) || (estilo == 1 && img == "Nenhuma imagem adicionada.")) &&
                 <section className='Desc'>
                     <section className={`DescCard border cor2 ${(img == "Nenhuma imagem adicionada." && video == "Nenhum vídeo adicionado.") && "fix"}`}>
                         <div className='linha'></div>

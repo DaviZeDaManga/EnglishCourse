@@ -20,10 +20,13 @@ export default function BarraLateral({page}) {
                 toast.dark("Você não pode acessar isso.")
             }
             if (para == 1) {
-                navigate(`/admin/minhassalas`)
+                navigate(`/professor/minhassalas`)
             }
             if (para == 2) {
-                navigate(`/admin/criação`)
+                navigate(`/professor/criação`)
+            }
+            if (para == 3) {
+                navigate(`/professor/minhaconta`)
             }
         }
         catch {
@@ -39,18 +42,12 @@ export default function BarraLateral({page}) {
             <LoadingBar color="#8A55CD" ref={ref} />
             
             <section className='BarraLateral border cor1'>
-                {/* <div className='ButtonSections cor4'>
-                    <button className={`b cem cor3 ${page == "dash" && "selecionado"}`}> 
-                        <img src={`/assets/images/icones/inicio${page === "dash" ? "PE" : ""}.png`} />
-                        Dash 
+                <div className='ButtonSections cor4'>
+                    <button onClick={()=> navegacao(3)} className={`b cem cor3 ${page == "minhaconta" && "selecionado"}`}> 
+                        <img src={`/assets/images/icones/user${page === "minhaconta" ? "PE" : ""}.png`} />
+                        Conta
                     </button>
                 </div>
-                <div className='ButtonSections cor4'>
-                    <button className={`b cem cor3 ${page == "gerenciamento" && "selecionado"}`}> 
-                        <img src={`/assets/images/icones/pessoas.png`} />
-                        Gerenciamento de alunos 
-                    </button>
-                </div> */}
                 <div className='ButtonSections cor4'>
                     <button onClick={()=> navegacao(1)} className={`b cem cor3 ${page == "minhassalas" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/minhasala${page === "minhassalas" ? "PE" : ""}.png`} />

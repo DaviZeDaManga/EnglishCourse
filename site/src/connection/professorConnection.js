@@ -55,6 +55,22 @@ export async function dadosProfessorCon(idprofessor) {
     }
 }
 
+//alterar dados professor
+export async function alterarDadosProfessorCon(idprofessor, nome, email, numero, nascimento) {
+    try {
+        const resposta = await api.put(`/professor/${idprofessor}/alterar`, {
+            nome: nome,
+            email: email,
+            numero: numero,
+            nascimento: nascimento
+        })
+        return resposta.data
+    }
+    catch(error) {
+        console.error('Erro ao alterar dados do professor:', error);
+        throw new Error(`Erro ao alterar dados do aluno: ${error.message}`);
+    }
+}
 
 
 //dados salas professor

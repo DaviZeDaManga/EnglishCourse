@@ -10,9 +10,21 @@
     position: relative;
     padding: 12px;
 }
-
+.StatusCardButtons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+.LoadIcon {
+    opacity: 0.2 !important;
+    position: absolute;
+    transition: 0.3s;
+}
 .Load {
     animation: loading 1.5s ease-in-out infinite;
+    transition: 0.3s;
 }
 
 @keyframes loading {

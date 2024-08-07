@@ -4,11 +4,11 @@ import storage from 'local-storage';
 import { useNavigate } from 'react-router-dom';
 
 //conexoes
-import { alterarDadosAlunoCon, dadosAlunoCon, dadosMinhaSalaCon } from '../../../connection/alunoConnection';
+import { alterarDadosProfessorCon, dadosProfessorCon } from '../../../connection/professorConnection';
 import { BuscarImagem } from '../../../connection/userConnection';
 
 // components
-import BarraLateral from '../../../components/user/barraLateral';
+import BarraLateral from '../../../components/admin/barraLateral';
 import StatusCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage'; 
 
@@ -16,9 +16,9 @@ import StatusPage from '../../../components/user/statusPage';
 import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
 
-export default function MinhaConta() {
-    const aluno = storage.get('aluno');
-    const [alunoDados, setAlunoDados] = useState([]);
+export default function ContaProfessor() {
+    const professor = storage.get('professor');
+    const [professorDados, setProfessorDados] = useState([]);
     const [carddados, setCarddados] = useState(false);
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
@@ -26,24 +26,10 @@ export default function MinhaConta() {
     const [nascimento, setNascimento] = useState(""); 
     const [section, setSection] = useState(1);
 
-    useEffect(()=> {
-        if (!aluno) {
-            ref.current.continuousStart()
-            try {
-                navigate("/")
-                toast.dark("Voce preciosa logar antes de acessar essa página!")
-            } catch {
-                toast.dark("Algo deu errado.")
-            } finally {
-                ref.current.complete()
-            }
-        }
-    }, [aluno])
-
-    async function dadosAluno() {
-        setAlunoDados("Loading");
+    async function dadosProfessor() {
+        setProfessorDados("Loading");
         try {
-            const resposta = await dadosAlunoCon(aluno.map(item => item.id));
+            const resposta = await dadosProfessorCon(professor.map(item => item.id));
 
             setNome(resposta.map(item => item.nome)[0] || ""); 
             setEmail(resposta.map(item => item.email)[0] || "");
@@ -58,16 +44,16 @@ export default function MinhaConta() {
             })[0] || ""; 
 
             setNascimento(dataFormatada); 
-            setAlunoDados(resposta);
+            setProfessorDados(resposta);
         } catch (error) {
-            console.error("Nenhum aluno encontrado", error);
-            setAlunoDados("Nenhum aluno encontrado.");
+            console.error("Nenhum professor encontrado", error);
+            setProfessorDados("Nenhum professor encontrado.");
         }
     }
 
     useEffect(() => {
         async function fetchData() {
-            await dadosAluno();
+            await dadosProfessor();
         }
         fetchData();
     }, []);
@@ -76,14 +62,7 @@ export default function MinhaConta() {
     const [rendimento, setRendimento] = useState([]);
 
     async function dadosMinhaSala() {
-        setSala("Loading");
-        try {
-            const resposta = await dadosMinhaSalaCon(aluno.map(item => item.id));
-            setSala(resposta);
-        } catch (error) {
-            console.error('Erro ao buscar dados da minha sala:', error);
-            setSala("Nenhuma sala encontrada.");
-        }
+        setSala("Essa função ainda não está disponível.");
     }
 
     async function dadosRendimento() {
@@ -92,7 +71,7 @@ export default function MinhaConta() {
 
     useEffect(() => {
         async function fetchDataSection() {
-            if (Array.isArray(alunoDados)) {
+            if (Array.isArray(professorDados)) {
                 switch (section) {
                     case 1:
                         await dadosMinhaSala();
@@ -106,7 +85,7 @@ export default function MinhaConta() {
             }
         }
         fetchDataSection();
-    }, [section, alunoDados]);
+    }, [section, professorDados]);
 
     const [paisagem, setPaisagem] = useState(0);
 
@@ -114,12 +93,12 @@ export default function MinhaConta() {
         setPaisagem(Math.floor(Math.random() * 6) + 1);
     }, []);
 
-    async function alterarDadosAluno() {
+    async function alterarDadosprofessor() {
         try {
-            await alterarDadosAlunoCon(aluno.map(item => item.id), nome, email, numero, nascimento)
+            await alterarDadosProfessorCon(professor.map(item => item.id), nome, email, numero, nascimento)
             toast.dark("Dados alterados!")
             setCarddados(false)
-            dadosAluno()
+            dadosProfessor()
         } catch (error) {
             toast.dark("Voce não pode executar essa ação!")
         }
@@ -133,7 +112,7 @@ export default function MinhaConta() {
 
         try {
             if (para == 1) {
-                navigate(`/aluno/minhasala`)
+                navigate(`/professor/minhasala`)
             } 
         }
         catch {
@@ -143,15 +122,14 @@ export default function MinhaConta() {
             ref.current.complete()
         }
     }
-    console.log(sala)
 
     return (
         <section className='PageSize'>
             <LoadingBar color="#8A55CD" ref={ref} />
             <BarraLateral page={"minhaconta"} />
 
-            {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado.") ? (
-                <StatusPage status={alunoDados} /> 
+            {(professorDados === "Loading" || professorDados === "Nenhum professor encontrado.") ? (
+                <StatusPage status={professorDados} /> 
             ) : (
                 <>
                 {carddados &&
@@ -188,39 +166,39 @@ export default function MinhaConta() {
                         />
                         <section className='SectionButtons default'>
                             <button className='b cem cor3'>
-                                {alunoDados.map(item => item.tipo)}
+                                {professorDados.map(item => item.tipo)}
                             </button>
                             <button className='b cem cor3'>
-                                {alunoDados.map(item => item.status)}
+                                {professorDados.map(item => item.status)}
                             </button>
                         </section>
                         <section className='SectionButtons default'>
                             <button onClick={() => setCarddados(false)} className='b cor3 cem'>Voltar</button>
-                            {(nome !== alunoDados.map(item => item.nome)[0] ||
-                              email !== alunoDados.map(item => item.email)[0] ||
-                              numero !== alunoDados.map(item => item.numero)[0] ||
-                              nascimento !== alunoDados.map(item => {
+                            {(nome !== professorDados.map(item => item.nome)[0] ||
+                              email !== professorDados.map(item => item.email)[0] ||
+                              numero !== professorDados.map(item => item.numero)[0] ||
+                              nascimento !== professorDados.map(item => {
                                 const date = new Date(item.nascimento);
                                 const day = String(date.getDate()).padStart(2, '0');
                                 const month = String(date.getMonth() + 1).padStart(2, '0');
                                 const year = date.getFullYear();
                                 return `${year}-${month}-${day}`;
                               })[0]) &&
-                            <button onClick={alterarDadosAluno} className='b cor3 cem'>Alterar dados</button>}
+                            <button onClick={alterarDadosprofessor} className='b cor3 cem'>Alterar dados</button>}
                         </section>
                     </section>
                 </StatusPage>}
 
                 <section className='InfoFundo marginTop cor1 border'>
-                    {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado.") || alunoDados.map(item => item.imagem)
+                    {(professorDados === "Loading" || professorDados === "Nenhum professor encontrado.") || professorDados.map(item => item.imagem)
                     ? <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
-                    : <>{alunoDados.map(item => <img className='fundo' key={item.id} src={BuscarImagem(item.imagemSala)} />)}</>}
+                    : <>{professorDados.map(item => <img className='fundo' key={item.id} src={BuscarImagem(item.imagemSala)} />)}</>}
                     <section className='Escuro'>
                         <section className='PerfilImage cor0'>
                             <section className='imgPerfilImage cor2 border'>
-                                {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado")
+                                {(professorDados === "Loading" || professorDados === "Nenhum professor encontrado")
                                     ? <img className='Load icon' src='/assets/images/icones/Loading.png' />
-                                    : <img src={BuscarImagem(alunoDados.map(item => item.imagem))} />}
+                                    : <img src={BuscarImagem(professorDados.map(item => item.imagem))} />}
                             </section>
                         </section>
                     </section>
@@ -237,13 +215,13 @@ export default function MinhaConta() {
                 <section className='SectionCards'>
                     {section === 1 &&
                         <>
-                        {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado.") ? (
-                            <StatusCard mensagem={alunoDados} />
+                        {(professorDados === "Loading" || professorDados === "Nenhum professor encontrado.") ? (
+                            <StatusCard mensagem={professorDados} />
                         ) : (
                             <section className='Info InfoDados'>
                                 <section className='Card CardDados cem cor1 border'>
                                     <section className='Title  cor2'>
-                                        <h3>{alunoDados.map(item => item.nome)}</h3>
+                                        <h3>{professorDados.map(item => item.nome)}</h3>
                                     </section>
                                     <div className='Desc'>
                                         <section className='DescCard border cor2'>

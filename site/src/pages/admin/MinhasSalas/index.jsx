@@ -86,7 +86,7 @@ export default function MinhasSalas() {
     }
 
     return (
-        <section className='MinhasSalas'>
+        <section className='PageSize'>
             <BarraLateral page={"minhassalas"} />
 
             {cardadd &&

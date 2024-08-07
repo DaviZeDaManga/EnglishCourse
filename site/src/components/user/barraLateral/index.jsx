@@ -5,7 +5,7 @@ import storage from 'local-storage';
 import React from 'react';
 
 //conexoes
-import { dadosAtividadesAlunoCon, dadosTrilhaAlunoCon } from '../../../connection/alunoConnection';
+import { dadosAtividadesAlunoCon, dadosMinhaSalaCon, dadosTrilhaAlunoCon } from '../../../connection/alunoConnection';
 
 //outros
 import { toast } from 'react-toastify';
@@ -15,12 +15,34 @@ import StatusPage from '../statusPage';
 export default function BarraLateral({page}) {
     const aluno = storage.get('aluno') || [];
     const {idsala, idtrilha, idatividade} = useParams()
-    const [trilha, setTrilha] = useState([])
+    const [sala, setSala] = useState("Loading")
+    const [trilha, setTrilha] = useState("Loading")
     const [cardativ, setCardativ] = useState("-100%")
-    const [atividades, setAtividades] = useState([])
+    const [atividades, setAtividades] = useState("Loading")
+
+    async function dadosMinhaSala() {
+        try {
+            const resposta = await dadosMinhaSalaCon(aluno.map(item => item.id));
+            setSala(resposta);
+        } catch (error) {
+            console.error('Erro ao buscar dados da minha sala:', error);
+            setSala("Nenhuma sala encontrada.");
+        }
+    }
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                await dadosMinhaSala();
+            } catch (error) {
+                console.error('Erro ao carregar dados da minha sala:', error);
+                toast.dark("Erro ao carregar dados da minha sala.");
+            } 
+        }
+        fetchData();
+    }, []);
 
     async function dadosTrilha() {
-        setTrilha("Loading")
         try {
             const resposta = await dadosTrilhaAlunoCon(aluno.map(item => item.id), idsala, idtrilha);
             setTrilha(resposta)
@@ -43,7 +65,6 @@ export default function BarraLateral({page}) {
     }, [idsala, idtrilha, idatividade]);
 
     async function dadosAtividades() {
-        setAtividades("Loading");
         try {
             let resposta = await dadosAtividadesAlunoCon(aluno.map(item => item.id), idsala, idtrilha);
             setAtividades(resposta);
@@ -90,6 +111,9 @@ export default function BarraLateral({page}) {
             if (para == 4) {
                 navigate(`/aluno/minhasala/${idsala}/trilha/${id}`)
             }
+            if (para == 5) {
+                navigate(`/aluno/salas`)
+            }
         }
         catch {
             toast.dark("Algo deu errado.")
@@ -112,12 +136,22 @@ export default function BarraLateral({page}) {
                         Conta 
                     </button>
                 </div>
+
+                <div className='ButtonSections cor4'>
+                    <button onClick={()=> navegacao(5)} className={`b cem cor3 ${page == "salas" && "selecionado"}`}> 
+                        <img src={`/assets/images/icones/salas${page === "salas" ? "PE" : ""}.png`} />
+                        Salas
+                    </button>
+                </div>
+
+                {(sala != "Loading" && sala != "Nenhuma sala encontrada.") &&
                 <div className='ButtonSections cor4'>
                     <button onClick={()=> navegacao(2)} className={`b cem cor3 ${page == "minhasala" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/minhasala${page === "minhasala" ? "PE" : ""}.png`} />
                         Minha Sala 
                     </button>
-                </div>
+                </div>}
+
                 {(page === "Trilha" || page === "Assistir" || page === "Lições") &&
                 <div className='ButtonSections cor4'>
                     {(trilha === "Loading" || trilha === "Nenhuma trilha encontrada.") ? (

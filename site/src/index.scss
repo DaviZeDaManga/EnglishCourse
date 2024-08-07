@@ -59,9 +59,9 @@ body {
             padding: 6px;
             justify-content: center;
         }
-        .auto {
-            max-width: auto;
-            width: 100px;
+        &.auto {
+            max-width: auto !important;
+            width: auto !important;
         }
         &.mostrando { 
             background-color: #7D4CBB; 
@@ -442,7 +442,7 @@ input, select {
     border: #383838 solid 1px;
     left: 0;
     top: 59px;
-    z-index: 1;
+    z-index: 3;
     gap: 10px;
 }
 .Video {
