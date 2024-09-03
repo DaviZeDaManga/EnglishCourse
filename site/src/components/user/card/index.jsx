@@ -8,7 +8,6 @@ import { BuscarImagem } from '../../../connection/userConnection';
 //outros
 import { toast } from 'react-toastify';
 import LoadingBar from "react-top-loading-bar";
-import { pedirEntrarSalaCon } from '../../../connection/alunoConnection';
 
 export default function Card({estilo, id, idSala, name, desc, img, video, status, para, conteudo, licoes, width, children, nomeProf, emailProf, imgProf}) {
     const aluno = storage.get('aluno') || []; 
@@ -53,12 +52,8 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
         <>
             <LoadingBar color="#8A55CD" ref={ref} />
 
-            <main className={`Card ${width} conts cor1 border ${(estilo == 1 && img != "Nenhuma imagem adicionada.") && "normalPadding"}`}>
+            <main className={`Card ${width} ${estilo === 1 && "Retangular"} cor1 border`}>
 
-                {(estilo == 1 && img == "Nenhuma imagem adicionada.") &&
-                <section className='Title cor2'>
-                    <h3 className="cor2">{name}</h3>
-                </section>}
                 {((estilo == 2 || estilo == 3) || (estilo == 1 && img != "Nenhuma imagem adicionada.")) &&
                 <section className={`Img cor2 `}>
                     <img src={BuscarImagem(img)} className='fundo'/>
@@ -72,20 +67,27 @@ export default function Card({estilo, id, idSala, name, desc, img, video, status
                         <h3 onClick={()=> navegacao()}>{name}</h3>
                     </section>
                 </section>}
-                {((estilo == 2 || estilo == 3) || (estilo == 1 && img == "Nenhuma imagem adicionada.")) &&
-                <section className='Desc'>
-                    <section className={`DescCard border cor2 ${(img == "Nenhuma imagem adicionada." && video == "Nenhum vídeo adicionado.") && "fix"}`}>
-                        <div className='linha'></div>
-                        <h4>{desc}</h4>
-                    </section>
-                    <section className='SectionButtons default'>
-                        {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado." && para != null) &&
-                        <button onClick={()=> navegacao()} className='b cor3 cem'>
-                            Acessar
-                        </button>}
-                        {children}                     
-                    </section>
-                </section>}
+                
+                <section className={`CardCont ${estilo == 4 && "w50"}`}>
+                    {((estilo == 1 && img == "Nenhuma imagem adicionada.")) &&
+                    <section className='Title cor2'>
+                        <h3 className="cor2">{name}</h3>
+                    </section>}
+                    {((estilo == 2 || estilo == 3) || (estilo == 1 && img == "Nenhuma imagem adicionada.")) &&
+                    <section className='Desc'>
+                        <section className={`DescCard border cor2 ${(img == "Nenhuma imagem adicionada." && video == "Nenhum vídeo adicionado.") && "fix"}`}>
+                            <div className='linha'></div>
+                            <h4>{desc}</h4>
+                        </section>
+                        <section className='SectionButtons default'>
+                            {(img != "Nenhuma imagem adicionada." && video != "Nenhum vídeo adicionado." && para != null) &&
+                            <button onClick={()=> navegacao()} className='b cor3 cem'>
+                                Acessar
+                            </button>}
+                            {children}                     
+                        </section>
+                    </section>}
+                </section>
             </main>
         </>
     )

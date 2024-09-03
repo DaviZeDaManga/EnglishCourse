@@ -3,14 +3,21 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    width: 350px;
+    width: 55px;
     height: 100vh;
     gap: 10px;
-    padding: 6px;
+    padding: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
     position: fixed;
     left: 0;
     top: 0;
     z-index: 3;
+    transition: 0.3s;
+
+    &.BiggerSize {
+        width: 380px;
+    }
 
     .ButtonSections {
         display: flex;
@@ -48,7 +55,7 @@
             justify-content: flex-start;
             align-items: flex-start;
             width: 100%;
-            padding: 6px;
+            padding: 4px;
         }
         .MostrarAtividades {
             display: none;

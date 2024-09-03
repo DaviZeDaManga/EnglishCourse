@@ -1,4 +1,3 @@
-import './index.scss';
 import { useEffect, useRef, useState } from 'react';
 import storage from 'local-storage';
 import { useNavigate } from 'react-router-dom';

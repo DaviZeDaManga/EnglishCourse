@@ -2,7 +2,7 @@ import './index.scss'
 import { useEffect, useRef } from 'react'
 import LoadingBar from 'react-top-loading-bar'
 
-export default function StatusPage({loading, mensagem, children}) {
+export default function StatusPage({loading, mensagem, children, fundo}) {
     function RecarregarPagina() {
         window.location.reload()
     }
@@ -20,7 +20,7 @@ export default function StatusPage({loading, mensagem, children}) {
         <>
         <LoadingBar color="#8A55CD" ref={ref} />
 
-        {(loading == true || mensagem != null || children != null) &&
+        {(loading == true || mensagem != null || children != null || fundo == true) &&
         <main className="FundoEmbacado">
             {mensagem != null &&
             <main className={`Card min cor1 border ${mensagem == null && "in"}visible`}>

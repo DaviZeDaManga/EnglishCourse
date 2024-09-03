@@ -1,5 +1,4 @@
-import './index.scss';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import storage from 'local-storage';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +13,7 @@ import StatusPage from '../../../components/user/statusPage';
 
 // outros
 import { toast } from 'react-toastify';
-import LoadingBar from "react-top-loading-bar";
+import CardSections from '../../../components/user/cardSections';
 
 export default function ContaUser() {
     const aluno = storage.get('aluno');
@@ -119,27 +118,14 @@ export default function ContaUser() {
     }
 
     const navigate = useNavigate()
-    const ref = useRef()
-
     function navegacao(para) {
-        ref.current.continuousStart()
-
-        try {
-            if (para == 1) {
-                navigate(`/aluno/minhasala`)
-            } 
-        }
-        catch {
-            toast.dark("Algo deu errado.")
-        }
-        finally {
-            ref.current.complete()
+        if (para == 1) {
+            navigate(`/aluno/minhasala`)
         }
     }
 
     return (
         <section className='PageSize'>
-            <LoadingBar color="#8A55CD" ref={ref} />
             <BarraLateral page={"minhaconta"} />
             <StatusPage loading={loading} />
 
@@ -149,28 +135,36 @@ export default function ContaUser() {
                 <>
                 {carddados &&
                 <StatusPage>
-                    <section className='Card normalPadding cor1 border minH'>
-                        <section className='Title cor2'>
-                            <h3 className="cor2">Meus dados</h3>
+                    <CardSections
+                    buttons={[["Minhas informações", "/assets/images/icones/user.png"]]}
+                    >
+                        <button onClick={()=> setCarddados(false)} className='b cor3' data-category='Voltar'>
+                            <img src={"/assets/images/icones/voltar.png"}/>
+                        </button>
+                        <section className='DescCard autoH border cor2' data-category='Minhas informações'>
+                            <div className='linha cor3'></div>
+                            <h4>A seção Minhas Informações permite que o aluno visualize e atualize seus dados pessoais, como nome, email, número de telefone e data de nascimento. Os alunos podem alterar essas informações preenchendo os campos apropriados e clicando em "Alterar dados" para salvar as mudanças. Essa funcionalidade garante que os alunos mantenham suas informações sempre atualizadas.</h4>
                         </section>
-
                         <input 
                             onChange={(e) => setNome(e.target.value)} 
                             value={nome}              
                             placeholder='Meu nome' 
                             className='cor2 border' 
+                            data-category='Minhas informações'
                         />
                         <input 
                             onChange={(e) => setEmail(e.target.value)} 
                             value={email}              
                             placeholder='Meu email' 
                             className='cor2 border' 
+                            data-category='Minhas informações'
                         />
                         <input 
                             onChange={(e) => setNumero(e.target.value)} 
                             value={numero}              
                             placeholder='Meu número' 
                             className='cor2 border' 
+                            data-category='Minhas informações'
                         />
                         <input 
                             onChange={(e) => setNascimento(e.target.value)} 
@@ -178,17 +172,15 @@ export default function ContaUser() {
                             value={nascimento}              
                             placeholder='Meu nascimento' 
                             className='cor2 border' 
+                            data-category='Minhas informações'
                         />
-                        <section className='SectionButtons default'>
-                            <button className='b cem cor3'>
-                                {alunoDados.map(item => item.tipo)}
-                            </button>
-                            <button className='b cem cor3'>
-                                {alunoDados.map(item => item.status)}
-                            </button>
-                        </section>
-                        <section className='SectionButtons default'>
-                            <button onClick={() => setCarddados(false)} className='b cor3 cem'>Voltar</button>
+                        <button className='b cem cor3' data-category='Minhas informações'>
+                            {alunoDados.map(item => item.tipo)}
+                        </button>
+                        <button className='b cem cor3' data-category='Minhas informações'>
+                            {alunoDados.map(item => item.status)}
+                        </button>
+                        <section className='SectionButtons default' data-category='Minhas informações'>
                             {(nome !== alunoDados.map(item => item.nome)[0] ||
                               email !== alunoDados.map(item => item.email)[0] ||
                               numero !== alunoDados.map(item => item.numero)[0] ||
@@ -199,9 +191,9 @@ export default function ContaUser() {
                                 const year = date.getFullYear();
                                 return `${year}-${month}-${day}`;
                               })[0]) &&
-                            <button onClick={alterarDadosAluno} className='b cor3 cem'>Alterar dados</button>}
+                            <button onClick={alterarDadosAluno} className='b selecionado cem'>Alterar dados</button>}
                         </section>
-                    </section>
+                    </CardSections>
                 </StatusPage>}
 
                 <section className='InfoFundo marginTop cor1 border'>
@@ -209,7 +201,7 @@ export default function ContaUser() {
                     ? <img className='fundo' src={`/assets/images/paisagens/fundo${paisagem}.jpg`} />
                     : <>{alunoDados.map(item => <img className='fundo' key={item.id} src={BuscarImagem(item.imagemSala)} />)}</>}
                     <section className='Escuro'>
-                        <section className='PerfilImage cor0'>
+                        <section className='PerfilImage cor1'>
                             <section className='imgPerfilImage cor2 border'>
                                 {(alunoDados === "Loading" || alunoDados === "Nenhum aluno encontrado")
                                     ? <img className='Load icon' src='/assets/images/icones/Loading.png' />
@@ -234,14 +226,14 @@ export default function ContaUser() {
                             <StatusCard mensagem={alunoDados} />
                         ) : (
                             <section className='Info InfoDados'>
-                                <section className='Card CardDados cem cor1 border'>
+                                <section className='Card CardDados min cor1 border'>
                                     <section className='Title  cor2'>
                                         <h3>{alunoDados.map(item => item.nome)}</h3>
                                     </section>
                                     <div className='Desc'>
                                         <section className='DescCard border cor2'>
                                             <div className='linha cor3'></div>
-                                            <h4>Bem-vindo à Smart Lingu! Esta é a sua página de perfil, onde você pode acompanhar seu progresso no curso. Aqui, você encontrará uma visão detalhada do seu desempenho, incluindo as trilhas de aprendizado que você já completou e as atividades que você concluiu. Além disso, você poderá ver as lições que já foram respondidas e aquelas que ainda estão pendentes. Acompanhe seu avanço e continue se dedicando para alcançar seus objetivos de aprendizado!</h4>
+                                            <h4>Bem-vindo à Smart Lingu! Esta é a sua página de perfil, onde você pode acompanhar seu progresso no curso. Aqui, você encontrará uma visão detalhada do seu desempenho, incluindo as trilhas de aprendizado que você já completou e as atividades que você concluiu. Além disso, você poderá ver as lições que já foram respondidas e aquelas que ainda estão pendentes.</h4>
                                         </section>
                                         <button onClick={() => setCarddados(true)} className='b cor3 cem'> 
                                             Ver meus dados

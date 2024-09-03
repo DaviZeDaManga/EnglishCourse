@@ -20,10 +20,10 @@ import { toast } from 'react-toastify';
 export default function Trilha() {
     const aluno = storage.get('aluno') || [];
     const {idsala, idtrilha} = useParams();
-    const [trilha, setTrilha] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [trilha, setTrilha] = useState("Loading");
 
     async function dadosTrilha() {
-        setTrilha("Loading")
         try {
             const resposta = await dadosTrilhaAlunoCon(aluno.map(item => item.id), idsala, idtrilha);
             setTrilha(resposta)
@@ -35,29 +35,27 @@ export default function Trilha() {
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true)
             try {
                 await dadosTrilha();
             } catch (error) {
                 console.error('Erro ao carregar dados da trilha:', error);
                 toast.dark("Erro ao carregar dados da trilha.")
+            } finally {
+                setLoading(false)
             }
         }
         fetchData();
     }, []);
 
     const [section, setSection] = useState(1);
-    const [atividades, setAtividades] = useState([]);
+    const [atividades, setAtividades] = useState("Loading");
     const [rendimento, setRendimento] = useState([]);
 
     async function dadosAtividades() {
-        setAtividades("Loading");
         try {
             let resposta = await dadosAtividadesAlunoCon(aluno.map(item => item.id), idsala, idtrilha);
-            if (Array.isArray(resposta)) {
-                setAtividades(resposta);
-            } else {
-                setAtividades([]);
-            }
+            setAtividades(resposta);
         } catch (error) {
             console.error('Erro ao buscar dados das atividades:', error);
             setAtividades("Parece que não tem nada aqui.")
@@ -89,9 +87,10 @@ export default function Trilha() {
     return (
         <div className='PageSize PageTrilha'>
             <BarraLateral page={"Trilha"} />
+            <StatusPage loading={loading} />
 
             {(trilha == "Loading" || trilha == "Nenhuma trilha encontrada.") ? (
-                <StatusPage status={trilha} />
+                <StatusCard className={"marginTop"} mensagem={trilha} reload={true}/>
             ) : (
                 <>
                 <Titulo nome={"Trilha"} />

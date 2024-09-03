@@ -47,6 +47,33 @@ export default function Transmissao() {
 
     const [section, setSection] = useState(1)
     const [comentarios, setComentarios] = useState([])
+    const [conteudos, setConteudos] = useState([])
+
+    async function dadosConteudos() {
+        setConteudos("Essa função ainda não está disponível.")
+    }
+
+    async function dadosComentarios() {
+        setComentarios("Essa função ainda não está disponível.")
+    }
+
+    useEffect(()=> {
+        async function fetchDataSection() {
+            if (Array.isArray(transmissao)) {
+                switch (section) {
+                    case 1:
+                        await dadosConteudos()
+                        break
+                    case 2:
+                        await dadosComentarios()
+                        break
+                    default:
+                        break
+                }
+            }
+        }
+        fetchDataSection()
+    }, [section, transmissao])
 
     return(
         <div className='PageSize'>
@@ -100,25 +127,25 @@ export default function Transmissao() {
 
                     <section className='Card cem cor1 border'>
                         <section className='Title  cor2'>
-                            <h3>Criado por</h3>
+                            <h3>Conteúdos extras</h3>
                         </section>
                         <div className='Desc'>
                             <section className='DescCard fix border cor2'>
                                 <div className='linha cor3'></div>
-                                
+                                <h4>{conteudos}</h4>
                             </section>
                         </div>
                     </section>
                     </>}
 
-                    {section == 2 && <>  
-                    {comentarios.length <= 0 
-                        ? <StatusCard mensagem={"Parece que não tem nada aqui."}/>
-                        : <>
-                        {comentarios.map( item =>
-                            <></>
-                        )}</>
-                    }</>}
+                    {section == 2 && 
+                    <>  
+                    {(comentarios === "Loading" || comentarios === "Nenhum comentário encontrado." || comentarios === "Essa função ainda não está disponível.") ? (
+                        <StatusCard mensagem={comentarios}/>
+                    ) : (
+                        <></>
+                    )}
+                    </>}
                 </section>
                 </>
             )}

@@ -1,6 +1,7 @@
 import './index.scss';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import storage from 'local-storage';
+import { useNavigate } from 'react-router-dom';
 
 // conexoes
 import { dadosMinhaSalaCon, dadosSalasAlunoCon, entrarSalaCon, pedirEntrarSalaCon, sairSalaCon } from '../../../connection/alunoConnection';
@@ -18,13 +19,14 @@ import { toast } from 'react-toastify';
 
 export default function Salas() {
     const aluno = storage.get('aluno') || [];
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [section, setSection] = useState(1);
     const [buttons, setButtons] = useState(false);
     const [joinByCode, setJoinByCode] = useState(false);
     const [codigo, setCodigo] = useState("");
     const [salas, setSalas] = useState("Loading");
     const [salasolicitada, setSalasolicitada] = useState([]);
+    const [minhasala, setMinhasala] = useState([]);
     const [paisagem, setPaisagem] = useState(0);
 
     async function dadosSalas() {
@@ -38,17 +40,8 @@ export default function Salas() {
         }
     }
 
-    async function salaSolicitada() {
-        if (salas !== "Loading" && salas !== "Nenhuma sala encontrada.") {
-            const resposta = salas.filter(item => item.statusAluno === "Solicitado");
-            setSalasolicitada(resposta);
-        }
-    }
-
-    console.log(salas)
-
     useEffect(() => {
-        async function fetchSectionData() {
+        async function fetchData() {
             setLoading(true)
             try {
                 await dadosSalas()
@@ -59,20 +52,58 @@ export default function Salas() {
                 setLoading(false)
             }
         }
-        fetchSectionData();
+        fetchData();
     }, []);
+
+    async function salaSolicitada() {
+        if (salas != "Loading" && salas != "Nenhuma sala encontrada.") {
+            const resposta = salas.filter(item => item.statusAluno === "Solicitado");
+            setSalasolicitada(resposta);
+        }
+    }
+
+    async function minhaSala() {
+        if (salas != "Loading" && salas != "Nenhuma sala encontrada.") {
+            const resposta = salas.filter(item => item.statusAluno === "Ativo");
+            setMinhasala(resposta);
+        }
+    }
+
+    useEffect(()=> {
+        async function fetchSectionData() {
+            switch (section) {
+                case 2:
+                    await salaSolicitada()
+                    break
+                case 3:
+                    await minhaSala()
+                    break
+                default:
+                    break
+            }
+        }
+        fetchSectionData()
+    }, [section, salas])
 
     useEffect(() => {
         setPaisagem(Math.floor(Math.random() * 6) + 1);
     }, []);
 
 
+    const refetchMinhaSala = useRef(null);
+    const navigate = useNavigate()
 
+    function navegacao(para) {
+        if (para == 1) {
+            navigate(`/aluno/minhasala`)
+        }
+    }
 
     async function entrarSala() {
         try {
             await entrarSalaCon(aluno.map(item => item.id), codigo);
             toast.dark("Seja bem-vindo(a)!");
+            navegacao(1)
         } catch (error) {
             console.error("Erro ao entrar na sala:", error);
             toast.dark("Erro ao entrar na sala.");
@@ -84,6 +115,9 @@ export default function Salas() {
             await sairSalaCon(aluno.map(item => item.id));
             toast.dark("Você saiu da sala!");
             dadosSalas();
+            if (refetchMinhaSala.current) {
+                await refetchMinhaSala.current()
+            }
         } catch (error) {
             console.error("Erro ao sair da sala:", error);
             toast.dark("Erro ao sair da sala.");
@@ -95,6 +129,9 @@ export default function Salas() {
             await pedirEntrarSalaCon(aluno.map(item => item.id), idsala);
             toast.dark("Entrada solicitada!");
             dadosSalas();
+            if (refetchMinhaSala.current) {
+                await refetchMinhaSala.current()
+            }
         } catch {
             toast.dark("Algo deu errado.");
         }
@@ -102,7 +139,7 @@ export default function Salas() {
 
     return (
         <div className='PageSize'>
-            <BarraLateral page={"salas"} />
+            <BarraLateral page={"salas"} refetchMinhaSala={refetchMinhaSala}/>
             <StatusPage loading={loading} />
 
             {(salas === "Loading" || salas === "Nenhuma sala encontrada.") ? (
@@ -182,11 +219,14 @@ export default function Salas() {
                                                 emailProf={item.emailProfessor}
                                                 imgProf={item.imagemProfessor}
                                             >
-                                                <button onClick={() => pedirEntrarSala(item.statusAluno !== "Solicitado" ? item.id : "Solicitado")} className='b cor3 cem'>
-                                                    {item.statusAluno == "Solicitado" && "Solicitado"}
-                                                    {item.statusAluno == "Ativo" && "Ativo"}
-                                                    {(item.statusAluno != "Ativo" && item.statusAluno != "Solicitado") && "Pedir para entrar"}
-                                                </button>
+                                                {item.statusAluno == "Solicitado" && 
+                                                <button className='b cor3 cem'>Solicitado</button>}
+
+                                                {item.statusAluno == "Ativo" && 
+                                                <button onClick={()=> sairSala()} className='b cor3 cem'>Sair da sala</button>}
+                                                
+                                                {(item.statusAluno != "Ativo" && item.statusAluno != "Solicitado") &&
+                                                <button onClick={() => pedirEntrarSala(item.statusAluno !== "Solicitado" && item.id)} className='b cor3 cem'>Pedir para entrar</button>}
                                             </Card>
                                         ))}
                                     </>
@@ -214,6 +254,34 @@ export default function Salas() {
                                             >
                                                 <button onClick={() => sairSala()} className='b cor3 cem'>
                                                     Cancelar
+                                                </button>
+                                            </Card>
+                                        ))}
+                                    </>
+                                )}
+                            </>
+                        )}
+
+                        {section === 3 && (
+                            <>
+                                {minhasala.length === 0 ? (
+                                    <StatusCard mensagem={"Voce não entrou em nenhuma sala."} />
+                                ) : (
+                                    <>
+                                        {minhasala.map(item => (
+                                            <Card
+                                                key={item.id}
+                                                estilo={2}
+                                                id={item.id}
+                                                name={item.nome}
+                                                desc={item.descricao}
+                                                img={item.imagem}
+                                                video={item.video}
+                                                acao={0}
+                                                statusAluno={item.statusAluno}
+                                            >
+                                                <button onClick={() => sairSala()} className='b cor3 cem'>
+                                                    Sair da sala
                                                 </button>
                                             </Card>
                                         ))}

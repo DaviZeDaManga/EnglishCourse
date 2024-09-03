@@ -6,7 +6,14 @@
 
 .PageSize {
     width: 100vw;
-    padding: 0px 12px 12px 362px;
+    padding: 0px 10px 10px 67px;
+
+    &.PageAtividade {
+        padding: 0px 10px 10px 390px !important;
+    }
+    &.PageLicoes {
+        padding: 0px 10px 10px 390px !important;
+    }
 }
 
 body {
@@ -16,6 +23,7 @@ body {
     align-items: flex-start;
     height: 100vh;
     background-color: #151515;
+    overflow-x: hidden;
 
     .b {
         display: flex;
@@ -23,7 +31,7 @@ body {
         justify-content: flex-start;
         align-items: center;
         min-width: 35px;
-        max-width: calc((100% - 36px) / 4);
+        max-width: 300px;
         width: 100%;
         min-height: 35px;
         max-height: 35px;
@@ -33,11 +41,11 @@ body {
         transition: 0.3s;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         color: #898989;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 500;
         line-height: 19px;
         overflow: hidden;
-        border: 1px solid #393939bc;
+        border: 1px solid #39393971;
         position: relative;
         cursor: pointer;
 
@@ -119,28 +127,28 @@ body {
 
 
 .cor0 {
-    background-color: #151515;
+    background-color: #151515 !important;
 }
 .cor1 {
-    background-color: #1F1F1F;
-    &.selecionado { background-color: #8A55CD; }
+    background-color: #1F1F1F !important;
+    &.selecionado { background-color: #8A55CD !important; }
 }
 .cor2 {
-    background-color: #242424;
-    &.selecionado { background-color: #7D4CBB; }
+    background-color: #242424 !important;
+    &.selecionado { background-color: #7D4CBB !important; }
 }
 .cor3 {
-    background-color: #313131;
-    &.selecionado { background-color: #8A55CD; }
+    background-color: #292929 !important;
+    &.selecionado { background-color: #8A55CD !important; }
 }
 .cor4 {
-    background-color: #8A55CD;
+    background-color: #8A55CD !important;
 }
 .border {
-    border: 1px solid #2c2c2c74;
+    border: 1px solid #2c2c2c74 !important;
 }
 .border2 {
-    border: solid 2px rgba(56, 56, 56, 0.233);
+    border: 1px solid #2c2c2c30 !important;
 }
 
 
@@ -153,20 +161,19 @@ h1 {
 h3 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #acacac;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
 }
 h4 {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #767676;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 450;
-    line-height: 20px;
 }
 img {
     height: 100%;
     transition: 0.3s;
-    &.fundo {width: 100%; aspect-ratio: 16 / 9;}
+    &.fundo {width: 100%; aspect-ratio: 16 / 9 !important; display: block;}
     &.meio { position: absolute;}
     &.icon { max-width: 35px; max-height: 35px; &:hover {transform: scale(1.1);} cursor: pointer;}
     &.vinte {height: 20%; &:hover {transform: scale(1.1);} cursor: pointer;}
@@ -181,7 +188,7 @@ textarea {
     top: 0;
     right: 0;
     resize: none;
-    padding: 12px;
+    padding: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #898989;
     font-size: 15px;
@@ -194,7 +201,7 @@ input, select {
     width: 100%;
     min-height: 35px;
     max-height: 35px;
-    padding: 0px 12px;
+    padding: 0px 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #898989;
     font-size: 15px;
@@ -209,24 +216,28 @@ input, select {
 
 
 ::-webkit-scrollbar {
-    width: 0px;
+    width: 5px;
     background-color: transparent;
 }
   
 ::-webkit-scrollbar-track {
-    width: 0px;
+    width: 5px;
     background-color: transparent;
+    
 }
 
 ::-webkit-scrollbar-thumb { 
-    width: 0px;
+    width: 5px;
     background-color: transparent;
+    &:hover {
+        background-color: rgb(46, 46, 46);
+    }
 }
 
 
 
 .linha {
-    width: 5px;
+    width: 4px;
     min-height: 100%;
     position: absolute;
     top: 0;
@@ -246,8 +257,8 @@ input, select {
 .null {
     opacity: 0;
 }
-.marginTop {margin-top: 12px;}
-.marginBottom {margin-bottom: 12px;}
+.marginTop {margin-top: 10px;}
+.marginBottom {margin-bottom: 10px;}
 
 
 
@@ -270,21 +281,23 @@ input, select {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    min-width: calc((100% / 3) - 8px);
-    max-width: calc((100% / 3) - 8px);
+    min-width: calc((100% / 4) - 8px);
+    max-width: calc((100% / 4) - 8px);
     min-height: 300px;
-    max-height: 680px;
+    max-height: 580px;
     border-radius: 10px;
     padding: 6px 6px 0px 6px;
     position: relative;
     gap: 10px;
+    &:hover > .CardCont > .Desc > .DescCard { min-height: 196px;}
     &:hover > .Desc > .DescCard { min-height: 196px;}
     &:hover > .Img > .Escuro > h3 {bottom: 6px;}
-    &.min {min-width: calc((100% - 36px) / 4); max-width: calc((100% - 36px) / 4);}
+    &.min {min-width: 400px; max-width: 400px;}
     &.minH {min-height: auto;}
     &.cem {max-width: none; min-width: none; width: 100%;}
     &.normalPadding {padding: 6px;}
     &:hover > button{opacity: 1;}
+    &.Retangular {min-height: auto; aspect-ratio: 16 / 9 !important;}
     
     .Desc {
         display: flex;
@@ -302,9 +315,8 @@ input, select {
         justify-content: center;
         align-items: center;
         width: 100%;
-        height: 284px;
         border-radius: 10px;
-        position: relative;
+        aspect-ratio: 16 / 9;
         overflow: hidden;
         position: relative;
     }
@@ -314,8 +326,8 @@ input, select {
         justify-content: flex-start;
         align-items: flex-start;
         width: 100%;
-        height: 550px;
         gap: 10px;
+        &.w50 {width: 50%;}
     }
 }
 .InfoFundo {
@@ -336,7 +348,7 @@ input, select {
     width: 100%;
     min-height: 35px;
     border-radius: 10px;
-    padding: 0px 12px;
+    padding: 0px 10px;
 }
 .DescCard {
     display: flex;
@@ -345,7 +357,7 @@ input, select {
     width: 100%;
     min-height: 230px;
     max-height: 230px;
-    padding: 12px 12px 12px 17px;
+    padding: 10px 10px 10px 17px;
     border-radius: 10px;
     position: relative;
     transition: 0.3s;
@@ -356,6 +368,11 @@ input, select {
         max-height: 238px; 
         height: 100%;
     }
+    &.autoH {
+        min-height: auto; 
+        max-height: auto; 
+        height: auto;
+    }
 }
 .Escuro {
     display: flex;
@@ -365,7 +382,7 @@ input, select {
     height: 100%;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.349);
-    padding: 12px;
+    padding: 10px;
     border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
@@ -378,7 +395,7 @@ input, select {
     }
     > h3 {
         position: absolute; 
-        padding: 7px 12px;
+        padding: 7px 10px;
         border-radius: 10px;
         left: 6px;
         bottom: -25px;
@@ -396,31 +413,34 @@ input, select {
     width: 100%;
     height: 600px;
     border-radius: 10px;
-    overflow: hidden;
+    overflow: auto;
     &.autoH {height: auto; }
-}
-.CardSelecionavel {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 100%;
-    aspect-ratio: 16 / 5;
-    position: relative;
-    overflow: hidden;
 }
 .SectionButtons {
     display: flex;
     justify-content: flex-start;
     align-items: flex-end;
     width: 100%;
-    gap: 10px;
-    min-height: 59px;
-    max-height: 59px;
-    padding: 12px 0px;
+    gap: 10px;  
+    padding: 10px 0px;
     z-index: 1;
     position: relative;
     background-color: #151515;
-    &.default { padding: 0; background-color: rgba(255, 0, 0, 0); max-height: 35px; min-height: 35px;}
+
+    &.default { 
+        padding: 0; 
+        background-color: rgba(255, 0, 0, 0); 
+        max-height: 35px; 
+        min-height: 35px;
+    }
+    &.column {
+        align-items: flex-start;
+        flex-direction: column;
+        min-width: 57px;
+        max-width: 57px;
+        height: 100%;
+        padding: 10px;
+    }
 }
 .SectionCards {
     display: flex;
@@ -429,6 +449,14 @@ input, select {
     flex-wrap: wrap;
     width: 100%;
     gap: 10px;
+
+    &.column {
+        flex-direction: column;
+        min-width: 400px;
+        max-width: 400px;
+        padding: 10px;
+        overflow: auto;
+    }
 }
 .Buttons {
     display: flex;
@@ -448,32 +476,25 @@ input, select {
 .Video {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    height: 650px;
+    aspect-ratio: 16 / 9;
     padding: 6px;
     border-radius: 10px;
+    overflow: hidden;
 
     .FundoVideo {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 100%;
-        height: 100%;
+        aspect-ratio: 16 / 9;
         border-radius: 10px;
         position: relative;
         overflow: hidden;
-        background-color: black;
+        background-color: rgb(19, 19, 19);
     }
-}
-.Info {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    gap: 10px;
 }
 .CardPerfil {
     display: flex;
@@ -529,185 +550,115 @@ input, select {
     border-radius: 10px;
     gap: 10px;
 }
-
-
-
-.invisible {
-    opacity: 0;
-    transition: 0.3s;
-    &.visible {opacity: 1;}
+.CardSections {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    min-height: 400px;
+    max-height: 400px;
+    border-radius: 10px;
+    overflow: hidden;
 }
+.PerfilImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 180px;
+    height: 180px;
+    border-radius: 100%;
+    z-index: 1;
+    padding: 4px;
+    position: absolute;
+    bottom: calc(50% - 90px);
+    left: calc(50% - 90px);
 
+    .imgPerfilImage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        border-radius: 100%;
+        overflow: hidden;
 
-
-
-
-
-
-
-
-
-
-
-
-@media screen and (max-width: 1720px) {
-    .PageSize, .FundoEmbacado {
-        padding: 0px 12px 12px 232px !important;
-    }
-    .BarraLateral {
-        max-width: 220px;
-    }
-}
-@media screen and (max-width: 1520px) {
-    .PageSize, .FundoEmbacado {
-        padding: 0px 12px 12px 62px !important;
-    }
-    .BarraLateral {
-        max-width: 50px;
-
-        button {
-            font-size: 0px;
+        &.min {
+            border-radius: 100%;
         }
     }
 }
-@media screen and (max-width: 1320px) {
-    .InfoLicoes {
-        flex-direction: column-reverse !important;
 
-        .CardAtividadeLicoes {
-            min-width: 100% !important;
-            max-width: 100% !important;
-            position: relative !important;
-            margin-bottom: 15px;
-            margin-top: -15px;
-            .Card {
-                flex-direction: row;
-                .Desc {
-                    height: 292px;
-                }
-                .DescCard {
-                    min-height: 240px;
-                    max-height: 240px;
-                }
-            }
-        }
+
+
+
+
+
+
+
+
+//cards
+@media screen and (max-width: 1630px) {
+    .Card {
+        min-width: calc((100% / 3) - 7px);
+        max-width: calc((100% / 3) - 7px);
     }
+}
+
+@media screen and (max-width: 1237px) {
     .Card {
         min-width: calc((100% / 2) - 5px);
         max-width: calc((100% / 2) - 5px);
-        &.min {min-width: calc((100% - 36px) / 3); max-width: calc((100% - 36px) / 3);}
-    }
-    button {
-        max-width: auto;
-        width: auto;
     }
 }
-@media screen and (max-width: 1290px) {
-    .Video {
-        height: auto;
-        aspect-ratio: 16 / 9;
-    }
-}
-@media screen and (max-width: 1190px) {
-    .Card { 
-        &.CardDados {
-            min-width: calc((100% / 3) - 5px);
-            max-width: calc((100% / 3) - 5px);
-            width: 100%;
-        }
-    }
-}
-@media screen and (max-width: 1025px) {
-    button {
-        &.nav {
-            font-size: 0px !important;
-            justify-content: center !important;
 
-            img {
-                margin-left: 10px;
-            }
-        }
-    }
-    button {
-        max-width: 100% !important;
-    }
-    .Escuro > h3 {
-        bottom: 6px;
-    }
-    .Escuro > button {
-        display: flex;
-    }
-    .Card { 
-        &.min {
-            display: none;
-            z-index: 1;
-            position: absolute;
-            top: 0;
-            left: 0;
-            min-width: 300px;
-            max-width: 300px;
-        }
-        .Desc {
-            .DescCard {
-                min-height: 195px;
-                max-height: 195px;
-                &.fix { 
-                    min-height: 238px; 
-                    max-height: 238px; 
-                    height: 100%;
-                }
-            }
-        }
-        &.conts {
-            flex-direction: row;
-            min-width: 100%;
-            max-width: 100%;
-    
-            .Desc {
-                height: 292px;
-                .DescCard {
-                    min-height: 240px;
-                    max-height: 240px;
-                }
-            }
-        }
-    }
-}
-@media screen and (max-width: 992px) {
-    .Info {
-        flex-direction: column !important;
-
-        &.InfoDados {
-            flex-direction: row !important;
-        }
-    }
-    .PageSize, .FundoEmbacado {
-        padding: 0px 12px 60px 12px !important;
-
+//geral
+@media screen and (max-width: 1440px) {
+    .PageSize {
         &.PageAtividade {
-            padding: 48px 12px 420px 12px !important;
+            padding: 0px 10px 10px 310px !important;
         }
         &.PageLicoes {
-            padding: 48px 12px 110px 12px !important;
+            padding: 0px 10px 10px 310px !important;
         }
-        &.PageTrilha {
-            padding: 0px 12px 110px 12px !important;
-        }
-    }
-    .FundoEmbacado{ 
-        justify-content: flex-end !important;
-
-        > .Card {
-            max-width: auto !important; 
-            min-width: 100% !important;
-        }
-    }
-    .EnviarRespostas {
-        max-width: auto !important; 
-        min-width: 100% !important;
-        margin-bottom: 45px;
     }
     .BarraLateral {
+        &.BiggerSize {
+            width: 300px !important;
+        }
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .PageSize {
+        &.PageAtividade {
+            padding: 0px 10px 10px 230px !important;
+        }
+        &.PageLicoes {
+            padding: 0px 10px 10px 230px !important;
+        }
+    }
+    .BarraLateral {
+        &.BiggerSize {
+            width: 220px !important;
+        }
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    h1 {
+        font-size: 14px;
+    }
+    
+    h3 {
+        font-size: 13px;
+    }
+    h4 {
+        font-size: 13px;
+    }
+
+    .BarraLateral {
+        &.BiggerSize {
+            width: 55px !important;
+        }
         min-width: 100% !important;
         min-height: 50px;
         max-height: 50px;
@@ -737,7 +688,7 @@ input, select {
                 bottom: 50px;
                 left: -100%;
                 z-index: 1;
-                width: calc(100% - 12px) !important;
+                width: calc(100% - 10px) !important;
 
                 .AtividadeButtons {
                     background-color: #1F1F1F;
@@ -756,7 +707,7 @@ input, select {
 
                     > .Atividades {
                         gap: 10px;
-                        width: calc(100% - 12px);
+                        width: calc(100% - 10px);
                         flex-direction: row !important;
                         bottom: 6px;
                         padding: 0px !important;
@@ -772,35 +723,78 @@ input, select {
             }
         }
     }
-}
-@media screen and (max-width: 850px) {
-    .PageSize, .FundoEmbacado {
-        &.PageAtividade {
-            padding: 48px 12px 110px 12px !important;
-        }
-    }
+
     .Info {
+        flex-direction: column !important;
         height: auto;
         
-        &.InfoDados {
-            flex-direction: row !important;
-        }
-    }
-    .Info {
         &.InfoDados {
             flex-direction: column !important;
         }
     }
-    .Card { 
-        &.CardDados {
-            min-width: 100%;
-            max-width: 100%;
-            width: 100%;
+
+    .PageSize,
+    .FundoEmbacado {
+        padding: 0px 10px 60px 10px !important;
+
+        &.PageAtividade {
+            padding: 48px 10px 110px 10px !important;
+        }
+
+        &.PageLicoes {
+            padding: 48px 10px 110px 10px !important;
+        }
+
+        &.PageTrilha {
+            padding: 0px 10px 110px 10px !important;
         }
     }
-}
-@media screen and (max-width: 650px) {
+
+    .FundoEmbacado {
+        justify-content: flex-end !important;
+
+        > .Card {
+            max-width: auto !important;
+            min-width: 100% !important;
+        }
+    }
+
+    .EnviarRespostas {
+        max-width: auto !important;
+        min-width: 100% !important;
+        margin-bottom: 45px;
+    }
+
+    button {
+        max-width: 100% !important;
+
+        &.nav {
+            font-size: 0px !important;
+            justify-content: center !important;
+
+            img {
+                margin-left: 10px;
+            }
+        }
+    }
+
+    .Escuro {
+        > h3 {
+            bottom: 6px;
+        }
+
+        > button {
+            display: flex;
+        }
+    }
     .Card { 
+        &.min {
+            display: none;
+        }
+        &.CardDados {
+            display: flex;
+            min-width: 100%;
+        }
         .Desc {
             .DescCard {
                 min-height: 195px;
@@ -826,6 +820,28 @@ input, select {
             }
         }
     }
+}
+
+@media screen and (max-width: 850px) {
+    .PageSize, .FundoEmbacado {
+        &.PageAtividade {
+            padding: 48px 10px 110px 10px !important;
+        }
+    }
+    .Info {
+        &.InfoDados {
+            flex-direction: column !important;
+        }
+    }
+    .Card { 
+        &.CardDados {
+            min-width: 100%;
+            max-width: 100%;
+            width: 100%;
+        }
+    }
+}
+@media screen and (max-width: 650px) {
     .InfoLicoes {
         .CardAtividadeLicoes {
             .Card {
@@ -837,7 +853,7 @@ input, select {
         flex-direction: column !important;
 
         > .Title {
-            padding: 12px;
+            padding: 10px;
         }
         > button {
             display: none;
@@ -873,17 +889,5 @@ input, select {
         min-height: auto !important;
         max-height: auto !important;
         aspect-ratio: 16 / 8 !important;
-    }
-    .PerfilImage {
-        height: 120px !important;
-        width: 120px !important;
-        border-radius: 100% !important;
-        padding: 6px !important;
-        bottom: calc(50% - 60px) !important;
-        left: calc(50% - 60px) !important;
-
-        .imgPerfilImage {
-            border-radius: 100% !important;
-        }
     }
 }

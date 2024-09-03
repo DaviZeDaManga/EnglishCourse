@@ -1,5 +1,5 @@
 import './index.scss';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import storage from 'local-storage';
 
@@ -18,15 +18,12 @@ import StatusPage from '../../../components/user/statusPage';
 
 export default function Licoes() {
     const aluno = storage.get('aluno') || [];
+    const [loading, setLoading] = useState(true);
     const {idsala, idtrilha, idatividade} = useParams();
-    const [atividade, setAtividade] = useState([]);
-    const [licoes, setLicoes] = useState([]);
-    const [respostas, setRespostas] = useState([]);
-    const [cardenvio, setCardenvio] = useState(false);
-    const [enviar, setEnviar] = useState("");
+    const [atividade, setAtividade] = useState("Loading");
+    const [licoes, setLicoes] = useState("Loading");
 
     async function dadosAtividade() {
-        setAtividade("Loading");
         try {
             const resposta = await dadosAtividadeAlunoCon(aluno.map(item => item.id), idsala, idtrilha, idatividade);
             setAtividade(resposta);
@@ -36,20 +33,7 @@ export default function Licoes() {
         }
     }
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                await dadosAtividade();
-            } catch (error) {
-                console.error("Erro ao tentar carregar atividade:", error);
-                toast.dark("Erro ao tentar carregar atividade.");
-            }
-        }
-        fetchData();
-    }, [idsala, idtrilha, idatividade]);
-
     async function dadosLicoes() {
-        setLicoes("Loading");
         try {
             const resposta = await dadosLicoesAlunoCon(aluno.map(item => item.id), idsala, idtrilha, idatividade);
             setLicoes(resposta);
@@ -60,19 +44,25 @@ export default function Licoes() {
     }
 
     useEffect(() => {
-        if (Array.isArray(atividade)) {
-            async function fetchDataSection() {
-                try {
-                    await dadosLicoes();
-                } catch (error) {
-                    console.error("Erro ao tentar carregar as lições:", error);
-                    toast.dark("Erro ao tentar carregar as lições.");
-                }
+        async function fetchData() {
+            setLoading(true)
+            try {
+                await dadosAtividade();
+                await dadosLicoes()
+            } catch (error) {
+                console.error("Erro ao tentar carregar atividade e suas atividades:", error);
+                toast.dark("Erro ao tentar carregar atividade e suas atividades.");
+            } finally {
+                setLoading(false)
             }
-            fetchDataSection();
         }
-    }, [atividade]);
+        fetchData();
+    }, [idsala, idtrilha, idatividade]);
 
+    const refetchAtividades = useRef(null)
+    const [respostas, setRespostas] = useState([]);
+    const [cardenvio, setCardenvio] = useState(false);
+    const [enviar, setEnviar] = useState("");
     const [buttonEnviarRespostas, setButtonsEnviarRespostas] = useState(true)
  
     function adicionarRespostas(resposta, tipo, status, idlicao) {
@@ -95,6 +85,9 @@ export default function Licoes() {
                 try {
                     await inserirRespostaCon(aluno.map(item => item.id), item.idlicao, item.resposta, item.tipo, item.status);
                     console.log(`Resposta ${i + 1} enviada com sucesso.`);
+                    if (refetchAtividades.current) {
+                        await refetchAtividades.current()
+                    }
                 } catch (inserirError) {
                     console.error(`Erro ao enviar resposta ${i + 1}:`, inserirError);
                 }
@@ -115,36 +108,37 @@ export default function Licoes() {
 
     return (
         <section className='PageSize PageLicoes'>
-            <BarraLateral page={"Lições"} />
+            <BarraLateral page={"Lições"} refetchAtividades={refetchAtividades} biggerSize={true}/>
             <Titulo nome={"Lições"} />
-
-            {cardenvio && (
-                <StatusPage>
-                    <section className='EnviarRespostas cor1 border'>
-                        <section className='Title cor2'>
-                            <h3>Deseja enviar suas respostas?</h3>
-                        </section>
-                        <input
-                            onChange={(e) => setEnviar(e.target.value)}
-                            value={enviar}
-                            className='cor2 border'
-                            placeholder='Digite "Confirmar" para fazer essa ação'
-                        />
-                        <section className='SectionButtons default'>
-                            <button onClick={() => setCardenvio(false)} className='b cor3 border cem'>
-                                Voltar
-                            </button>
-                            {enviar === "Confirmar" && (
-                                <button onClick={() => enviarRespostas()} className='b cor3 cem'>Enviar</button>
-                            )}
-                        </section>
-                    </section>
-                </StatusPage>
-            )}
+            <StatusPage loading={loading} />
 
             {atividade === "Loading" || atividade === "Nenhuma atividade encontrada." || atividade.map(item => item.status) === "Não feita" ? (
-                <StatusPage status={atividade} />
+                <StatusCard className={"marginTop"} mensagem={atividade} reload={true} />
             ) : (
+                <>
+                {cardenvio && (
+                    <StatusPage>
+                        <section className='EnviarRespostas cor1 border'>
+                            <section className='Title cor2'>
+                                <h3>Deseja enviar suas respostas?</h3>
+                            </section>
+                            <input
+                                onChange={(e) => setEnviar(e.target.value)}
+                                value={enviar}
+                                className='cor2 border'
+                                placeholder='Digite "Confirmar" para fazer essa ação'
+                            />
+                            <section className='SectionButtons default'>
+                                <button onClick={() => setCardenvio(false)} className='b cor3 border cem'>
+                                    Voltar
+                                </button>
+                                {enviar === "Confirmar" && (
+                                    <button onClick={() => enviarRespostas()} className='b cor3 cem'>Enviar</button>
+                                )}
+                            </section>
+                        </section>
+                    </StatusPage>
+                )}
                 <section className='InfoLicoes marginTop'>
                     <section className='SectionLicoes'>
                         {licoes === "Loading" || licoes === "Nenhuma lição encontrada." ? (
@@ -238,6 +232,7 @@ export default function Licoes() {
                         )}
                     </section>
                 </section>
+                </>
             )}
         </section>
     );

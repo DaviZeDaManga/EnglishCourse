@@ -7,11 +7,9 @@ export default function StatusCard({className, mensagem, children, reload}) {
     const ref = useRef()
     
     function reloadPage() {
-        ref.current.continuousStart()
         setCarregando(true)
 
         setTimeout(() => {
-            ref.current.complete()
             window.location.reload() 
         }, 1500);
     }

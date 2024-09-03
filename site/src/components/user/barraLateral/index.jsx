@@ -9,10 +9,9 @@ import { dadosAtividadesAlunoCon, dadosMinhaSalaCon, dadosTrilhaAlunoCon } from 
 
 //outros
 import { toast } from 'react-toastify';
-import LoadingBar from "react-top-loading-bar";
 import StatusPage from '../statusPage';
 
-export default function BarraLateral({page}) {
+export default function BarraLateral({page, refetchMinhaSala, refetchAtividades, biggerSize}) {
     const aluno = storage.get('aluno') || [];
     const {idsala, idtrilha, idatividade} = useParams()
     const [sala, setSala] = useState("Loading")
@@ -41,6 +40,12 @@ export default function BarraLateral({page}) {
         }
         fetchData();
     }, []);
+
+    useEffect(()=> {
+        if (refetchMinhaSala) {
+            refetchMinhaSala.current = dadosMinhaSala
+        }
+    }, [refetchMinhaSala])
 
     async function dadosTrilha() {
         try {
@@ -86,6 +91,12 @@ export default function BarraLateral({page}) {
         fetchData()
     }, [])
 
+    useEffect(()=> {
+        if (refetchAtividades) {
+            refetchAtividades.current = dadosAtividades
+        }
+    }, [refetchAtividades])
+
 
 
 
@@ -93,43 +104,33 @@ export default function BarraLateral({page}) {
     const ref = useRef()
 
     function navegacao(para, id, outro) {
-        ref.current.continuousStart()
-
-        try {
-            if (para == 0) {
-                toast.dark("Você não pode acessar isso.")
-            }
-            if (para == 1) {
-                navigate(`/aluno/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}${outro != null && "/" + outro}`)
-            }
-            if (para == 2) {
-                navigate(`/aluno/minhasala`)
-            }
-            if (para == 3) {
-                navigate(`/aluno/minhaconta`)
-            }
-            if (para == 4) {
-                navigate(`/aluno/minhasala/${idsala}/trilha/${id}`)
-            }
-            if (para == 5) {
-                navigate(`/aluno/salas`)
-            }
+        if (para == 0) {
+            toast.dark("Você não pode acessar isso.")
         }
-        catch {
-            toast.dark("Algo deu errado.")
+        if (para == 1) {
+            navigate(`/aluno/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}${outro != null && "/" + outro}`)
         }
-        finally {
-            ref.current.complete()
+        if (para == 2) {
+            navigate(`/aluno/minhasala`)
+        }
+        if (para == 3) {
+            navigate(`/aluno/minhaconta`)
+        }
+        if (para == 4) {
+            navigate(`/aluno/minhasala/${idsala}/trilha/${id}`)
+        }
+        if (para == 5) {
+            navigate(`/aluno/salas`)
         }
     }
 
     return ( 
         <>
-            <LoadingBar color="#8A55CD" ref={ref} />
-            {cardativ != "-100%" &&
-            <StatusPage/>}
+            {(cardativ != "-100%") &&
+            <StatusPage fundo={true}/>}
             
-            <section className='BarraLateral border cor1'>
+            <section className={`BarraLateral border cor1 ${biggerSize == true && "BiggerSize"}`}>
+
                 <div className='ButtonSections cor4'>
                     <button onClick={()=> navegacao(3)} className={`b cor3 cem ${page == "minhaconta" && "selecionado"}`}> 
                         <img src={`/assets/images/icones/user${page === "minhaconta" ? "PE" : ""}.png`} />
@@ -168,7 +169,7 @@ export default function BarraLateral({page}) {
                 </div>
                 }
 
-                {(page === "Trilha" || page === "Assistir" || page === "Lições") &&
+                {(page === "Assistir" || page === "Lições") &&
                 <section className='Atividades cor4'>
                     <section style={{ left: cardativ}} className='CardAtividades cor3 selecionado'>
                         {(atividades === "Loading" || atividades == "Parece que não tem nada aqui.") ? (

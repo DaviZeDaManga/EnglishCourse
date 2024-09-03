@@ -55,11 +55,7 @@ export default function MinhaSala() {
     async function dadosTrilhas() {
         try {
             const resposta = await dadosTrilhasAlunoCon(aluno.map(item => item.id), sala.map(item => item.sala.id));
-            if (Array.isArray(resposta)) {
-                setTrilhas(resposta);
-            } else {
-                setTrilhas([]);
-            }
+            setTrilhas(resposta);
         } catch (error) {
             console.error('Erro ao buscar dados das trilhas:', error);
             setTrilhas("Parece que não tem nada aqui.");
@@ -69,11 +65,7 @@ export default function MinhaSala() {
     async function dadosAvisos() {
         try {
             const resposta = await dadosAvisosAlunoCon(aluno.map(item => item.id), sala.map(item => item.sala.id));
-            if (Array.isArray(resposta)) {
-                setAvisos(resposta);
-            } else {
-                setAvisos([]);
-            }
+            setAvisos(resposta);
         } catch (error) {
             console.error('Erro ao buscar dados dos avisos:', error);
             setAvisos("Parece que não tem nada aqui.");
@@ -83,11 +75,7 @@ export default function MinhaSala() {
     async function dadosTransmissoes() {
         try {
             const resposta = await dadosTransmissoesAlunoCon(aluno.map(item => item.id), sala.map(item => item.sala.id));
-            if (Array.isArray(resposta)) {
-                setTransmissoes(resposta);
-            } else {
-                setTransmissoes([]);
-            }
+            setTransmissoes(resposta);
         } catch (error) {
             console.error('Erro ao buscar dados das transmissões:', error);
             setTransmissoes("Parece que não tem nada aqui.");
@@ -96,18 +84,20 @@ export default function MinhaSala() {
 
     useEffect(() => {
         async function fetchSectionData() {
-            switch (section) {
-                case 1:
-                    await dadosTrilhas();
-                    break;
-                case 2:
-                    await dadosAvisos();
-                    break;
-                case 3:
-                    await dadosTransmissoes();
-                    break;
-                default:
-                    break;
+            if (Array.isArray(sala)) {
+                switch (section) {
+                    case 1:
+                        await dadosTrilhas();
+                        break;
+                    case 2:
+                        await dadosAvisos();
+                        break;
+                    case 3:
+                        await dadosTransmissoes();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         fetchSectionData();
