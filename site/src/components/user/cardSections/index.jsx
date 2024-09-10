@@ -21,11 +21,12 @@ export default function CardSections({ buttons, children }) {
                         onClick={() => setSection(label)}
                         className={`b cor3 ${section === label ? "selecionado" : ""}`}
                     >
-                        <img src={image} />
+                        <img src={section === label ? image.replace('.png', 'PE.png') : image} />
                     </button>
                 ))}
             </section>
             <section className="SectionCards column cor1 border2">
+                <h3>{section}</h3>
                 {filteredChildren.length === 0 ? (
                     <h4>Nada encontrado.</h4>
                 ) : (

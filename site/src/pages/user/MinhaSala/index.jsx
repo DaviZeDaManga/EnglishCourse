@@ -15,6 +15,7 @@ import Titulo from '../../../components/user/titulo';
 
 // outros
 import { toast } from 'react-toastify';
+import CardSections from '../../../components/user/cardSections';
 
 export default function MinhaSala() {
     const aluno = storage.get('aluno') || [];
@@ -114,11 +115,28 @@ export default function MinhaSala() {
                 <>
                 {cardpessoas && (
                     <StatusPage>
-                        <section className='Card cor1 border normalPadding'>
-                            <section className='Title cor2'>
-                                <h3>Professor</h3>
-                            </section>
-                            <section className='CardPerfil cor2 border'>
+                        <CardSections
+                        buttons={[["Sobre", "/assets/images/icones/Avisos.png"], ["Pessoas", "/assets/images/icones/pessoas.png"]]}
+                        >
+                            <button onClick={()=> setCardpessoas(false)} className='b cor3' data-category='Voltar'>
+                                <img src={"/assets/images/icones/voltar.png"}/>
+                            </button>
+
+                            <div className='Desc' data-category='Sobre'>
+                                <section className='DescCard autoH border cor2'>
+                                    <div className='linha cor3'></div>
+                                    {sala.map(item => <h4>{item.sala.descricao}</h4>)}
+                                </section>
+                            </div>
+
+                            <div className='Desc' data-category='Pessoas'>
+                                <section className='DescCard autoH border cor2' >
+                                    <div className='linha cor3'></div>
+                                    <h4>Nesta seção, você poderá visualizar todos os alunos que fazem parte da sua sala, junto com o nome e os detalhes do professor responsável. Isso permite que você tenha uma visão clara de quem está participando da mesma turma, facilitando a interação e o acompanhamento das atividades em grupo. Além disso, ao conhecer o professor responsável pela sala, você saberá a quem recorrer em caso de dúvidas ou para solicitar orientações.</h4>
+                                </section>
+                            </div>
+                            <h3 data-category="Pessoas">Professor</h3>
+                            <section className='CardPerfil cor2 border' data-category="Pessoas">
                                 <section className='CardPerfilImg cor3'>
                                     {sala.map(item => (
                                         <img className='fundo' src={BuscarImagem(item.sala.imagemProfessor)} alt="imagem de fundo" />
@@ -131,25 +149,20 @@ export default function MinhaSala() {
                                 </section>
                             </section>
 
-                            <section className='Title cor2'>
-                                <h3>Alunos</h3>
-                            </section>
-                            <section className='SectionItems cor2 border'>
-                                {sala[0].alunos.map(item => (
-                                    <section className='CardPerfil cor2 border'>
-                                        <section className='CardPerfilImg cor3'>
-                                            <img className='fundo' src={BuscarImagem(item.imagem)} alt="imagem de fundo" />
-                                            <section className='Escuro'></section>
-                                        </section>
-                                        <section className='CardPerfilCont'>
-                                            <h3>{item.nome}</h3>
-                                            <h4>{item.tipo}</h4>
-                                        </section>
+                            <h3 data-category="Pessoas">Alunos</h3>
+                            {sala[0].alunos.map(item => (
+                                <section className='CardPerfil cor2 border' data-category="Pessoas">
+                                    <section className='CardPerfilImg cor3'>
+                                        <img className='fundo' src={BuscarImagem(item.imagem)} alt="imagem de fundo" />
+                                        <section className='Escuro'></section>
                                     </section>
-                                ))}
-                            </section>
-                            <button onClick={() => setCardpessoas(false)} className='b cem cor3'>Voltar</button>
-                        </section>
+                                    <section className='CardPerfilCont'>
+                                        <h3>{item.nome}</h3>
+                                        <h4>{item.tipo}</h4>
+                                    </section>
+                                </section>
+                            ))}
+                        </CardSections>
                     </StatusPage>
                 )}
 
@@ -164,8 +177,8 @@ export default function MinhaSala() {
                                 {sala.map(item => <h4>{item.sala.descricao}</h4>)}
                             </section>
                             <button onClick={() => setCardpessoas(true)} className='b cor3 cem'>
-                                <img src="/assets/images/icones/pessoas.png" />
-                                Pessoas
+                                <img src="/assets/images/icones/Avisos.png" />
+                                Ver mais
                             </button>
                         </div>
                     </section>
@@ -176,7 +189,7 @@ export default function MinhaSala() {
                         <section className='Escuro'>
                             <h3>{sala.map(item => item.sala.nome)}</h3>
                             <button onClick={() => setCardpessoas(true)} className='b cor3 border min'>
-                                <img src="/assets/images/icones/pessoas.png" />
+                                <img src="/assets/images/icones/Avisos.png" />
                             </button>
                         </section>
                     </section>

@@ -1,10 +1,10 @@
 import './index.scss';
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import storage from 'local-storage';
 
 // conexões
-import { dadosAtividadeAlunoCon, dadosLicoesAlunoCon, inserirRespostaCon } from '../../../connection/alunoConnection';
+import { dadosAtividadeAlunoCon, dadosAtividadesAlunoCon, dadosLicoesAlunoCon, inserirRespostaCon } from '../../../connection/alunoConnection';
 
 // components
 import BarraLateral from '../../../components/user/barraLateral';
@@ -15,11 +15,38 @@ import StatusCard from '../../../components/user/statusCard';
 // outros
 import { toast } from 'react-toastify';
 import StatusPage from '../../../components/user/statusPage';
+import { BuscarImagem } from '../../../connection/userConnection';
 
 export default function Licoes() {
     const aluno = storage.get('aluno') || [];
     const [loading, setLoading] = useState(true);
     const {idsala, idtrilha, idatividade} = useParams();
+
+    const [atividades, setAtividades] = useState("Loading")
+
+    async function dadosAtividades() {
+        try {
+            let resposta = await dadosAtividadesAlunoCon(aluno.map(item => item.id), idsala, idtrilha);
+            setAtividades(resposta);
+        } catch (error) {
+            console.error('Erro ao buscar dados das atividades:', error);
+            setAtividades("Parece que não tem nada aqui.")
+        }
+    }
+
+    useEffect(()=> {
+        async function fetchData() {
+            try {
+                await dadosAtividades()
+            } catch (error) {
+                console.error('Erro ao carregar dados das atividades:', error);
+                toast.dark("Erro ao carregar as atividades!")
+            }
+        }
+        fetchData()
+    }, [])
+
+    const [section, setSection] = useState(1);
     const [atividade, setAtividade] = useState("Loading");
     const [licoes, setLicoes] = useState("Loading");
 
@@ -106,8 +133,23 @@ export default function Licoes() {
         respostas.some(resposta => resposta.idlicao === licao.licao.id && resposta.resposta)
     );
 
+    const navigate = useNavigate()
+    const ref = useRef()
+
+    function navegacao(para, id) {
+        if (para == 0) {
+            toast.dark("Você não pode acessar isso.")
+        }
+        if (para == 1) {
+            navigate(`/aluno/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}/assistir`)
+        }
+        if (para == 2) {
+            navigate(`/aluno/minhasala/${idsala}/trilha/${idtrilha}/atividade/${id}/lições`)
+        }
+    }
+
     return (
-        <section className='PageSize PageLicoes'>
+        <section className='PageSize flex'>
             <BarraLateral page={"Lições"} refetchAtividades={refetchAtividades} biggerSize={true}/>
             <Titulo nome={"Lições"} />
             <StatusPage loading={loading} />
@@ -139,97 +181,150 @@ export default function Licoes() {
                         </section>
                     </StatusPage>
                 )}
-                <section className='InfoLicoes marginTop'>
-                    <section className='SectionLicoes'>
-                        {licoes === "Loading" || licoes === "Nenhuma lição encontrada." ? (
-                            <StatusCard mensagem={licoes} />
-                        ) : (
-                            <>
-                                {licoes.map(item => (
-                                    <section className='CardLicoes cor1 border' key={item.licao.id}>
-                                        <section className='TitleLicoes'>
-                                            {item.licao.nome !== "Nenhum título adicionado."
-                                                ? <section className='Title border cor2'><h3>{item.licao.nome}</h3></section>
-                                                : <section className='Title border cor2'><h3>{item.licao.pergunta}</h3></section>}
-                                            <button className='b cor2 min'><img src={`/assets/images/icones/${item.licao.tipo}.png`} /></button>
-                                            {item.licao.status == "Respondida" &&
-                                            <button className='b cor2 min'>{item.licao.nota}</button>}
-                                            {(item.licao.status != "Respondida" && item.licao.status != null) &&
-                                            <button className='b cor2 auto'>{item.licao.status}</button>}
-                                        </section>
+                <section className='ConteudosTrilha'>
+                    <section className='CardConteudosTrilha cor1 border'>
+                        <section className='Title cor2'>
+                            <h3>Conteúdos</h3>
+                        </section>
 
-                                        {item.licao.descricao !== "Nenhuma descrição adicionada." &&
-                                            <section className="DescCard border cor2">
-                                                <div className='linha'></div>
-                                                <h4>{item.licao.descricao}</h4>
-                                            </section>
-                                        }
-
-                                        {item.licao.nome !== "Nenhum título adicionado." &&
-                                            <section className='TitleLicoes'>
-                                                <section className='Title border cor2'><h3>{item.licao.pergunta}</h3></section>
-                                            </section>
-                                        }
-
-                                        {item.licao.tipo === "Writing" &&
-                                            <section className="DescCard border cor2">
-                                                <div className='linha'></div>
-                                                {item.licao.resposta == null
-                                                    ? <textarea onChange={(e) => adicionarRespostas(e.target.value, "Dissertativa", "Em análise", item.licao.id)} placeholder='Digite sua resposta' className='cor2 border'></textarea>
-                                                    : <h4>{item.licao.resposta}</h4>
-                                                }
-                                            </section>
-                                        }
-
-                                        {item.licao.tipo === "Reading" &&
+                        <main className='ConteudosList cor2 border'>
+                            {(atividades === "Loading" || atividades == "Parece que não tem nada aqui.") ? (
+                                <button className='b selecionado cem'>{atividades}</button>
+                            ) : (
+                                <>
+                                {atividades.map( item=>
+                                <>
+                                <button onClick={()=> navegacao(1, item.id)} className='b cem transparente'>{item.nome}</button>
+                                <section className={`CardList border ${item.id != idatividade && "minH"}`}>
+                                    {item.id == idatividade ? (
                                         <>
-                                        {item.licao.resposta == null ? (
-                                            item.alternativas.map(alternativa => (
-                                                <button
-                                                    key={alternativa.id}
-                                                    onClick={() => adicionarRespostas(alternativa.nome, "Alternativa", "Respondida", item.licao.id)}
-                                                    className={`b cor3 cem ${respostas.some(respin => respin.idlicao === item.licao.id && respin.resposta === alternativa.nome) ? 'selecionado' : ''}`}
-                                                >
-                                                    {alternativa.nome}
-                                                </button>
-                                            ))
-                                        ) : (
-                                            item.alternativas.map(alternativa => (
-                                                <button
-                                                    key={alternativa.id}
-                                                    className={`b cor3 cem ${alternativa.correto === true && "grey"} ${item.licao.resposta === alternativa.nome ? (alternativa.correto ? 'green' : 'red') : ''}`}
-                                                >
-                                                    {alternativa.nome}
-                                                </button>
-                                            ))
-                                        )}
+                                        <img src={BuscarImagem(item.imagem)} />
+                                        <section className='Escuro'>
+                                            <h3>{item.nome}</h3>
+                                        </section>
                                         </>
-                                        }
-                                    </section>
-                                ))}
-                            </>
-                        )}
+                                    ) : (
+                                        <>
+                                        <button onClick={()=> navegacao(2, item.id)} className='b cem transparente'>Lições - {item.nome}</button>
+                                        </>
+                                    )}  
+                                </section>
+                                </>)}
+                                </>
+                            )}
+                        </main>
+                    </section>
+                </section>
 
-                        {todasLicoesRespondidas && (
-                            <button onClick={() => setCardenvio(true)} className='b cem amarelo'>Enviar respostas</button>
-                        )}
+                <section className='PageSection'>
+                    <section className='Info marginTop'>
+                        <section className='Card min cor1 border'>
+                            <section className='Title cor2'>
+                                {atividade.map(item => <h3>{item.nome}</h3>)}
+                            </section>
+                            <div className='Desc'>
+                                <section className='DescCard fix border cor2'>
+                                    <div className='linha cor3'></div>
+                                    {atividade.map(item => <h4>{item.descricao}</h4>)}
+                                </section>
+                            </div>
+                        </section>
+                        <section className='InfoFundo border cor1'>
+                            {atividade.map(item => (
+                                <img className='fundo' src={BuscarImagem(item.imagem)} alt="imagem de fundo" />
+                            ))}
+                            <section className='Escuro'>
+                                <h3>{atividade.map(item => item.nome)}</h3>
+                            </section>
+                        </section>
                     </section>
 
-                    <section className='CardAtividadeLicoes'>
-                        {atividade.map(item =>
-                            <Card
-                                key={item.id}
-                                estilo={2}
-                                id={item.id}
-                                name={item.nome}
-                                desc={item.descricao}
-                                img={item.imagem}
-                                video={item.video}
-                                para={4}
-                                conteudo={false}
-                                width={"cem"}
-                            />
-                        )}
+                    <section className='SectionButtons'>
+                        <button onClick={() => setSection(1)} className={`b nav cor3 ${section === 1 && "selecionado"}`}>
+                            <img src={`/assets/images/icones/atividades${section === 1 ? "PE" : ""}.png`} alt="atividades" />
+                            Lições
+                        </button>
+                        <button onClick={() => setSection(2)} className={`b nav cor3 ${section === 2 && "selecionado"}`}>
+                            <img src={`/assets/images/icones/comentario${section === 2 ? "PE" : ""}.png`} alt="Comentários" />
+                            Outros
+                        </button>
+                    </section>
+
+                    <section className='InfoLicoes'>
+                        <section className='SectionLicoes'>
+                            {licoes === "Loading" || licoes === "Nenhuma lição encontrada." ? (
+                                <StatusCard mensagem={licoes} />
+                            ) : (
+                                <>
+                                    {licoes.map(item => (
+                                        <section className='CardLicoes cor1 border' key={item.licao.id}>
+                                            <section className='TitleLicoes'>
+                                                {item.licao.nome !== "Nenhum título adicionado."
+                                                    ? <section className='Title border cor2'><h3>{item.licao.nome}</h3></section>
+                                                    : <section className='Title border cor2'><h3>{item.licao.pergunta}</h3></section>}
+                                                <button className='b cor2 min'><img src={`/assets/images/icones/${item.licao.tipo}.png`} /></button>
+                                                {item.licao.status == "Respondida" &&
+                                                <button className='b cor2 min'>{item.licao.nota}</button>}
+                                                {(item.licao.status != "Respondida" && item.licao.status != null) &&
+                                                <button className='b cor2 auto'>{item.licao.status}</button>}
+                                            </section>
+
+                                            {item.licao.descricao !== "Nenhuma descrição adicionada." &&
+                                                <section className="DescCard border cor2">
+                                                    <div className='linha'></div>
+                                                    <h4>{item.licao.descricao}</h4>
+                                                </section>
+                                            }
+
+                                            {item.licao.nome !== "Nenhum título adicionado." &&
+                                                <section className='TitleLicoes'>
+                                                    <section className='Title border cor2'><h3>{item.licao.pergunta}</h3></section>
+                                                </section>
+                                            }
+
+                                            {item.licao.tipo === "Writing" &&
+                                                <section className="DescCard border cor2">
+                                                    <div className='linha'></div>
+                                                    {item.licao.resposta == null
+                                                        ? <textarea onChange={(e) => adicionarRespostas(e.target.value, "Dissertativa", "Em análise", item.licao.id)} placeholder='Digite sua resposta' className='cor2 border'></textarea>
+                                                        : <h4>{item.licao.resposta}</h4>
+                                                    }
+                                                </section>
+                                            }
+
+                                            {item.licao.tipo === "Reading" &&
+                                            <>
+                                            {item.licao.resposta == null ? (
+                                                item.alternativas.map(alternativa => (
+                                                    <button
+                                                        key={alternativa.id}
+                                                        onClick={() => adicionarRespostas(alternativa.nome, "Alternativa", "Respondida", item.licao.id)}
+                                                        className={`b cor3 cem ${respostas.some(respin => respin.idlicao === item.licao.id && respin.resposta === alternativa.nome) ? 'selecionado' : ''}`}
+                                                    >
+                                                        {alternativa.nome}
+                                                    </button>
+                                                ))
+                                            ) : (
+                                                item.alternativas.map(alternativa => (
+                                                    <button
+                                                        key={alternativa.id}
+                                                        className={`b cor3 cem ${alternativa.correto === true && "grey"} ${item.licao.resposta === alternativa.nome ? (alternativa.correto ? 'green' : 'red') : ''}`}
+                                                    >
+                                                        {alternativa.nome}
+                                                    </button>
+                                                ))
+                                            )}
+                                            </>
+                                            }
+                                        </section>
+                                    ))}
+                                </>
+                            )}
+
+                            {todasLicoesRespondidas && (
+                                <button onClick={() => setCardenvio(true)} className='b cem amarelo'>Enviar respostas</button>
+                            )}
+                        </section>
                     </section>
                 </section>
                 </>

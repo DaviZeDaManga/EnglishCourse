@@ -173,6 +173,7 @@ export default function ContaProfessor() {
                         </section>
                         <section className='SectionButtons default'>
                             <button onClick={() => setCarddados(false)} className='b cor3 cem'>Voltar</button>
+                            
                             {(nome !== professorDados.map(item => item.nome)[0] ||
                               email !== professorDados.map(item => item.email)[0] ||
                               numero !== professorDados.map(item => item.numero)[0] ||

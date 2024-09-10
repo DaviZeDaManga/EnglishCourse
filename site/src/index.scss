@@ -8,12 +8,16 @@
     width: 100vw;
     padding: 0px 10px 10px 67px;
 
-    &.PageAtividade {
-        padding: 0px 10px 10px 390px !important;
+    &.flex {
+        display: flex;
+        padding: 0px 0px 0px 67px;
     }
-    &.PageLicoes {
-        padding: 0px 10px 10px 390px !important;
-    }
+}
+.PageSection {
+    width: 100%;
+    height: 100vh;
+    padding: 0px 10px 10px 10px;
+    overflow: auto;
 }
 
 body {
@@ -31,7 +35,7 @@ body {
         justify-content: flex-start;
         align-items: center;
         min-width: 35px;
-        max-width: 300px;
+        max-width: 320px;
         width: 100%;
         min-height: 35px;
         max-height: 35px;
@@ -111,6 +115,13 @@ body {
             background-color: rgba(255, 0, 0, 0);
             border-radius: 0px;
             border: none;
+        }
+        &.impossivel {
+            background-color: rgba(255, 0, 0, 0);
+            border: 2px solid #39393971;
+            &:hover { 
+                color: #898989;
+            }
         }
         &.amarelo {
             background-color: rgba(255, 186, 83, 0.529);
@@ -340,6 +351,12 @@ input, select {
     max-height: 300px;
     overflow: hidden;
     position: relative;
+
+    &.auto {
+        min-height: unset;
+        max-width: unset;
+        aspect-ratio: 16 / 9;
+    }
 }
 .Title {
     display: flex;
@@ -369,9 +386,14 @@ input, select {
         height: 100%;
     }
     &.autoH {
-        min-height: auto; 
-        max-height: auto; 
+        min-height: unset; 
+        max-height: unset; 
         height: auto;
+    } 
+    &.minH {
+        min-height: 110px; 
+        max-height: 110px; 
+        height: 100%;
     }
 }
 .Escuro {
@@ -383,7 +405,6 @@ input, select {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.349);
     padding: 10px;
-    border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
 
@@ -451,11 +472,14 @@ input, select {
     gap: 10px;
 
     &.column {
-        flex-direction: column;
         min-width: 400px;
         max-width: 400px;
+        height: 400px;
         padding: 10px;
+        gap: 10px !important;
         overflow: auto;
+        flex-direction: column;
+        flex-wrap: nowrap;
     }
 }
 .Buttons {
@@ -586,7 +610,48 @@ input, select {
         }
     }
 }
+.ConteudosTrilha {
+    max-width: 380px;
+    width: 100%;
+    height: 100vh;
+    padding: 10px 0px;
 
+    .CardConteudosTrilha {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        height: 100%;
+        padding: 6px;
+        gap: 10px;
+        border-radius: 10px;
+    }
+}
+.ConteudosList {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: auto;
+
+    .CardList {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 368px;
+        width: 100%;
+        position: relative;
+        aspect-ratio: 16 / 9;
+
+        &.minH {
+            max-height: 35px;
+        }
+    }
+}
 
 
 

@@ -9,7 +9,6 @@ import { BuscarImagem } from '../../../connection/userConnection';
 
 // components
 import BarraLateral from '../../../components/user/barraLateral';
-import Titulo from '../../../components/user/titulo';
 import Card from '../../../components/user/card';
 import StatusCard from '../../../components/user/statusCard';
 import StatusPage from '../../../components/user/statusPage';
@@ -93,7 +92,6 @@ export default function Trilha() {
                 <StatusCard className={"marginTop"} mensagem={trilha} reload={true}/>
             ) : (
                 <>
-                <Titulo nome={"Trilha"} />
                 <section className='Info marginTop'>
                     <section className='Card min cor1 border'>
                         <section className='Title cor2'>

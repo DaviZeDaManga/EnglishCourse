@@ -141,10 +141,12 @@ export default function ContaUser() {
                         <button onClick={()=> setCarddados(false)} className='b cor3' data-category='Voltar'>
                             <img src={"/assets/images/icones/voltar.png"}/>
                         </button>
-                        <section className='DescCard autoH border cor2' data-category='Minhas informações'>
-                            <div className='linha cor3'></div>
-                            <h4>A seção Minhas Informações permite que o aluno visualize e atualize seus dados pessoais, como nome, email, número de telefone e data de nascimento. Os alunos podem alterar essas informações preenchendo os campos apropriados e clicando em "Alterar dados" para salvar as mudanças. Essa funcionalidade garante que os alunos mantenham suas informações sempre atualizadas.</h4>
-                        </section>
+                        <div className='Desc' data-category='Minhas informações'>
+                            <section className='DescCard autoH border cor2'>
+                                <div className='linha cor3'></div>
+                                <h4>A seção Minhas Informações permite que o aluno visualize e atualize seus dados pessoais, como nome, email, número de telefone e data de nascimento. Os alunos podem alterar essas informações preenchendo os campos apropriados e clicando em "Alterar dados" para salvar as mudanças. Essa funcionalidade garante que os alunos mantenham suas informações sempre atualizadas.</h4>
+                            </section>
+                        </div>
                         <input 
                             onChange={(e) => setNome(e.target.value)} 
                             value={nome}              
@@ -181,17 +183,33 @@ export default function ContaUser() {
                             {alunoDados.map(item => item.status)}
                         </button>
                         <section className='SectionButtons default' data-category='Minhas informações'>
-                            {(nome !== alunoDados.map(item => item.nome)[0] ||
-                              email !== alunoDados.map(item => item.email)[0] ||
-                              numero !== alunoDados.map(item => item.numero)[0] ||
-                              nascimento !== alunoDados.map(item => {
+                            <button 
+                            onClick={(
+                                nome !== alunoDados.map(item => item.nome)[0] ||
+                                email !== alunoDados.map(item => item.email)[0] ||
+                                numero !== alunoDados.map(item => item.numero)[0] ||
+                                nascimento !== alunoDados.map(item => {
                                 const date = new Date(item.nascimento);
                                 const day = String(date.getDate()).padStart(2, '0');
                                 const month = String(date.getMonth() + 1).padStart(2, '0');
                                 const year = date.getFullYear();
                                 return `${year}-${month}-${day}`;
-                              })[0]) &&
-                            <button onClick={alterarDadosAluno} className='b selecionado cem'>Alterar dados</button>}
+                                })[0]
+                            ) ? alterarDadosAluno : null}
+                            className={`b cem ${(
+                                nome !== alunoDados.map(item => item.nome)[0] ||
+                                email !== alunoDados.map(item => item.email)[0] ||
+                                numero !== alunoDados.map(item => item.numero)[0] ||
+                                nascimento !== alunoDados.map(item => {
+                                const date = new Date(item.nascimento);
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const year = date.getFullYear();
+                                return `${year}-${month}-${day}`;
+                                })[0]
+                            ) ? 'selecionado' : 'impossivel'}`}>
+                            Alterar dados
+                            </button>
                         </section>
                     </CardSections>
                 </StatusPage>}
@@ -236,7 +254,8 @@ export default function ContaUser() {
                                             <h4>Bem-vindo à Smart Lingu! Esta é a sua página de perfil, onde você pode acompanhar seu progresso no curso. Aqui, você encontrará uma visão detalhada do seu desempenho, incluindo as trilhas de aprendizado que você já completou e as atividades que você concluiu. Além disso, você poderá ver as lições que já foram respondidas e aquelas que ainda estão pendentes.</h4>
                                         </section>
                                         <button onClick={() => setCarddados(true)} className='b cor3 cem'> 
-                                            Ver meus dados
+                                            <img src="/assets/images/icones/Avisos.png" />
+                                            Ver mais
                                         </button>
                                     </div>
                                 </section>
